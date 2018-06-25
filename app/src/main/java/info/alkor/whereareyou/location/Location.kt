@@ -1,5 +1,6 @@
 package info.alkor.whereareyou.location
 
+import info.alkor.whereareyou.common.AccurateValue
 import java.util.*
 
 data class Coordinates(
@@ -7,17 +8,9 @@ data class Coordinates(
         val longitude: Double,
         val accuracy: Float? = null)
 
-data class Altitude(
-        val value: Double,
-        val accuracy: Float? = null)
-
-data class Speed(
-        val value: Float,
-        val accuracy: Float? = null)
-
-data class Bearing(
-        val value: Float,
-        val accuracy: Float? = null)
+typealias Altitude = AccurateValue<Double>
+typealias Speed = AccurateValue<Float>
+typealias Bearing = AccurateValue<Float>
 
 data class Location(
         val provider: ProviderType,

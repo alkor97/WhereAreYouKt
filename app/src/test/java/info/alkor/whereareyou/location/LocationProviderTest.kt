@@ -10,7 +10,7 @@ class LocationProviderTest {
 
     data class Response(val delay: Long, val accuracy: Float?)
 
-    class LocationProviderImpl(val responses: Map<ProviderType, Response>) : AbstractLocationProvider() {
+    class LocationProviderImpl(private val responses: Map<ProviderType, Response>) : AbstractLocationProvider() {
         override suspend fun requestLocation(provider: ProviderType): Location? {
             val response = responses[provider]
             if (response != null) {

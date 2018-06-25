@@ -47,7 +47,7 @@ fun Location.toModelCoordinates() = Coordinates(latitude, longitude, if (hasAccu
 fun Location.toModelAltitude() =
         if (hasAltitude())
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && hasVerticalAccuracy())
-                Altitude(altitude, verticalAccuracyMeters)
+                Altitude(altitude, verticalAccuracyMeters.toDouble())
             else
                 Altitude(altitude)
         else null
