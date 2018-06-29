@@ -34,15 +34,16 @@ class LocationProviderTest {
     @Test
     fun testTimeAndAccuracyBasedLocationResponse() {
         val responses = HashMap<ProviderType, Response>()
-        responses[ProviderType.GPS] = Response(300, 10.0f)
-        responses[ProviderType.NETWORK] = Response(200, 100.0f)
-        responses[ProviderType.PASSIVE] = Response(100, 200.0f)
+        responses[ProviderType.GPS] = Response(600, 10.0f)
+        responses[ProviderType.NETWORK] = Response(400, 100.0f)
+        responses[ProviderType.PASSIVE] = Response(200, 200.0f)
 
-        fun getLocation(timeout: Long) = getLocationBlocking(timeout, responses)
+        fun getLocation(type: ProviderType) = getLocationBlocking((responses[type]?.delay
+                ?: 0) + 100, responses)
 
-        Assert.assertEquals(ProviderType.PASSIVE, getLocation(100 + 50)?.provider)
-        Assert.assertEquals(ProviderType.NETWORK, getLocation(200 + 50)?.provider)
-        Assert.assertEquals(ProviderType.GPS, getLocation(300 + 50)?.provider)
+        Assert.assertEquals(ProviderType.PASSIVE, getLocation(ProviderType.PASSIVE)?.provider)
+        Assert.assertEquals(ProviderType.NETWORK, getLocation(ProviderType.NETWORK)?.provider)
+        Assert.assertEquals(ProviderType.GPS, getLocation(ProviderType.GPS)?.provider)
     }
 
     @Test
@@ -51,8 +52,9 @@ class LocationProviderTest {
         responses[ProviderType.GPS] = Response(100, 10.0f)
         responses[ProviderType.PASSIVE] = Response(100, null)
 
-        fun getLocation(timeout: Long) = getLocationBlocking(timeout, responses)
+        fun getLocation(type: ProviderType) = getLocationBlocking((responses[type]?.delay
+                ?: 0) + 50, responses)
 
-        Assert.assertEquals(ProviderType.GPS, getLocation(100 + 50)?.provider)
+        Assert.assertEquals(ProviderType.GPS, getLocation(ProviderType.GPS)?.provider)
     }
 }
