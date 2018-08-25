@@ -41,10 +41,10 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3'
 
     // architecture components
-//    implementation "android.arch.lifecycle:runtime:$archLifecycleVersion"
-//    implementation "android.arch.lifecycle:extensions:$archLifecycleVersion"
-//    implementation "android.arch.lifecycle:reactivestreams:$archLifecycleVersion"
-//    kapt "android.arch.lifecycle:compiler:$archLifecycleVersion"
+    implementation "android.arch.lifecycle:runtime:$rootProject.archLifecycleVersion"
+    implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
+    implementation "android.arch.lifecycle:reactivestreams:$rootProject.archLifecycleVersion"
+    kapt "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
 
     // Room components
     implementation "android.arch.persistence.room:runtime:$rootProject.roomVersion"

@@ -10,25 +10,19 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.common.duration
-import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.ui.settings.SettingsActivity
 import info.alkor.whereareyoukt.R
 import kotlinx.android.synthetic.main.activity_simple.*
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 import java.util.*
 
-
 class SimpleActivity : AppCompatActivity() {
-
-    var locationViewModel = SimpleViewModel()
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,36 +36,30 @@ class SimpleActivity : AppCompatActivity() {
         tabs_main.setupWithViewPager(viewpager_main)
 
         fab.setOnClickListener { view ->
-            val ctx = applicationContext as AppContext
-            val queryTimeout = ctx.settings.getLocationQueryTimeout()
-            Log.i("location", "location query timeout is $queryTimeout")
             if (requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                val locationsChannel = Channel<Location>()
+                val ctx = applicationContext as AppContext
+                val startTime = Date().time
+                ctx.requestLocation()
+
+                val queryTimeout = ctx.settings.getLocationQueryTimeout()
+                Snackbar.make(view, "Location getting started with timeout $queryTimeout", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
+
                 launch {
-                    locationsChannel.consumeEach {
-                        Log.i("location", "intermediate: $it")
+                    ctx.locationChannel.consumeEach {
                         launch(UI) {
-                            locationViewModel.update(it)
-                            Snackbar.make(view, "Got intermediate location", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show()
+                            if (it.final) {
+                                val d = duration(millis = Date().time - startTime).toSeconds()
+                                Snackbar.make(view, "Completed in $d seconds", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show()
+                            } else {
+                                Snackbar.make(view, "Got intermediate location", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show()
+                            }
                         }
                     }
                 }
-                launch {
-                    val startTime = Date().time
-                    val location = ctx.locationProvider.getLocation(queryTimeout, locationsChannel)
-                    val duration = duration(millis = Date().time - startTime).toSeconds()
-
-                    Log.i("location", "final: " + (location?.toString() ?: "none"))
-                    launch(UI) {
-                        locationViewModel.update(location)
-                        Snackbar.make(view, "Completed in $duration seconds", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show()
-                    }
-                }
             }
-            Snackbar.make(view, "Location getting started with timeout $queryTimeout", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
         }
     }
 
