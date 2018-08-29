@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -17,7 +18,15 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:shrinkColumns="2">
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:shrinkColumns="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -27,7 +36,8 @@
                     android:id="@+id/providerName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/provider" />
+                    android:text="@string/provider"
+                    android:textStyle="bold" />
 
                 <Space
                     android:layout_width="8dp"
@@ -48,7 +58,8 @@
                     android:id="@+id/timeName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/time" />
+                    android:text="@string/time"
+                    android:textStyle="bold" />
 
                 <Space
                     android:layout_width="8dp"
@@ -68,8 +79,9 @@
                 <TextView
                     android:id="@+id/coordsName"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/coords" />
+                    android:layout_height="match_parent"
+                    android:text="@string/coords"
+                    android:textStyle="bold" />
 
                 <Space
                     android:layout_width="8dp"
@@ -84,13 +96,15 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="@{safeUnbox(locationModel.altitudeVisible)}">
 
                 <TextView
                     android:id="@+id/altName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/altitude" />
+                    android:text="@string/altitude"
+                    android:textStyle="bold" />
 
                 <Space
                     android:layout_width="8dp"
@@ -105,13 +119,15 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="@{safeUnbox(locationModel.bearingVisible)}">
 
                 <TextView
                     android:id="@+id/bearingName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/bearing" />
+                    android:text="@string/bearing"
+                    android:textStyle="bold" />
 
                 <Space
                     android:layout_width="8dp"
@@ -126,13 +142,15 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="@{safeUnbox(locationModel.speedVisible)}">
 
                 <TextView
                     android:id="@+id/speedName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/speed" />
+                    android:text="@string/speed"
+                    android:textStyle="bold" />
 
                 <Space
                     android:layout_width="8dp"

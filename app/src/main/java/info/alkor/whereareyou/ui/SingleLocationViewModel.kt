@@ -2,6 +2,8 @@ package info.alkor.whereareyou.ui
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.view.View
+import info.alkor.whereareyou.common.DateTimeFormatter
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.toKilometersPerHour
 
@@ -14,25 +16,46 @@ class SingleLocationViewModel : ViewModel() {
     val bearing = MutableLiveData<String>()
     val speed = MutableLiveData<String>()
 
+    val altitudeVisible = MutableLiveData<Int>()
+    val bearingVisible = MutableLiveData<Int>()
+    val speedVisible = MutableLiveData<Int>()
+
     init {
         update(null)
     }
 
     fun update(location: Location?) {
         if (location != null) {
-            this.provider.postValue(location.provider.name)
-            this.time.postValue(location.time.toString())
-            this.coords.postValue("${location.coordinates}")
-            this.altitude.postValue(if (location.altitude != null) "${location.altitude}" else "-")
-            this.bearing.postValue(if (location.bearing != null) "${location.bearing}" else "-")
-            this.speed.postValue(if (location.speed != null) "${location.speed.toKilometersPerHour()}" else "-")
+            provider.postValue(location.provider.name)
+            time.postValue(formatter.formatTime(location.time))
+            coords.postValue("${location.coordinates}")
+
+            setValue(altitude, altitudeVisible, location.altitude)
+            setValue(bearing, bearingVisible, location.bearing)
+            setValue(speed, speedVisible, location.speed) {
+                "${it.toKilometersPerHour()}"
+            }
         } else {
-            this.provider.postValue("-")
-            this.time.postValue("-")
-            this.coords.postValue("-")
-            this.altitude.postValue("-")
-            this.bearing.postValue("-")
-            this.speed.postValue("-")
+            provider.postValue("-")
+            time.postValue("-")
+            coords.postValue("-")
+            setValue(altitude, altitudeVisible, null)
+            setValue(bearing, bearingVisible, null)
+            setValue(speed, speedVisible, null)
         }
+    }
+
+    private fun <T> setValue(target: MutableLiveData<String>, targetVisibility: MutableLiveData<Int>, value: T?, toString: (v: T) -> String = fun(v: T) = "$v") {
+        if (value != null) {
+            target.postValue(toString(value))
+            targetVisibility.postValue(View.VISIBLE)
+        } else {
+            target.postValue("-")
+            targetVisibility.postValue(View.GONE)
+        }
+    }
+
+    companion object {
+        val formatter = DateTimeFormatter()
     }
 }
