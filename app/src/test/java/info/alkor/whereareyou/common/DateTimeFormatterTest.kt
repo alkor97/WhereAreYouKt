@@ -7,7 +7,7 @@ import java.util.*
 class DateTimeFormatterTest {
 
     private val now = now()
-    private val instance = DateTimeFormatter(Locale.GERMANY)
+    private val instance = DateTimeFormatter(Locale.UK)
 
     @Test
     fun testSameDay() {
@@ -20,21 +20,21 @@ class DateTimeFormatterTest {
     fun testSameWeek() {
         val time = now()
         time.roll(Calendar.DAY_OF_MONTH, -1)
-        Assert.assertEquals("Dienstag, 13:47:15", instance.formatTime(time.time, now))
+        Assert.assertEquals("Tuesday, 13:47:15", instance.formatTime(time.time, now))
     }
 
     @Test
     fun testSameYear() {
         val time = now()
         time.roll(Calendar.MONTH, -1)
-        Assert.assertEquals("29 Juli, 13:47:15", instance.formatTime(time.time, now))
+        Assert.assertEquals("29 July, 13:47:15", instance.formatTime(time.time, now))
     }
 
     @Test
     fun testGenericDate() {
         val time = now()
         time.roll(Calendar.YEAR, -1)
-        Assert.assertEquals("29. August 2017 13:47:15", instance.formatTime(time.time, now))
+        Assert.assertEquals("29 August 2017 13:47:15", instance.formatTime(time.time, now))
     }
 
     private fun now() = calendar(2018, 8, 29, 13, 47, 15)

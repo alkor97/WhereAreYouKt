@@ -7,8 +7,8 @@ import java.util.*
 class DateTimeFormatter(locale: Locale = Locale.getDefault()) {
 
     private val sameDayFormat: DateFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM, locale)
-    private val sameWeekFormat = SimpleDateFormat("E, HH:mm:ss", locale)
-    private val sameYearFormat = SimpleDateFormat("d M, HH:mm:ss", locale)
+    private val sameWeekFormat = SimpleDateFormat("EEEE, HH:mm:ss", locale)
+    private val sameYearFormat = SimpleDateFormat("d MMMM, HH:mm:ss", locale)
     private val genericFormat: DateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM, locale)
 
     fun formatTime(time: Date, now: Calendar = Calendar.getInstance()): String {
