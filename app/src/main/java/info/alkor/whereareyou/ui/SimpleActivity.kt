@@ -42,11 +42,6 @@ class SimpleActivity : AppCompatActivity() {
             if (requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 val ctx = applicationContext as AppContext
                 val startTime = Date().time
-                ctx.requestLocation()
-
-                val queryTimeout = ctx.settings.getLocationQueryTimeout()
-                Snackbar.make(view, "Location getting started with timeout $queryTimeout", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show()
 
                 launch {
                     ctx.locationChannel.consumeEach {
@@ -62,6 +57,11 @@ class SimpleActivity : AppCompatActivity() {
                         }
                     }
                 }
+                ctx.requestLocation()
+
+                val queryTimeout = ctx.settings.getLocationQueryTimeout()
+                Snackbar.make(view, "Location getting started with timeout $queryTimeout", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
             }
         }
     }
