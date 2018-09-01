@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WhereAreYouKt</string>
+    <string name="title_activity_simple">Gdzie jestem?</string>
+    <string name="action_settings">Ustawienia</string>
+
+    <string name="provider">źródło</string>
+    <string name="time">czas</string>
+    <string name="coords">położenie</string>
+    <string name="altitude">wysokość</string>
+    <string name="bearing">kierunek</string>
+    <string name="speed">prędkość</string>
+
+    <string name="location_query_timeout_title">Maksymalny czas oczekiwania na lokalizację</string>
+    <string name="location_query_timeout_summary">%1$s sekund</string>
+    <string name="location_query_timeout_dialog_message">Maksymalny czas oczekiwania na uzyskanie bieżącego położenia w sekundach</string>
+
+    <string name="show">Pokaż</string>
+    <string name="you">Ty</string>
+</resources>

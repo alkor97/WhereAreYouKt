@@ -1,12 +1,12 @@
 <!DOCTYPE resources [<!ENTITY appName "Where are you?"><!ENTITY scheme "http"><!ENTITY host "alkor.info"><!ENTITY pathPrefix "loc">]>
 <resources>
-    <string name="app_name">WhereAreYouKt</string>
+    <string name="app_name">WhereAreYouKy</string>
     <string name="title_activity_simple">Where am I?</string>
     <string name="action_settings">Settings</string>
 
     <string name="provider">provider</string>
     <string name="time">time</string>
-    <string name="coords">coords</string>
+    <string name="coords">location</string>
     <string name="altitude">altitude</string>
     <string name="bearing">bearing</string>
     <string name="speed">speed</string>
@@ -14,8 +14,9 @@
     <string name="location_query_timeout_title">Location query timeout</string>
     <string name="location_query_timeout_summary">%1$s seconds</string>
     <string name="location_query_timeout_dialog_message">Maximal time to await for location information in seconds</string>
-    <string name="location_query_timeout_default">30</string>
+    <string name="location_query_timeout_default" translatable="false">30</string>
 
     <string name="location_presenter_url" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s,%s,%s</string>
     <string name="show">SHOW</string>
+    <string name="you">You</string>
 </resources>
