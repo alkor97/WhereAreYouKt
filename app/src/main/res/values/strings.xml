@@ -17,6 +17,10 @@
     <string name="location_query_timeout_default" translatable="false">30</string>
 
     <string name="location_presenter_url" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s,%s,%s</string>
-    <string name="show">SHOW</string>
+    <string name="show">Show</string>
     <string name="you">You</string>
+
+    <string name="got_intermediate_result">Got intermediate location</string>
+    <string name="completed_within_duration">Completed in %1$d seconds</string>
+    <string name="query_started_with_timeout">Location getting started with timeout %1$s</string>
 </resources>

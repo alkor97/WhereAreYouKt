@@ -48,10 +48,10 @@ class SimpleActivity : AppCompatActivity() {
                         launch(UI) {
                             if (it.final) {
                                 val d = duration(millis = Date().time - startTime).toSeconds()
-                                Snackbar.make(view, "Completed in $d seconds", Snackbar.LENGTH_LONG)
+                                Snackbar.make(view, getString(R.string.completed_within_duration, d), Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show()
                             } else {
-                                Snackbar.make(view, "Got intermediate location", Snackbar.LENGTH_LONG)
+                                Snackbar.make(view, getString(R.string.got_intermediate_result), Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show()
                             }
                         }
@@ -60,7 +60,7 @@ class SimpleActivity : AppCompatActivity() {
                 ctx.requestLocation()
 
                 val queryTimeout = ctx.settings.getLocationQueryTimeout()
-                Snackbar.make(view, "Location getting started with timeout $queryTimeout", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, getString(R.string.query_started_with_timeout, queryTimeout.toString()), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show()
             }
         }
