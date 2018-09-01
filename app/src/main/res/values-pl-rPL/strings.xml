@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">WhereAreYouKt</string>
+    <string name="app_name">Gdzie jestem?</string>
     <string name="title_activity_simple">Gdzie jestem?</string>
     <string name="action_settings">Ustawienia</string>
 

@@ -1,6 +1,6 @@
 <!DOCTYPE resources [<!ENTITY appName "Where are you?"><!ENTITY scheme "http"><!ENTITY host "alkor.info"><!ENTITY pathPrefix "loc">]>
 <resources>
-    <string name="app_name">WhereAreYouKy</string>
+    <string name="app_name">Where am I?</string>
     <string name="title_activity_simple">Where am I?</string>
     <string name="action_settings">Settings</string>
 
