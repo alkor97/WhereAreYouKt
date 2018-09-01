@@ -2,8 +2,10 @@ package info.alkor.whereareyou.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
@@ -12,6 +14,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.common.duration
 import info.alkor.whereareyou.ui.settings.SettingsActivity
@@ -89,5 +92,14 @@ class SimpleActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun showLocation(view: View) {
+        val locationViewModel = ViewModelProviders.of(this).get(SingleLocationViewModel::class.java)
+        if (locationViewModel.link != null) {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(locationViewModel.link))
+            startActivity(intent)
+        }
     }
 }

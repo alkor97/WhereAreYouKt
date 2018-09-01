@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.model.location.Location
+import info.alkor.whereareyou.model.location.toMinimalText
 import info.alkor.whereareyoukt.R
 import info.alkor.whereareyoukt.databinding.FragmentSimpleBinding
 import kotlinx.coroutines.experimental.Job
@@ -23,12 +25,15 @@ class SimpleActivityFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        if (activity == null)
+            return null
+
         val locationViewModel = ViewModelProviders.of(activity!!).get(SingleLocationViewModel::class.java)
         if (context != null) {
             val ctx = context?.applicationContext as AppContext
             job = launch {
                 ctx.locationChannel.consumeEach {
-                    locationViewModel.update(it.location)
+                    locationViewModel.update(it.location, prepareLink(it.location))
                 }
             }
         }
@@ -36,8 +41,14 @@ class SimpleActivityFragment : Fragment() {
         val binding: FragmentSimpleBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_simple, container, false)
         binding.setLifecycleOwner(this)
         binding.locationModel = locationViewModel
+
         return binding.root
     }
+
+    private fun prepareLink(location: Location?) = if (location != null) context?.getString(R.string.location_presenter_url,
+            location.toMinimalText(),
+            "",
+            "You") else null
 
     override fun onDestroyView() {
         job?.cancel()

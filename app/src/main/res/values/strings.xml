@@ -1,3 +1,4 @@
+<!DOCTYPE resources [<!ENTITY appName "Where are you?"><!ENTITY scheme "http"><!ENTITY host "alkor.info"><!ENTITY pathPrefix "loc">]>
 <resources>
     <string name="app_name">WhereAreYouKt</string>
     <string name="title_activity_simple">Where am I?</string>
@@ -14,4 +15,7 @@
     <string name="location_query_timeout_summary">%1$s seconds</string>
     <string name="location_query_timeout_dialog_message">Maximal time to await for location information in seconds</string>
     <string name="location_query_timeout_default">30</string>
+
+    <string name="location_presenter_url" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s,%s,%s</string>
+    <string name="show">SHOW</string>
 </resources>
