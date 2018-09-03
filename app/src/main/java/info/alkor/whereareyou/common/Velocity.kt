@@ -9,7 +9,7 @@ data class Velocity(val value: Double, val unit: VelocityUnit) {
     private fun toBaseValue() = unit.toMetersPerSecond(value)
     override fun equals(other: Any?) = (other as? Velocity)?.toBaseValue() == toBaseValue()
     override fun hashCode() = toBaseValue().hashCode() + unit.hashCode()
-    override fun toString() = "$value $unit"
+    override fun toString() = "${value.toString(0)} $unit"
 
     fun <T : VelocityUnit> convertTo(unit: T) = Velocity(unit.fromMetersPerSecond(toBaseValue()), unit)
     fun toMetersPerSecond() = convertTo(MetersPerSecond)

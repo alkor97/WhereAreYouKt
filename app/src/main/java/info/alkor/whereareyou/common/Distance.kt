@@ -12,7 +12,7 @@ data class Distance(val value: Double, val unit: DistanceUnit) {
     private fun toMeters() = unit.toMeters(value)
     override fun equals(other: Any?) = (other as? Distance)?.toMeters() == toMeters()
     override fun hashCode() = toMeters().hashCode() + unit.hashCode()
-    override fun toString() = "$value $unit"
+    override fun toString() = "${value.toString(0)} $unit"
 
     fun <T : DistanceUnit> convertTo(unit: T) = Distance(unit.fromMeters(toMeters()), unit)
 }

@@ -1,5 +1,7 @@
 package info.alkor.whereareyou.common
 
+fun Double.toString(decimal: Int) = String.format("%.${decimal}f", this)
+
 sealed class Degree(protected val min: Double, protected val max: Double) {
     open fun normalize(value: Double): Double {
         if (min <= value && value < max)
@@ -30,7 +32,7 @@ data class Latitude private constructor(val value: Double) {
         }
     }
 
-    override fun toString() = "$value$unit"
+    override fun toString() = "${value.toString(6)}$unit"
 }
 
 fun <T : Number> latitudeDegrees(value: T) = Latitude(value.toDouble())
@@ -45,7 +47,7 @@ data class Longitude private constructor(val value: Double) {
         }
     }
 
-    override fun toString() = "$value$unit"
+    override fun toString() = "${value.toString(6)}$unit"
 }
 
 fun <T : Number> longitudeDegrees(value: T) = Longitude(value.toDouble())
@@ -60,7 +62,7 @@ data class Azimuth private constructor(val value: Double) {
         }
     }
 
-    override fun toString() = "$value$unit"
+    override fun toString() = "${value.toString(6)}$unit"
 }
 
 fun <T : Number> azimuthDegrees(value: T) = Azimuth(value.toDouble())
