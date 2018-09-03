@@ -25,4 +25,6 @@
     <string name="share">Udostępnij&#8230;</string>
     <string name="hera_i_am">Tu jestem</string>
     <string name="share_via">Udostępnij przez</string>
+
+    <string name="tab_location">Położenie</string>
 </resources>

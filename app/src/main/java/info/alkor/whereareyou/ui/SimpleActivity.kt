@@ -34,7 +34,7 @@ class SimpleActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         PreferenceManager.setDefaultValues(this, R.xml.settings, false)
 
-        val fragmentAdapter = SimplePagerAdapter(supportFragmentManager)
+        val fragmentAdapter = prepareFragmentAdapter()
         viewpager_main.adapter = fragmentAdapter
         tabs_main.setupWithViewPager(viewpager_main)
 
@@ -116,4 +116,10 @@ class SimpleActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(intent, getString(R.string.share_via)))
         }
     }
+
+    private fun prepareFragmentAdapter() = GenericPagerAdapter(supportFragmentManager,
+            listOf(
+                    FragmentDescriptor(getString(R.string.tab_location)) { SimpleActivityFragment() }
+            )
+    )
 }
