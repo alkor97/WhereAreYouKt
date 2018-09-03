@@ -2,8 +2,6 @@ package info.alkor.whereareyou.ui
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.content.Intent
-import android.net.Uri
 import android.view.View
 import info.alkor.whereareyou.common.DateTimeFormatter
 import info.alkor.whereareyou.model.location.Location
@@ -23,6 +21,7 @@ class SingleLocationViewModel : ViewModel() {
     val speedVisible = MutableLiveData<Int>()
 
     val showVisible = MutableLiveData<Int>()
+    val shareVisible = MutableLiveData<Int>()
 
     var link: String? = null
 
@@ -43,6 +42,7 @@ class SingleLocationViewModel : ViewModel() {
                 "${it.toKilometersPerHour()}"
             }
             showVisible.postValue(View.VISIBLE)
+            shareVisible.postValue(View.VISIBLE)
         } else {
             provider.postValue("-")
             time.postValue("-")
@@ -51,6 +51,7 @@ class SingleLocationViewModel : ViewModel() {
             setValue(bearing, bearingVisible, null)
             setValue(speed, speedVisible, null)
             showVisible.postValue(View.GONE)
+            shareVisible.postValue(View.GONE)
         }
     }
 

@@ -23,4 +23,8 @@
     <string name="got_intermediate_result">Got intermediate location</string>
     <string name="completed_within_duration">Completed in %1$d seconds</string>
     <string name="query_started_with_timeout">Location getting started with timeout %1$s</string>
+
+    <string name="share">Share&#8230;</string>
+    <string name="hera_i_am">Here I am</string>
+    <string name="share_via">Share via</string>
 </resources>
