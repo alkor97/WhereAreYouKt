@@ -102,4 +102,18 @@ class SimpleActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun shareLocation(view: View) {
+        val locationViewModel = ViewModelProviders.of(this).get(SingleLocationViewModel::class.java)
+        if (locationViewModel.link != null) {
+            val intent = Intent(Intent.ACTION_SEND)
+            with(intent) {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "tu jestem")
+                putExtra(Intent.EXTRA_TEXT, locationViewModel.link)
+            }
+            startActivity(Intent.createChooser(intent, "Share via"))
+        }
+    }
 }

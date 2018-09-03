@@ -21,4 +21,8 @@
     <string name="got_intermediate_result">Uzyskano pośredni wynik</string>
     <string name="completed_within_duration">Ukończono w %1$d sekund</string>
     <string name="query_started_with_timeout">Rozpoczęto zapytanie o położenie (maksymalny czas oczekiwania to %1$s)</string>
+
+    <string name="share">Udostępnij&#8230;</string>
+    <string name="hera_i_am">Tu jestem</string>
+    <string name="share_via">Udostępnij przez</string>
 </resources>
