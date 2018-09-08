@@ -9,6 +9,8 @@ import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -28,6 +30,7 @@ import kotlinx.coroutines.experimental.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+
 class SimpleActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
@@ -41,8 +44,13 @@ class SimpleActivity : AppCompatActivity() {
         viewpager_main.adapter = fragmentAdapter
         tabs_main.setupWithViewPager(viewpager_main)
 
+        var locating = false
         fab.setOnClickListener { view ->
+            if (locating)
+                return@setOnClickListener
             if (requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                locating = true
+                hideFloatingActionButton(fab)
                 val ctx = applicationContext as AppContext
                 val startTime = Date().time
 
@@ -53,6 +61,8 @@ class SimpleActivity : AppCompatActivity() {
                                 val d = duration(millis = Date().time - startTime).convertTo(TimeUnit.SECONDS)
                                 Snackbar.make(view, getString(R.string.completed_within_duration, d.toString(resources)), Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show()
+                                showFloatingActionButton(fab)
+                                locating = false
                             } else {
                                 Snackbar.make(view, getString(R.string.got_intermediate_result), Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show()
@@ -125,6 +135,27 @@ class SimpleActivity : AppCompatActivity() {
                     FragmentDescriptor(getString(R.string.tab_location)) { SimpleActivityFragment() }
             )
     )
+
+    private fun hideFloatingActionButton(fab: FloatingActionButton) {
+        val params = fab.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as FloatingActionButton.Behavior?
+
+        if (behavior != null) {
+            behavior.isAutoHideEnabled = false
+        }
+
+        fab.hide()
+    }
+
+    private fun showFloatingActionButton(fab: FloatingActionButton) {
+        fab.show()
+        val params = fab.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as FloatingActionButton.Behavior?
+
+        if (behavior != null) {
+            behavior.isAutoHideEnabled = true
+        }
+    }
 }
 
 fun Duration.toString(resources: Resources) = byUnit().joinToString(" ") { (value, unit) ->
