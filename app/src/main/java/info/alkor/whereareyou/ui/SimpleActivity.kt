@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -16,6 +17,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.common.duration
 import info.alkor.whereareyou.ui.settings.SettingsActivity
 import info.alkor.whereareyoukt.R
@@ -24,6 +26,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class SimpleActivity : AppCompatActivity() {
 
@@ -47,8 +50,8 @@ class SimpleActivity : AppCompatActivity() {
                     ctx.locationChannel.consumeEach {
                         launch(UI) {
                             if (it.final) {
-                                val d = duration(millis = Date().time - startTime).toSeconds()
-                                Snackbar.make(view, getString(R.string.completed_within_duration, d), Snackbar.LENGTH_LONG)
+                                val d = duration(millis = Date().time - startTime).convertTo(TimeUnit.SECONDS)
+                                Snackbar.make(view, getString(R.string.completed_within_duration, d.toString(resources)), Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show()
                             } else {
                                 Snackbar.make(view, getString(R.string.got_intermediate_result), Snackbar.LENGTH_LONG)
@@ -60,7 +63,7 @@ class SimpleActivity : AppCompatActivity() {
                 ctx.requestLocation()
 
                 val queryTimeout = ctx.settings.getLocationQueryTimeout()
-                Snackbar.make(view, getString(R.string.query_started_with_timeout, queryTimeout.toString()), Snackbar.LENGTH_LONG)
+                Snackbar.make(view, getString(R.string.query_started_with_timeout, queryTimeout.toString(resources)), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show()
             }
         }
@@ -122,4 +125,17 @@ class SimpleActivity : AppCompatActivity() {
                     FragmentDescriptor(getString(R.string.tab_location)) { SimpleActivityFragment() }
             )
     )
+}
+
+fun Duration.toString(resources: Resources) = byUnit().joinToString(" ") { (value, unit) ->
+    val plural = when (unit) {
+        TimeUnit.DAYS -> R.plurals.duration_days
+        TimeUnit.HOURS -> R.plurals.duration_hours
+        TimeUnit.MINUTES -> R.plurals.duration_minutes
+        TimeUnit.SECONDS -> R.plurals.duration_seconds
+        TimeUnit.MILLISECONDS -> R.plurals.duration_milliseconds
+        TimeUnit.MICROSECONDS -> R.plurals.duration_microseconds
+        TimeUnit.NANOSECONDS -> R.plurals.duration_nanoseconds
+    }
+    resources.getQuantityString(plural, value.toInt(), value)
 }

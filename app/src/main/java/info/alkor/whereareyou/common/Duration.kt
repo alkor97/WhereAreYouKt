@@ -17,7 +17,12 @@ data class Duration(val value: Long, val unit: TimeUnit) {
     private fun toSmallest() = unit.toNanos(value)
     override fun equals(other: Any?) = (other as? Duration)?.toSmallest() == toSmallest()
     override fun hashCode() = toSmallest().hashCode() + unit.hashCode()
-    override fun toString(): String {
+    override fun toString() =
+            byUnit().map {
+                "${it.first}${it.second.asString()}"
+            }.joinToString(" ")
+
+    fun byUnit(): List<Pair<Long, TimeUnit>> {
         var milliseconds = toSmallest()
         return arrayOf(TimeUnit.DAYS, TimeUnit.HOURS, TimeUnit.MINUTES, TimeUnit.SECONDS, TimeUnit.MILLISECONDS, TimeUnit.MICROSECONDS, TimeUnit.NANOSECONDS)
                 .filter { it >= unit }
@@ -25,9 +30,8 @@ data class Duration(val value: Long, val unit: TimeUnit) {
                     val unitInNanos = it.toNanos(1)
                     val units = milliseconds / unitInNanos
                     milliseconds %= unitInNanos
-                    if (units != 0L) "$units${it.asString()}" else null
+                    if (units != 0L) Pair(units, it) else null
                 }
-                .joinToString(" ")
     }
 
     fun <T : TimeUnit> convertTo(unit: T) = Duration(convertValue(unit), unit)

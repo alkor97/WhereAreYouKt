@@ -1,13 +1,20 @@
 package info.alkor.whereareyou.impl.settings
 
+import android.content.res.Resources
+import info.alkor.whereareyou.common.seconds
+import info.alkor.whereareyou.ui.toString
 import info.alkor.whereareyoukt.R
 
-enum class SettingsKey(val defaultId: Int, val summaryId: Int) {
-    LOCATION_QUERY_TIMEOUT(
-            R.string.location_query_timeout_default,
-            R.string.location_query_timeout_summary);
+enum class SettingsKey(val defaultId: Int) {
+    LOCATION_QUERY_TIMEOUT(R.string.location_query_timeout_default) {
+        override fun getSummary(resources: Resources, value: String): String {
+            val duration = seconds(value.toInt())
+            return duration.toString(resources)
+        }
+    };
 
     override fun toString() = name.toLowerCase()
+    abstract fun getSummary(resources: Resources, value: String): String
 
     companion object {
         fun fromString(key: String): SettingsKey? {

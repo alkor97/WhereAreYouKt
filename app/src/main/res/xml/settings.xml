@@ -9,6 +9,5 @@
         android:key="location_query_timeout"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:summary="@string/location_query_timeout_summary"
         android:title="@string/location_query_timeout_title" />
 </PreferenceScreen>

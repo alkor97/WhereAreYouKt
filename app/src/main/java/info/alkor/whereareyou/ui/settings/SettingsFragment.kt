@@ -35,7 +35,7 @@ class SettingsFragment : PreferenceFragment(), OnSharedPreferenceChangeListener 
                 preferenceScreen.findPreference(key)?.let { preference ->
                     val defaultValue = resources.getString(typedKey.defaultId)
                     val value = sharedPreferences.getString(key, defaultValue)
-                    val summary = resources.getString(typedKey.summaryId, value)
+                    val summary = typedKey.getSummary(resources, value)
                     preference.summary = summary
                 }
             }

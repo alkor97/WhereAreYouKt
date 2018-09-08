@@ -12,7 +12,6 @@
     <string name="speed">speed</string>
 
     <string name="location_query_timeout_title">Location query timeout</string>
-    <string name="location_query_timeout_summary">%1$s seconds</string>
     <string name="location_query_timeout_dialog_message">Maximal time to await for location information in seconds</string>
     <string name="location_query_timeout_default" translatable="false">30</string>
 
@@ -21,12 +20,41 @@
     <string name="you">You</string>
 
     <string name="got_intermediate_result">Got intermediate location</string>
-    <string name="completed_within_duration">Completed in %1$d seconds</string>
-    <string name="query_started_with_timeout">Location getting started with timeout %1$s</string>
+    <string name="completed_within_duration">Completed in %s</string>
+    <string name="query_started_with_timeout">Location getting started with timeout %s</string>
 
     <string name="share">Share&#8230;</string>
     <string name="hera_i_am">Here I am</string>
     <string name="share_via">Share via</string>
 
     <string name="tab_location">Location</string>
+
+    <plurals name="duration_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="duration_hours">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <plurals name="duration_minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <plurals name="duration_seconds">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+    <plurals name="duration_milliseconds">
+        <item quantity="one">%d millisecond</item>
+        <item quantity="other">%d milliseconds</item>
+    </plurals>
+    <plurals name="duration_microseconds">
+        <item quantity="one">%d microsecond</item>
+        <item quantity="other">%d microsecond</item>
+    </plurals>
+    <plurals name="duration_nanoseconds">
+        <item quantity="one">%d nanosecond</item>
+        <item quantity="other">%d nanosecond</item>
+    </plurals>
 </resources>
