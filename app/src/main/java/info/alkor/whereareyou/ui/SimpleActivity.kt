@@ -14,6 +14,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -83,11 +84,39 @@ class SimpleActivity : AppCompatActivity() {
         val missingPermissions = permissions.filter {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
-        if (!missingPermissions.isEmpty()) {
-            ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), 1)
+        for (permission in missingPermissions) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                showExplanation(permission)
+            } else {
+                doRequestPermissions(permission)
+            }
+            // one permission at a time
             return false
         }
         return true
+    }
+
+    private fun doRequestPermissions(vararg permissions: String) {
+        ActivityCompat.requestPermissions(this, permissions, 1)
+    }
+
+    private fun showExplanation(vararg permissions: String) {
+        permissions.map { permission ->
+            when (permission) {
+                Manifest.permission.ACCESS_FINE_LOCATION -> Pair(permission, R.string.location_permission_needed)
+                else -> throw IllegalArgumentException(permission)
+            }
+        }.forEach { (permission, messageId) ->
+            with(AlertDialog.Builder(this)) {
+                setTitle(R.string.permission_needed_title)
+                setMessage(messageId)
+                setPositiveButton(android.R.string.ok) { _, _ ->
+                    doRequestPermissions(permission)
+                }
+                create()
+                show()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

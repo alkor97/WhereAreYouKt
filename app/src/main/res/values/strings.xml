@@ -57,4 +57,7 @@
         <item quantity="one">%d nanosecond</item>
         <item quantity="other">%d nanosecond</item>
     </plurals>
+
+    <string name="permission_needed_title">Permission needed</string>
+    <string name="location_permission_needed">This application requires you to grant it permission to use device location so that it could be presented to user.</string>
 </resources>

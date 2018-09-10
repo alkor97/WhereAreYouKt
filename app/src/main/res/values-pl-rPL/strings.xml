@@ -62,4 +62,7 @@
         <item quantity="few">%d nanosekundy</item>
         <item quantity="many">%d nanosekund</item>
     </plurals>
+
+    <string name="permission_needed_title">Wymagane uprawnienie</string>
+    <string name="location_permission_needed">Aplikacja wymaga zezwolenia na używanie lokalizacji urządzenia w celu jej prezentacji użytkownikowi.</string>
 </resources>
