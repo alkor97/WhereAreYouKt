@@ -10,7 +10,6 @@ import info.alkor.whereareyou.api.location.LocationProvider
 import info.alkor.whereareyou.api.settings.Settings
 import info.alkor.whereareyou.model.action.OwnLocationResponse
 import kotlinx.coroutines.experimental.channels.BroadcastChannel
-import kotlinx.coroutines.experimental.channels.Channel
 
 interface AppContext {
     val contactProvider: ContactProvider
@@ -21,7 +20,7 @@ interface AppContext {
     val messageReceiver: MessageReceiver
     val locationProvider: LocationProvider
     val settings: Settings
-    val locationChannel: BroadcastChannel<OwnLocationResponse>
+    val locationResponsesChannel: BroadcastChannel<OwnLocationResponse>
 
     fun requestLocation()
 }

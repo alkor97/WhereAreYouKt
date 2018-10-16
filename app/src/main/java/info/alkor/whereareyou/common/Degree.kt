@@ -62,7 +62,7 @@ data class Azimuth private constructor(val value: Double) {
         }
     }
 
-    override fun toString() = "${value.toString(6)}$unit"
+    override fun toString() = "${value.toString(0)}$unit"
 }
 
 fun <T : Number> azimuthDegrees(value: T) = Azimuth(value.toDouble())

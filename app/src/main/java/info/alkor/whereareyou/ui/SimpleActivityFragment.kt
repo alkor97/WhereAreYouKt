@@ -33,7 +33,7 @@ class SimpleActivityFragment : Fragment() {
         if (context != null) {
             val ctx = context?.applicationContext as AppContext
             job = launch {
-                ctx.locationChannel.consumeEach {
+                ctx.locationResponsesChannel.consumeEach {
                     locationViewModel.update(it.location, prepareLink(it.location))
                 }
             }

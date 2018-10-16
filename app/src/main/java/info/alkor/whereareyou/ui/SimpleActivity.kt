@@ -56,7 +56,7 @@ class SimpleActivity : AppCompatActivity() {
                 val startTime = Date().time
 
                 launch {
-                    ctx.locationChannel.consumeEach {
+                    ctx.locationResponsesChannel.consumeEach {
                         launch(UI) {
                             if (it.final) {
                                 val d = duration(millis = Date().time - startTime).convertTo(TimeUnit.SECONDS)

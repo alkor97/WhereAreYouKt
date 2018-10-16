@@ -1,7 +1,6 @@
 package info.alkor.whereareyou.impl.context
 
 import android.app.Application
-import android.util.Log
 import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.impl.action.LocationRequestParserImpl
 import info.alkor.whereareyou.impl.action.LocationRequesterImpl
@@ -12,9 +11,7 @@ import info.alkor.whereareyou.impl.contact.android.ContactProviderImpl
 import info.alkor.whereareyou.impl.location.android.LocationProviderImpl
 import info.alkor.whereareyou.impl.settings.SettingsImpl
 import info.alkor.whereareyou.model.action.OwnLocationResponse
-import info.alkor.whereareyou.model.location.Location
 import kotlinx.coroutines.experimental.channels.BroadcastChannel
-import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.launch
 
 class AppContextImpl : Application(), AppContext {
@@ -26,20 +23,14 @@ class AppContextImpl : Application(), AppContext {
     override val messageReceiver by lazy { MessageReceiverImpl(this) }
     override val locationProvider by lazy { LocationProviderImpl(this) }
     override val settings by lazy { SettingsImpl(this) }
-    override val locationChannel by lazy { BroadcastChannel<OwnLocationResponse>(5) }
+    override val locationResponsesChannel = BroadcastChannel<OwnLocationResponse>(5)
 
     override fun requestLocation() {
         val queryTimeout = settings.getLocationQueryTimeout()
-        val tmp = Channel<Location>()
-        launch {
-            for (location in tmp) {
-                locationChannel.send(OwnLocationResponse(location, false))
+        locationProvider.getLocation(queryTimeout) { location, final ->
+            launch {
+                locationResponsesChannel.send(OwnLocationResponse(location, final))
             }
-        }
-        launch {
-            val response = locationProvider.getLocation(queryTimeout, tmp)
-            locationChannel.send(OwnLocationResponse(response, true))
-            tmp.cancel()
         }
     }
 }

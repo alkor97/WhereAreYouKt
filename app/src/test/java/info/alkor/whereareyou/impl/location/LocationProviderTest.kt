@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import java.util.*
+import kotlin.coroutines.experimental.suspendCoroutine
 
 class LocationProviderTest {
 
@@ -30,8 +31,10 @@ class LocationProviderTest {
         }
     }
 
-    private fun getLocationBlocking(timeout: Duration, responses: Map<Provider, Response>) = runBlocking {
-        LocationProviderImpl(responses).getLocation(timeout)
+    private fun getLocationBlocking(timeout: Duration, responses: Map<Provider, Response>): Location? = runBlocking {
+        suspendCoroutine<Location?> { cont ->
+            LocationProviderImpl(responses).getLocation(timeout) { location, final -> if (final) cont.resume(location) }
+        }
     }
 
     @Test
