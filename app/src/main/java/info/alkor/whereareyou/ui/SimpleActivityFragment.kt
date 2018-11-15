@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.impl.settings.GOOGLE_API_KEY
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.toMinimalText
 import info.alkor.whereareyoukt.R
@@ -48,7 +49,8 @@ class SimpleActivityFragment : Fragment() {
     private fun prepareLink(location: Location?) = if (location != null) context?.getString(R.string.location_presenter_url,
             location.toMinimalText(),
             "",
-            "You") else null
+            "You",
+            GOOGLE_API_KEY) else null
 
     override fun onDestroyView() {
         job?.cancel()

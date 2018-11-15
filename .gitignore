@@ -76,3 +76,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Private data
+app/src/main/java/info/alkor/whereareyou/impl/settings/Private.kt
