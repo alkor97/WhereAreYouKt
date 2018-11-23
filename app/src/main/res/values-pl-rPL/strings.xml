@@ -63,6 +63,42 @@
         <item quantity="many">%d nanosekund</item>
     </plurals>
 
+    <plurals name="elapsed_duration_days">
+        <item quantity="one">Upłynął %d dzień</item>
+        <item quantity="few">Upłynęło %d dni</item>
+        <item quantity="many">Upłynęło %d dni</item>
+    </plurals>
+    <plurals name="elapsed_duration_hours">
+        <item quantity="one">Upłynęła %d godzina</item>
+        <item quantity="few">Upłynęły %d godziny</item>
+        <item quantity="many">Upłynęło %d godzin</item>
+    </plurals>
+    <plurals name="elapsed_duration_minutes">
+        <item quantity="one">Upłynęła %d minuta</item>
+        <item quantity="few">Upłynęły %d minuty</item>
+        <item quantity="many">Upłynęło %d minut</item>
+    </plurals>
+    <plurals name="elapsed_duration_seconds">
+        <item quantity="one">Upłynęła %d sekunda</item>
+        <item quantity="few">Upłynęły %d sekundy</item>
+        <item quantity="many">Upłynęło %d sekund</item>
+    </plurals>
+    <plurals name="elapsed_duration_milliseconds">
+        <item quantity="one">Upłynęła %d milisekunda</item>
+        <item quantity="few">Upłynęły %d milisekundy</item>
+        <item quantity="many">Upłynęło %d milisekund</item>
+    </plurals>
+    <plurals name="elapsed_duration_microseconds">
+        <item quantity="one">Upłynęła %d mikrosekunda</item>
+        <item quantity="few">Upłynęły %d mikrosekundy</item>
+        <item quantity="many">Upłynęło %d mikrosekund</item>
+    </plurals>
+    <plurals name="elapsed_duration_nanoseconds">
+        <item quantity="one">Upłynęła %d nanosekunda</item>
+        <item quantity="few">Upłynęły %d nanosekundy</item>
+        <item quantity="many">Upłynęło %d nanosekund</item>
+    </plurals>
+
     <string name="permission_needed_title">Wymagane uprawnienie</string>
     <string name="location_permission_needed">Aplikacja wymaga zezwolenia na używanie lokalizacji urządzenia w celu jej prezentacji użytkownikowi.</string>
 </resources>

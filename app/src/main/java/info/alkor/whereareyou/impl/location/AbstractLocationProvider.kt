@@ -28,7 +28,7 @@ abstract class AbstractLocationProvider(
                 deferred.awaitAll()
             }
             val totalTimeout = maxLocationAge + timeout
-            val location = deferred.filter { it.isCompleted }
+            val location = deferred.asSequence().filter { it.isCompleted }
                     .mapNotNull { it.getCompleted() }
                     .filter { it.time.notOlderThan(totalTimeout) }
                     .sortedWith(compareBy<Location, Double?>(nullsLast()) { it.coordinates.accuracy?.value })

@@ -58,6 +58,35 @@
         <item quantity="other">%d nanosecond</item>
     </plurals>
 
+    <plurals name="elapsed_duration_days">
+        <item quantity="one">Elapsed %d day</item>
+        <item quantity="other">Elapsed %d days</item>
+    </plurals>
+    <plurals name="elapsed_duration_hours">
+        <item quantity="one">Elapsed %d hour</item>
+        <item quantity="other">Elapsed %d hours</item>
+    </plurals>
+    <plurals name="elapsed_duration_minutes">
+        <item quantity="one">Elapsed %d minute</item>
+        <item quantity="other">Elapsed %d minutes</item>
+    </plurals>
+    <plurals name="elapsed_duration_seconds">
+        <item quantity="one">Elapsed %d second</item>
+        <item quantity="other">Elapsed %d seconds</item>
+    </plurals>
+    <plurals name="elapsed_duration_milliseconds">
+        <item quantity="one">Elapsed %d millisecond</item>
+        <item quantity="other">Elapsed %d milliseconds</item>
+    </plurals>
+    <plurals name="elapsed_duration_microseconds">
+        <item quantity="one">Elapsed %d microsecond</item>
+        <item quantity="other">Elapsed %d microsecond</item>
+    </plurals>
+    <plurals name="elapsed_duration_nanoseconds">
+        <item quantity="one">Elapsed %d nanosecond</item>
+        <item quantity="other">Elapsed %d nanosecond</item>
+    </plurals>
+
     <string name="permission_needed_title">Permission needed</string>
     <string name="location_permission_needed">This application requires you to grant it permission to use device location so that it could be presented to user.</string>
 </resources>

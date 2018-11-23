@@ -21,14 +21,15 @@ import android.view.MenuItem
 import android.view.View
 import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.common.Duration
-import info.alkor.whereareyou.common.duration
+import info.alkor.whereareyou.model.action.DurationCompleted
+import info.alkor.whereareyou.model.action.OwnLocationResponse
 import info.alkor.whereareyou.ui.settings.SettingsActivity
 import info.alkor.whereareyoukt.R
 import kotlinx.android.synthetic.main.activity_simple.*
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -45,29 +46,28 @@ class SimpleActivity : AppCompatActivity() {
         viewpager_main.adapter = fragmentAdapter
         tabs_main.setupWithViewPager(viewpager_main)
 
-        var locating = false
         fab.setOnClickListener { view ->
-            if (locating)
-                return@setOnClickListener
             if (requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                locating = true
                 hideFloatingActionButton(fab)
                 val ctx = applicationContext as AppContext
-                val startTime = Date().time
 
-                launch {
+                val listener = Job()
+                launch(parent = listener) {
                     ctx.locationResponsesChannel.consumeEach {
-                        launch(UI) {
-                            if (it.final) {
-                                val d = duration(millis = Date().time - startTime).convertTo(TimeUnit.SECONDS)
-                                Snackbar.make(view, getString(R.string.completed_within_duration, d.toString(resources)), Snackbar.LENGTH_LONG)
+                        if (it is OwnLocationResponse) {
+                            if (!it.final) {
+                                launch(UI) {
+                                    Snackbar.make(view, getString(R.string.got_intermediate_result), Snackbar.LENGTH_LONG)
+                                            .setAction("Action", null).show()
+                                }
+                            }
+                        } else if (it is DurationCompleted) {
+                            launch(UI) {
+                                Snackbar.make(view, getString(R.string.completed_within_duration, it.value.toString(resources)), Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show()
                                 showFloatingActionButton(fab)
-                                locating = false
-                            } else {
-                                Snackbar.make(view, getString(R.string.got_intermediate_result), Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show()
                             }
+                            listener.cancel()
                         }
                     }
                 }

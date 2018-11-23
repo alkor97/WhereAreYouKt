@@ -160,6 +160,29 @@
                     android:layout_height="wrap_content"
                     android:text="@{locationModel.speed}" />
             </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{safeUnbox(locationModel.progressVisible)}">
+
+                <TextView
+                    android:id="@+id/elapsedName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textStyle="bold" />
+
+                <Space
+                    android:layout_width="8dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/elapsedValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{locationModel.progress}" />
+            </TableRow>
         </TableLayout>
 
         <Button

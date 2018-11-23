@@ -15,10 +15,12 @@ class SingleLocationViewModel : ViewModel() {
     val altitude = MutableLiveData<String>()
     val bearing = MutableLiveData<String>()
     val speed = MutableLiveData<String>()
+    val progress = MutableLiveData<String>()
 
     val altitudeVisible = MutableLiveData<Int>()
     val bearingVisible = MutableLiveData<Int>()
     val speedVisible = MutableLiveData<Int>()
+    val progressVisible = MutableLiveData<Int>()
 
     val showVisible = MutableLiveData<Int>()
     val shareVisible = MutableLiveData<Int>()
@@ -52,6 +54,20 @@ class SingleLocationViewModel : ViewModel() {
             setValue(speed, speedVisible, null)
             showVisible.postValue(View.GONE)
             shareVisible.postValue(View.GONE)
+
+            setValue(progress, progressVisible, null)
+        }
+    }
+
+    fun updateProgress(duration: String) {
+        setValue(progress, progressVisible, duration)
+    }
+
+    fun finishProgress(duration: String) {
+        if (link != null) {
+            setValue(progress, progressVisible, duration)
+        } else {
+            setValue(progress, progressVisible, null)
         }
     }
 
