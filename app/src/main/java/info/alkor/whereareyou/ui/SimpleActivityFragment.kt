@@ -15,7 +15,7 @@ import info.alkor.whereareyou.model.action.DurationCompleted
 import info.alkor.whereareyou.model.action.DurationProgress
 import info.alkor.whereareyou.model.action.OwnLocationResponse
 import info.alkor.whereareyou.model.location.Location
-import info.alkor.whereareyou.model.location.toMinimalText
+import info.alkor.whereareyou.model.location.LocationFormatter
 import info.alkor.whereareyoukt.R
 import info.alkor.whereareyoukt.databinding.FragmentSimpleBinding
 import kotlinx.coroutines.experimental.Job
@@ -57,7 +57,7 @@ class SimpleActivityFragment : Fragment() {
     }
 
     private fun prepareLink(location: Location?) = if (location != null) context?.getString(R.string.location_presenter_url,
-            location.toMinimalText(),
+            LocationFormatter.format(location),
             "",
             "You",
             GOOGLE_API_KEY) else null
