@@ -8,7 +8,7 @@ sealed class DistanceUnit(private val meters: Double) {
     }
 }
 
-data class Distance(val value: Double, val unit: DistanceUnit) {
+data class Distance(val value: Double, val unit: DistanceUnit = Meter) {
     private fun toMeters() = unit.toMeters(value)
     override fun equals(other: Any?) = (other as? Distance)?.toMeters() == toMeters()
     override fun hashCode() = toMeters().hashCode() + unit.hashCode()
