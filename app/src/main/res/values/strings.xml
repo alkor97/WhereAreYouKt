@@ -15,6 +15,13 @@
     <string name="location_query_timeout_dialog_message">Maximal time to await for location information in seconds</string>
     <string name="location_query_timeout_default" translatable="false">30</string>
 
+    <string name="location_query_string_title">Location query string</string>
+    <string name="location_query_string_dialog_message">The key word used to indicate location request</string>
+    <string name="location_query_string_default">Hey, where are you?</string>
+
+    <!-- http://loc.alkor.info/?q=<location> -->
+    <string name="location_response_format" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s</string>
+    <!-- http://loc.alkor.info/?q=<location>,<phone>,<name>,<key> -->
     <string name="location_presenter_url" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s,%s,%s,%s</string>
     <string name="show">Show</string>
     <string name="you">You</string>

@@ -14,6 +14,10 @@
     <string name="location_query_timeout_title">Maksymalny czas oczekiwania na lokalizację</string>
     <string name="location_query_timeout_dialog_message">Maksymalny czas oczekiwania na uzyskanie bieżącego położenia w sekundach</string>
 
+    <string name="location_query_string_title">Zapytanie o lokalizację</string>
+    <string name="location_query_string_dialog_message">Ciąg znakó, który będzie używany do pytania o lokalizację</string>
+    <string name="location_query_string_default">Hej, gdzie jesteś?</string>
+
     <string name="show">Pokaż</string>
     <string name="you">Ty</string>
 

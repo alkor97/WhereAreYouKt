@@ -31,8 +31,10 @@ class SettingsFragment : PreferenceFragment(), OnSharedPreferenceChangeListener 
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (sharedPreferences != null && key != null) {
-            SettingsKey.fromString(key)?.let { typedKey ->
-                preferenceScreen.findPreference(key)?.let { preference ->
+            val typedKey = SettingsKey.fromString(key)
+            if (typedKey != null) {
+                val preference = preferenceScreen.findPreference(key)
+                if (preference != null) {
                     val defaultValue = resources.getString(typedKey.defaultId)
                     val value = sharedPreferences.getString(key, defaultValue)
                     val summary = typedKey.getSummary(resources, value)
