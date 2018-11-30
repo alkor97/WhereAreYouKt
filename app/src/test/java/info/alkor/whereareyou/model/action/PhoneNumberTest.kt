@@ -2,7 +2,6 @@ package info.alkor.whereareyou.model.action
 
 import org.junit.Assert
 import org.junit.Test
-import java.lang.IllegalArgumentException
 
 class PhoneNumberTest {
     @Test
@@ -42,5 +41,15 @@ class PhoneNumberTest {
     @Test
     fun verifyAcceptingNumberInLocalFormat() {
         Assert.assertEquals("091461546978", PhoneNumber("091461546978").value)
+    }
+
+    @Test
+    fun verifyOwnPhoneNumber() {
+        Assert.assertTrue(PhoneNumber.OWN.value.isEmpty())
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun verifyOwnPhoneNumberCannotBeCreatedViaUsualConstructor() {
+        PhoneNumber(PhoneNumber.OWN.value)
     }
 }
