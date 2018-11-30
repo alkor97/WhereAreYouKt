@@ -43,6 +43,11 @@ data class Duration(val value: Long, val unit: TimeUnit) {
         return Duration(convertValue(resultUnit) + other.convertValue(resultUnit), resultUnit)
     }
 
+    operator fun minus(other: Duration): Duration {
+        val resultUnit = if (other.unit < unit) other.unit else unit
+        return Duration(convertValue(resultUnit) - other.convertValue(resultUnit), resultUnit)
+    }
+
     fun toNanos() = unit.toNanos(value)
     fun toMicros() = unit.toMicros(value)
     fun toMillis() = unit.toMillis(value)
