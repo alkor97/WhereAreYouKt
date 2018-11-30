@@ -11,7 +11,7 @@ class LocationRequestParserImpl(private val context: AppContext) : LocationReque
 
     override fun parseLocationRequest(person: Person, text: String): LocationRequest? {
         if (requestString == text.trim()) {
-            return LocationRequest(null, person)
+            return LocationRequest(person)
         }
         return null
     }

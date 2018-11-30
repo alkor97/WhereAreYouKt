@@ -27,7 +27,7 @@ class SimpleLocationRequestPersistence : LocationRequestState {
         val id = nextMessageId()
         repository.add(PersistentLocationRequest(id, person))
         sendUpdate(LocationRequested(person))
-        return LocationRequest(id, person)
+        return LocationRequest(person, id)
     }
 
     override fun onCommunicationStatusUpdate(request: LocationRequest, status: SendingStatus) {
