@@ -9,11 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.api.persistence.ExecutionCompleted
+import info.alkor.whereareyou.api.persistence.ExecutionProgress
+import info.alkor.whereareyou.api.persistence.FinalLocation
+import info.alkor.whereareyou.api.persistence.IntermediateLocation
 import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.impl.settings.GOOGLE_API_KEY
-import info.alkor.whereareyou.model.action.DurationCompleted
-import info.alkor.whereareyou.model.action.DurationProgress
-import info.alkor.whereareyou.model.action.OwnLocationResponse
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.LocationFormatter
 import info.alkor.whereareyoukt.R
@@ -39,11 +40,16 @@ class SimpleActivityFragment : Fragment() {
         if (context != null) {
             val ctx = context?.applicationContext as AppContext
             job = launch {
-                ctx.locationResponsesChannel.consumeEach {
-                    when (it) {
-                        is OwnLocationResponse -> locationViewModel.update(it.location, prepareLink(it.location))
-                        is DurationProgress -> locationViewModel.updateProgress(it.value.toElapsedString(resources))
-                        is DurationCompleted -> locationViewModel.finishProgress(resources.getString(R.string.completed_within_duration, it.value.toString(resources)))
+                ctx.locationRequestPersistence.events.consumeEach { event ->
+                    when (event) {
+                        is FinalLocation ->
+                            locationViewModel.update(event.location, prepareLink(event.location))
+                        is IntermediateLocation ->
+                            locationViewModel.update(event.location, prepareLink(event.location))
+                        is ExecutionProgress ->
+                            locationViewModel.updateProgress(event.elapsed.toElapsedString(resources))
+                        is ExecutionCompleted ->
+                            locationViewModel.finishProgress(resources.getString(R.string.completed_within_duration, event.elapsed.toString(resources)))
                     }
                 }
             }
@@ -69,15 +75,19 @@ class SimpleActivityFragment : Fragment() {
     }
 }
 
-fun Duration.toElapsedString(resources: Resources) = byUnit().joinToString(" ") { (value, unit) ->
-    val plural = when (unit) {
-        TimeUnit.DAYS -> R.plurals.elapsed_duration_days
-        TimeUnit.HOURS -> R.plurals.elapsed_duration_hours
-        TimeUnit.MINUTES -> R.plurals.elapsed_duration_minutes
-        TimeUnit.SECONDS -> R.plurals.elapsed_duration_seconds
-        TimeUnit.MILLISECONDS -> R.plurals.elapsed_duration_milliseconds
-        TimeUnit.MICROSECONDS -> R.plurals.elapsed_duration_microseconds
-        TimeUnit.NANOSECONDS -> R.plurals.elapsed_duration_nanoseconds
+fun Duration.toElapsedString(resources: Resources): String {
+    var first = true
+    return byUnit().joinToString(" ") { (value, unit) ->
+        val plural = when (unit) {
+            TimeUnit.DAYS -> if (first) R.plurals.elapsed_duration_days else R.plurals.duration_days
+            TimeUnit.HOURS -> if (first) R.plurals.elapsed_duration_hours else R.plurals.duration_hours
+            TimeUnit.MINUTES -> if (first) R.plurals.elapsed_duration_minutes else R.plurals.duration_minutes
+            TimeUnit.SECONDS -> if (first) R.plurals.elapsed_duration_seconds else R.plurals.duration_seconds
+            TimeUnit.MILLISECONDS -> if (first) R.plurals.elapsed_duration_milliseconds else R.plurals.duration_milliseconds
+            TimeUnit.MICROSECONDS -> if (first) R.plurals.elapsed_duration_microseconds else R.plurals.duration_microseconds
+            TimeUnit.NANOSECONDS -> if (first) R.plurals.elapsed_duration_nanoseconds else R.plurals.duration_nanoseconds
+        }
+        first = false
+        resources.getQuantityString(plural, value.toInt(), value)
     }
-    resources.getQuantityString(plural, value.toInt(), value)
 }

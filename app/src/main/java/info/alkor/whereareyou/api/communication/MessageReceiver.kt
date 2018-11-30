@@ -1,7 +1,7 @@
 package info.alkor.whereareyou.api.communication
 
-import info.alkor.whereareyou.model.communication.Message
+import info.alkor.whereareyou.model.action.Person
 
 interface MessageReceiver {
-    fun onReceive(message: Message)
+    fun onReceive(from: Person, message: String)
 }

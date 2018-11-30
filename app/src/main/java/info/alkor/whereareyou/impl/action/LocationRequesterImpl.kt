@@ -2,28 +2,29 @@ package info.alkor.whereareyou.impl.action
 
 import android.util.Log
 import info.alkor.whereareyou.api.action.LocationRequester
-import info.alkor.whereareyou.api.communication.MessageSender
 import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.Person
-import kotlinx.coroutines.experimental.channels.consumeEach
-import kotlinx.coroutines.experimental.launch
 
 class LocationRequesterImpl(private val context: AppContext) : LocationRequester {
 
-    private var sender: MessageSender? = null
+    private val persistence by lazy { context.locationRequestPersistence }
+    private val sender by lazy { context.messageSender }
+
+    private val loggingTag = "requester"
 
     override fun requestLocationOf(person: Person) {
-        val message = "Hey, where are you?"
-        val channel = sender?.send(person, message)
-        launch {
-            channel?.consumeEach {
-                Log.i("request sending", it.name)
-            }
+        val request = persistence.onLocationRequested(person)
+
+        sender.send(request) {
+            persistence.onCommunicationStatusUpdate(request, it)
+            Log.i(loggingTag, "status of location request sent to $person is $it")
         }
+        Log.i(loggingTag, "location request sent to $person")
     }
 
     override fun onLocationResponse(response: LocationResponse) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.i(loggingTag, "got location response from ${response.person}")
+        persistence.onLocationResponse(response)
     }
 }

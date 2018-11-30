@@ -7,20 +7,20 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.telephony.SmsManager
-import info.alkor.whereareyou.api.communication.MessageSender
+import info.alkor.whereareyou.api.communication.SendingStatusCallback
+import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.impl.communication.MessageSenderImpl
 import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.SendingStatus
-import kotlinx.coroutines.experimental.channels.ProducerScope
-import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.launch
 
-class SmsSender(private val context: Context) : MessageSender {
+class SmsSender(private val context: Context) : MessageSenderImpl(context as AppContext) {
 
-    override fun send(person: Person, message: String) = produce {
-        send(SendingStatus.PENDING)
+    override fun sendMessage(person: Person, message: String, callback: SendingStatusCallback) {
+        callback(SendingStatus.PENDING)
 
-        val sentIntent = createAndRegisterIntent(SMS_SENT, this, arrayOf(SendingStatus.SENT, SendingStatus.SENDING_FAILED))
-        val deliveredIntent = createAndRegisterIntent(SMS_DELIVERED, this, arrayOf(SendingStatus.DELIVERED, SendingStatus.DELIVERY_FAILED))
+        val sentIntent = createAndRegisterIntent(SMS_SENT, callback, arrayOf(SendingStatus.SENT, SendingStatus.SENDING_FAILED))
+        val deliveredIntent = createAndRegisterIntent(SMS_DELIVERED, callback, arrayOf(SendingStatus.DELIVERED, SendingStatus.DELIVERY_FAILED))
 
         SmsManager.getDefault().sendTextMessage(
                 person.phone.value,
@@ -30,21 +30,20 @@ class SmsSender(private val context: Context) : MessageSender {
                 deliveredIntent)
     }
 
-    private fun createAndRegisterIntent(action: String, producer: ProducerScope<SendingStatus>, terminators: Array<SendingStatus>): PendingIntent? {
+    private fun createAndRegisterIntent(action: String, callback: SendingStatusCallback, terminators: Array<SendingStatus>): PendingIntent? {
         val intent = Intent(action)
-        context.registerReceiver(MessageEventReceiver(producer, terminators), IntentFilter(action))
+        context.registerReceiver(MessageEventReceiver(callback, terminators), IntentFilter(action))
         return PendingIntent.getBroadcast(context, 0, intent, 0)
     }
 
-    private class MessageEventReceiver(val producer: ProducerScope<SendingStatus>, val terminators: Array<SendingStatus>) : BroadcastReceiver() {
+    private class MessageEventReceiver(val callback: SendingStatusCallback, val terminators: Array<SendingStatus>) : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
                 val status = getStatus(resultCode, intent.action)
                 if (status != null) {
                     launch {
-                        producer.send(status)
+                        callback(status)
                         if (status in terminators) {
-                            producer.channel.close()
                             context?.unregisterReceiver(this@MessageEventReceiver)
                         }
                     }

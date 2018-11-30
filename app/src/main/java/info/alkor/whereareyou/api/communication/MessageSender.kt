@@ -1,9 +1,12 @@
 package info.alkor.whereareyou.api.communication
 
-import info.alkor.whereareyou.model.action.Person
+import info.alkor.whereareyou.model.action.LocationRequest
+import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.SendingStatus
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
+
+typealias SendingStatusCallback = (SendingStatus) -> Unit
 
 interface MessageSender {
-    fun send(person: Person, message: String): ReceiveChannel<SendingStatus>
+    fun send(request: LocationRequest, callback: SendingStatusCallback)
+    fun send(response: LocationResponse, callback: SendingStatusCallback)
 }
