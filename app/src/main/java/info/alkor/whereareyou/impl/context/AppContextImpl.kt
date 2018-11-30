@@ -29,6 +29,6 @@ class AppContextImpl : Application(), AppContext {
     override val locationRequestPersistence by lazy { SimpleLocationRequestPersistence() }
 
     override fun requestLocation() {
-        locationResponder.handleLocationRequest(LocationRequest(Person(PhoneNumber("+123"))))
+        locationResponder.handleLocationRequest(LocationRequest(Person(PhoneNumber.OWN)))
     }
 }

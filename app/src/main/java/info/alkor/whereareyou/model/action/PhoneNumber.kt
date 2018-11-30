@@ -1,7 +1,5 @@
 package info.alkor.whereareyou.model.action
 
-import java.lang.IllegalArgumentException
-
 data class PhoneNumber private constructor(val value: String) {
     fun toHumanReadable() = "+" + value.removePrefix("+")
             .reversed()
@@ -22,6 +20,9 @@ data class PhoneNumber private constructor(val value: String) {
             return PhoneNumber(normalized)
         }
 
-        private val normalizedForm = "^[\\+^0]\\d+$".toRegex()
+        private operator fun invoke(): PhoneNumber = PhoneNumber("")
+        val OWN = PhoneNumber()
+
+        private val normalizedForm = "^[+^0]\\d+$".toRegex()
     }
 }
