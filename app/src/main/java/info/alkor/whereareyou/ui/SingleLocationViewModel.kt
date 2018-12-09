@@ -22,8 +22,7 @@ class SingleLocationViewModel : ViewModel() {
     val speedVisible = MutableLiveData<Int>()
     val progressVisible = MutableLiveData<Int>()
 
-    val showVisible = MutableLiveData<Int>()
-    val shareVisible = MutableLiveData<Int>()
+    val popupVisible = MutableLiveData<Int>()
 
     var link: String? = null
 
@@ -43,8 +42,7 @@ class SingleLocationViewModel : ViewModel() {
             setValue(speed, speedVisible, location.speed) {
                 "${it.toKilometersPerHour()}"
             }
-            showVisible.postValue(View.VISIBLE)
-            shareVisible.postValue(View.VISIBLE)
+            popupVisible.postValue(View.VISIBLE)
         } else {
             provider.postValue("-")
             time.postValue("-")
@@ -52,8 +50,7 @@ class SingleLocationViewModel : ViewModel() {
             setValue(altitude, altitudeVisible, null)
             setValue(bearing, bearingVisible, null)
             setValue(speed, speedVisible, null)
-            showVisible.postValue(View.GONE)
-            shareVisible.postValue(View.GONE)
+            popupVisible.postValue(View.GONE)
 
             setValue(progress, progressVisible, null)
         }

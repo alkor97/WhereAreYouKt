@@ -33,6 +33,7 @@
     <string name="share">Share&#8230;</string>
     <string name="hera_i_am">Here I am</string>
     <string name="share_via">Share via</string>
+    <string name="popup_content_desc">Actions</string>
 
     <string name="tab_location">Location</string>
 

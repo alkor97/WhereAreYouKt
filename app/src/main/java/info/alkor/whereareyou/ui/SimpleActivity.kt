@@ -17,8 +17,10 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.PopupMenu
 import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.api.persistence.ExecutionCompleted
 import info.alkor.whereareyou.api.persistence.IntermediateLocation
@@ -124,38 +126,45 @@ class SimpleActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item != null) {
-            if (item.itemId == R.id.action_settings) {
-                val intent = Intent(this, SettingsActivity::class.java)
-                startActivity(intent)
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
+    @Suppress("UNUSED_PARAMETER")
+    fun showSettings(item: MenuItem) {
+        val intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun showLocation(view: View) {
-        val locationViewModel = ViewModelProviders.of(this).get(SingleLocationViewModel::class.java)
-        if (locationViewModel.link != null) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(locationViewModel.link))
+    fun showLocation(item: MenuItem) {
+        withLocationLink { link ->
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
             startActivity(intent)
         }
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun shareLocation(view: View) {
-        val locationViewModel = ViewModelProviders.of(this).get(SingleLocationViewModel::class.java)
-        if (locationViewModel.link != null) {
+    fun shareLocation(item: MenuItem) {
+        withLocationLink { link ->
             val intent = Intent(Intent.ACTION_SEND)
             with(intent) {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.hera_i_am))
-                putExtra(Intent.EXTRA_TEXT, locationViewModel.link)
+                putExtra(Intent.EXTRA_TEXT, link)
             }
             startActivity(Intent.createChooser(intent, getString(R.string.share_via)))
         }
+    }
+
+    private fun withLocationLink(handle: (link: String) -> Unit) {
+        val locationViewModel = ViewModelProviders.of(this).get(SingleLocationViewModel::class.java)
+        locationViewModel.link?.let {
+            handle(it)
+        }
+    }
+
+    fun showPopup(view: View) {
+        val popup = PopupMenu(this, view)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.menu_location_popup, popup.menu)
+        popup.show()
     }
 
     private fun prepareFragmentAdapter() = GenericPagerAdapter(supportFragmentManager,
