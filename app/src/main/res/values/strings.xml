@@ -19,6 +19,10 @@
     <string name="location_query_string_dialog_message">The key word used to indicate location request</string>
     <string name="location_query_string_default">Hey, where are you?</string>
 
+    <string name="scheme" translatable="false">&scheme;</string>
+    <string name="host" translatable="false">&host;</string>
+    <string name="pathPrefix" translatable="false">/&pathPrefix;</string>
+
     <!-- http://loc.alkor.info/?q=<location> -->
     <string name="location_response_format" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s</string>
     <!-- http://loc.alkor.info/?q=<location>,<phone>,<name>,<key> -->

@@ -20,8 +20,18 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host"
+                    android:pathPrefix="@string/pathPrefix"
+                    android:scheme="@string/scheme" />
             </intent-filter>
         </activity>
         <activity android:name="info.alkor.whereareyou.ui.settings.SettingsActivity">
