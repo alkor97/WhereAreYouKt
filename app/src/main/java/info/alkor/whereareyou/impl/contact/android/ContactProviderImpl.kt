@@ -1,14 +1,19 @@
 package info.alkor.whereareyou.impl.contact.android
 
+import android.Manifest
 import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
 import info.alkor.whereareyou.api.contact.ContactProvider
+import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.PhoneNumber
 
 class ContactProviderImpl(private val context: Context) : ContactProvider {
     override fun findName(phone: PhoneNumber): Person {
+        if (!canReadContacts())
+            return Person(phone)
+
         val uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phone.value))
         val projection = arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME)
 
@@ -20,4 +25,6 @@ class ContactProviderImpl(private val context: Context) : ContactProvider {
         }
         return Person(phone)
     }
+
+    private fun canReadContacts() = (context as AppContext).permissionAccessor.isPermissionGranted(Manifest.permission.READ_CONTACTS)
 }

@@ -30,9 +30,10 @@
     <string name="show">Show</string>
     <string name="you">You</string>
 
-    <string name="got_intermediate_result">Got intermediate location</string>
     <string name="completed_within_duration">Completed in %s</string>
     <string name="query_started_with_timeout">Location getting started with timeout %s</string>
+    <string name="query_succeeded">Location found</string>
+    <string name="query_failed">Location not found</string>
 
     <string name="share">Share&#8230;</string>
     <string name="hera_i_am">Here I am</string>
@@ -100,5 +101,7 @@
     </plurals>
 
     <string name="permission_needed_title">Permission needed</string>
-    <string name="location_permission_needed">This application requires you to grant it permission to use device location so that it could be presented to user.</string>
+    <string name="location_permission_needed">This application requires a permission to use device location so that it could be presented to user.</string>
+    <string name="receive_sms_permission_needed">This application requires a permission to read incoming text messages to react on location requests.</string>
+    <string name="read_contacts_permission_needed">This application requires a permission to read contacts in process of location requesting.</string>
 </resources>

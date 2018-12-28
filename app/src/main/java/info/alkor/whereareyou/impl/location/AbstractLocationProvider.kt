@@ -16,10 +16,13 @@ abstract class AbstractLocationProvider(
 ) : LocationProvider {
 
     override fun getLocation(timeout: Duration, callback: (location: Location?, final: Boolean) -> Unit) {
+        val totalTimeout = maxLocationAge + timeout
         val deferred = providers.map {
             async(coroutineContext) {
                 val location = requestLocation(it)
-                callback(location, false)
+                if (location != null && location.time.notOlderThan(totalTimeout)) {
+                    callback(location, false)
+                }
                 location
             }
         }
@@ -27,7 +30,6 @@ abstract class AbstractLocationProvider(
             withTimeoutOrNull(timeout.value, timeout.unit) {
                 deferred.awaitAll()
             }
-            val totalTimeout = maxLocationAge + timeout
             val location = deferred.asSequence().filter { it.isCompleted }
                     .mapNotNull { it.getCompleted() }
                     .filter { it.time.notOlderThan(totalTimeout) }

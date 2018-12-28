@@ -21,9 +21,10 @@
     <string name="show">Pokaż</string>
     <string name="you">Ty</string>
 
-    <string name="got_intermediate_result">Uzyskano pośredni wynik</string>
     <string name="completed_within_duration">Ukończono w %s</string>
     <string name="query_started_with_timeout">Rozpoczęto zapytanie o położenie (maksymalny czas oczekiwania to %s)</string>
+    <string name="query_succeeded">Znaleziono lokalizację</string>
+    <string name="query_failed">Nie znaleziono lokalizacji</string>
 
     <string name="share">Udostępnij&#8230;</string>
     <string name="hera_i_am">Tu jestem</string>
@@ -106,4 +107,6 @@
 
     <string name="permission_needed_title">Wymagane uprawnienie</string>
     <string name="location_permission_needed">Aplikacja wymaga zezwolenia na używanie lokalizacji urządzenia w celu jej prezentacji użytkownikowi.</string>
+    <string name="receive_sms_permission_needed">Aplikacja wymaga zezwolenia na filtrowanie przychodzących wiadomości tekstowych w celu obsługi żądań lokalizacji.</string>
+    <string name="read_contacts_permission_needed">Aplikacja wymaga zezwolenia na czytanie podstawowych danych Twoich kontaktów w celul ich prezentacji w kontekście żądań lokalizacji.</string>
 </resources>

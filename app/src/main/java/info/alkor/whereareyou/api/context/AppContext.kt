@@ -22,6 +22,7 @@ interface AppContext {
     val settings: Settings
     val messageSender: MessageSender
     val locationRequestPersistence: LocationRequestState
+    val permissionAccessor: PermissionAccessor
 
     fun requestLocation()
 }
