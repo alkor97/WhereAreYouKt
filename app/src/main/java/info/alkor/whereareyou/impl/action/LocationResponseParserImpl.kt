@@ -10,9 +10,12 @@ class LocationResponseParserImpl(private val context: AppContext) : LocationResp
 
     override fun parseLocationResponse(person: Person, text: String): LocationResponse? {
         val prefix = getString("")
-        val location = LocationFormatter.parse(text.trim().substring(prefix.length))
-        if (location != null) {
-            return LocationResponse(person, location, false)
+        val trimmedText = text.trim()
+        if (trimmedText.startsWith(prefix)) {
+            val location = LocationFormatter.parse(trimmedText.substring(prefix.length))
+            if (location != null) {
+                return LocationResponse(person, location, false)
+            }
         }
         return null
     }

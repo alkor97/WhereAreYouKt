@@ -7,6 +7,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import info.alkor.whereareyou.common.*
 import info.alkor.whereareyou.impl.location.AbstractLocationProvider
 import info.alkor.whereareyou.model.location.*

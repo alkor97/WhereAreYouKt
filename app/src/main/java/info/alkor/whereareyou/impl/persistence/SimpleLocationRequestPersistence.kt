@@ -105,5 +105,6 @@ class SimpleLocationRequestPersistence : LocationRequestState {
 
     private fun sendUpdate(event: LocationRequestEvent) = launch {
         events.send(event)
+        Log.d(loggingTag, event.toString())
     }
 }
