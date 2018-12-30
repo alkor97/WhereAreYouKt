@@ -19,7 +19,7 @@
     <string name="location_query_string_default">Hej, gdzie jesteś?</string>
 
     <string name="location_response_max_age_title">Maksymalny wiek lokalizacji</string>
-    <string name="location_response_max_age_dialog_message">Jeśli uzyskana lokalizacja jest starsza niż ta wartość progowa to jest ona odrzucana.</string>
+    <string name="location_response_max_age_dialog_message">Jeśli uzyskana lokalizacja jest starsza niż wartość progowa to jest ona odrzucana.</string>
 
     <string name="show">Pokaż</string>
     <string name="you">Ty</string>
