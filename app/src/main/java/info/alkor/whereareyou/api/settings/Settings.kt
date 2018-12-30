@@ -6,4 +6,5 @@ interface Settings {
     fun getLocationQueryTimeout(): Duration
     fun getLocationRequestString(): String
     fun getLocationResponseString(location: String): String
+    fun getLocationMaxAge(): Duration
 }

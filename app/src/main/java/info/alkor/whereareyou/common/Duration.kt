@@ -75,3 +75,15 @@ fun <T : Number> duration(days: T? = null, hours: T? = null, minutes: T? = null,
     return nanos(nanos ?: 0) + micros(micros ?: 0) + millis(millis ?: 0) + seconds(seconds
             ?: 0) + minutes(minutes ?: 0) + hours(hours ?: 0) + days(days ?: 0)
 }
+
+fun duration(text: String) = TimeUnit.values()
+        .map { Pair(it, it.asString()) }
+        .filter { text.endsWith(it.second) }
+        .mapNotNull {
+            try {
+                val value = text.substring(0, text.length - it.second.length)
+                Duration(Integer.parseInt(value).toLong(), it.first)
+            } catch (e: Exception) {
+                null
+            }
+        }.firstOrNull()

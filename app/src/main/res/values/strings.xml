@@ -13,11 +13,15 @@
 
     <string name="location_query_timeout_title">Location query timeout</string>
     <string name="location_query_timeout_dialog_message">Maximal time to await for location information in seconds</string>
-    <string name="location_query_timeout_default" translatable="false">30</string>
+    <string name="location_query_timeout_default" translatable="false">30s</string>
 
     <string name="location_query_string_title">Location query string</string>
     <string name="location_query_string_dialog_message">The key word used to indicate location request</string>
     <string name="location_query_string_default">Hey, where are you?</string>
+
+    <string name="location_response_max_age_title">Maximal age of location</string>
+    <string name="location_response_max_age_dialog_message">If location response is older than this threshold then it is ignored.</string>
+    <string name="location_response_max_age_default" translatable="false">1min</string>
 
     <string name="scheme" translatable="false">&scheme;</string>
     <string name="host" translatable="false">&host;</string>
@@ -99,6 +103,20 @@
         <item quantity="one">Elapsed %d nanosecond</item>
         <item quantity="other">Elapsed %d nanosecond</item>
     </plurals>
+
+    <string-array name="time_units_values" translatable="false">
+        <item>d</item>
+        <item>h</item>
+        <item>min</item>
+        <item>sec</item>
+    </string-array>
+
+    <string-array name="time_units">
+        <item>days</item>
+        <item>hours</item>
+        <item>minutes</item>
+        <item>seconds</item>
+    </string-array>
 
     <string name="permission_needed_title">Permission needed</string>
     <string name="location_permission_needed">This application requires a permission to use device location so that it could be presented to user.</string>

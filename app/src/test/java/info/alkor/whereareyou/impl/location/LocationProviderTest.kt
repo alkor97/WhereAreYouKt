@@ -33,7 +33,7 @@ class LocationProviderTest {
 
     private fun getLocationBlocking(timeout: Duration, responses: Map<Provider, Response>): Location? = runBlocking {
         suspendCoroutine<Location?> { cont ->
-            LocationProviderImpl(responses).getLocation(timeout) { location, final -> if (final) cont.resume(location) }
+            LocationProviderImpl(responses).getLocation(timeout, minutes(1)) { location, final -> if (final) cont.resume(location) }
         }
     }
 

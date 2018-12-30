@@ -2,7 +2,6 @@ package info.alkor.whereareyou.impl.location
 
 import info.alkor.whereareyou.api.location.LocationProvider
 import info.alkor.whereareyou.common.Duration
-import info.alkor.whereareyou.common.duration
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.Provider
 import kotlinx.coroutines.experimental.*
@@ -11,12 +10,11 @@ import kotlin.coroutines.experimental.CoroutineContext
 
 abstract class AbstractLocationProvider(
         private val providers: Array<Provider> = Provider.values(),
-        private val coroutineContext: CoroutineContext = DefaultDispatcher,
-        private val maxLocationAge: Duration = duration(minutes = 1)
+        private val coroutineContext: CoroutineContext = DefaultDispatcher
 ) : LocationProvider {
 
-    override fun getLocation(timeout: Duration, callback: (location: Location?, final: Boolean) -> Unit) {
-        val totalTimeout = maxLocationAge + timeout
+    override fun getLocation(timeout: Duration, maxAge: Duration, callback: (location: Location?, final: Boolean) -> Unit) {
+        val totalTimeout = maxAge + timeout
         val deferred = providers.map {
             async(coroutineContext) {
                 val location = requestLocation(it)

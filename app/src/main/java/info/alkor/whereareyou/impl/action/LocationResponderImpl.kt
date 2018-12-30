@@ -30,7 +30,8 @@ class LocationResponderImpl(private val context: AppContext) : LocationResponder
         ticker.start()
 
         val timeout = settings.getLocationQueryTimeout()
-        locationProvider.getLocation(timeout) { location, final ->
+        val maxAge = settings.getLocationMaxAge()
+        locationProvider.getLocation(timeout, maxAge) { location, final ->
             val response = LocationResponse(person, location, final)
             persistence.onLocationResponse(newRequest, response)
 

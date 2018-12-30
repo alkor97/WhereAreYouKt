@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference
+    <info.alkor.whereareyou.ui.settings.DurationPreference
         android:defaultValue="@string/location_query_timeout_default"
         android:dialogMessage="@string/location_query_timeout_dialog_message"
         android:digits="0123456789"
@@ -18,4 +18,11 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/location_query_string_title" />
+
+    <info.alkor.whereareyou.ui.settings.DurationPreference
+        android:defaultValue="@string/location_response_max_age_default"
+        android:dialogMessage="@string/location_response_max_age_dialog_message"
+        android:key="location_response_max_age"
+        android:singleLine="true"
+        android:title="@string/location_response_max_age_title" />
 </PreferenceScreen>

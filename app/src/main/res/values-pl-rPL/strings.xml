@@ -15,8 +15,11 @@
     <string name="location_query_timeout_dialog_message">Maksymalny czas oczekiwania na uzyskanie bieżącego położenia w sekundach</string>
 
     <string name="location_query_string_title">Zapytanie o lokalizację</string>
-    <string name="location_query_string_dialog_message">Ciąg znakó, który będzie używany do pytania o lokalizację</string>
+    <string name="location_query_string_dialog_message">Ciąg znaków, który będzie używany do pytania o lokalizację</string>
     <string name="location_query_string_default">Hej, gdzie jesteś?</string>
+
+    <string name="location_response_max_age_title">Maksymalny wiek lokalizacji</string>
+    <string name="location_response_max_age_dialog_message">Jeśli uzyskana lokalizacja jest starsza niż ta wartość progowa to jest ona odrzucana.</string>
 
     <string name="show">Pokaż</string>
     <string name="you">Ty</string>
@@ -104,6 +107,13 @@
         <item quantity="few">Upłynęły %d nanosekundy</item>
         <item quantity="many">Upłynęło %d nanosekund</item>
     </plurals>
+
+    <string-array name="time_units">
+        <item>dni</item>
+        <item>godziny</item>
+        <item>minuty</item>
+        <item>sekundy</item>
+    </string-array>
 
     <string name="permission_needed_title">Wymagane uprawnienie</string>
     <string name="location_permission_needed">Aplikacja wymaga zezwolenia na używanie lokalizacji urządzenia w celu jej prezentacji użytkownikowi.</string>
