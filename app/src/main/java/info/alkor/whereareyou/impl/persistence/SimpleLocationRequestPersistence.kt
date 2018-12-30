@@ -71,16 +71,18 @@ class SimpleLocationRequestPersistence : LocationRequestState {
     }
 
     private fun processFound(found: PersistentLocationRequest, response: LocationResponse) {
-        found.location = response.location
-        found.finalLocation = response.final
-        if (response.final) {
-            if (response.location != null) {
-                sendUpdate(FinalLocation(response.location))
-            } else {
-                sendUpdate(NoLocation)
+        if (!found.finalLocation) {
+            found.location = response.location
+            found.finalLocation = response.final
+            if (response.final) {
+                if (response.location != null) {
+                    sendUpdate(FinalLocation(response.location))
+                } else {
+                    sendUpdate(NoLocation)
+                }
+            } else if (response.location != null) {
+                sendUpdate(IntermediateLocation(response.location))
             }
-        } else if (response.location != null) {
-            sendUpdate(IntermediateLocation(response.location))
         }
     }
 
