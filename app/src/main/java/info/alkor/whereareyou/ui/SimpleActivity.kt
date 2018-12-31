@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit
 
 class SimpleActivity : AppCompatActivity() {
 
-    private val permissionRequester = PermissionRequester(this)
+    private val permissionRequester by lazy { PermissionRequester(this) }
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +44,7 @@ class SimpleActivity : AppCompatActivity() {
         viewpager_main.adapter = fragmentAdapter
         tabs_main.setupWithViewPager(viewpager_main)
 
-        permissionRequester.ensurePermissionsGranted()
+        permissionRequester.ensurePermissionsGranted(this)
     }
 
     @Suppress("UNUSED_PARAMETER")
