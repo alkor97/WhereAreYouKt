@@ -6,6 +6,7 @@ import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.model.action.LocationRequest
 import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.Person
+import info.alkor.whereareyou.model.action.SendingStatus
 
 abstract class MessageSenderImpl(private val context: AppContext) : MessageSender {
 
@@ -14,13 +15,22 @@ abstract class MessageSenderImpl(private val context: AppContext) : MessageSende
 
     override fun send(request: LocationRequest, callback: SendingStatusCallback) {
         val message = requestFormatter.formatLocationRequest(request)
-        sendMessage(request.person, message, callback)
+        doSend(request.person, message, callback)
     }
 
     override fun send(response: LocationResponse, callback: SendingStatusCallback) {
         val message = responseFormatter.formatLocationResponse(response)
-        sendMessage(response.person, message, callback)
+        doSend(response.person, message, callback)
+    }
+
+    private fun doSend(person: Person, message: String, callback: SendingStatusCallback) {
+        if (canSendSms())
+            sendMessage(person, message, callback)
+        else
+            callback(SendingStatus.SENDING_FAILED)
     }
 
     protected abstract fun sendMessage(person: Person, message: String, callback: SendingStatusCallback)
+
+    private fun canSendSms() = context.permissionAccessor.isPermissionGranted(android.Manifest.permission.SEND_SMS)
 }
