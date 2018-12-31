@@ -16,21 +16,27 @@ import info.alkor.whereareyoukt.R
 
 class DurationPreference(ctx: Context, attrs: AttributeSet) : DialogPreference(ctx, attrs) {
 
-    private val defaultDuration = duration(days = 1)
     private var durationMessage: TextView? = null
     private var durationValue: EditText? = null
     private var durationUnit: Spinner? = null
+
+    private val defaultDuration = duration(days = 999)
+    private var duration: Duration? = null
 
     init {
         dialogLayoutResource = R.layout.duration_selector
     }
 
-    private fun setDuration(duration: Duration) {
-        durationValue?.setText(duration.value.toString())
+    private fun setDuration(other: Duration) {
+        duration = other
+        duration?.let {
+            durationValue?.setText(it.value.toString())
 
-        val index = context.resources.getStringArray(R.array.time_units_values).indexOf(duration.unit.asString())
-        if (index > 0) {
-            durationUnit?.setSelection(index)
+            val index = context.resources.getStringArray(R.array.time_units_values)
+                    .indexOf(it.unit.asString())
+            if (index > 0) {
+                durationUnit?.setSelection(index)
+            }
         }
     }
 
@@ -49,13 +55,26 @@ class DurationPreference(ctx: Context, attrs: AttributeSet) : DialogPreference(c
 
     override fun onBindDialogView(view: View?) {
         super.onBindDialogView(view)
+        bindControls(view)
+        setDuration(getCurrentDuration())
+        durationValue?.selectAll()
+    }
 
+    override fun onDialogClosed(positiveResult: Boolean) {
+        if (positiveResult) {
+            duration = getDuration()
+            duration?.let {
+                persistDuration(it)
+            }
+        }
+        unbindControls()
+        super.onDialogClosed(positiveResult)
+    }
+
+    private fun bindControls(view: View?) {
         durationValue = view?.findViewById(R.id.durationValue)
         durationUnit = view?.findViewById(R.id.durationUnit)
         durationMessage = view?.findViewById(R.id.durationMessage)
-
-        val duration = getPersistedDuration(defaultDuration)
-        setDuration(duration)
 
         if (!TextUtils.isEmpty(dialogMessage)) {
             durationMessage?.let {
@@ -64,32 +83,35 @@ class DurationPreference(ctx: Context, attrs: AttributeSet) : DialogPreference(c
         }
     }
 
-    override fun onDialogClosed(positiveResult: Boolean) {
-        super.onDialogClosed(positiveResult)
+    private fun unbindControls() {
+        durationValue = null
+        durationUnit = null
+        durationMessage = null
+    }
 
-        if (positiveResult) {
-            val duration = getDuration()
-            if (duration != null) {
+    private fun getCurrentDuration() = duration ?: defaultDuration
+
+    override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
+        val value = a?.getString(index) ?: getCurrentDuration().toString()
+        duration = duration(value)
+        return value
+    }
+
+    override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any?) {
+        if (restorePersistedValue) {
+            setDuration(getPersistedDuration())
+        } else {
+            val duration = duration(defaultValue as String) ?: getCurrentDuration()
+            setDuration(duration)
+            if (shouldPersist()) {
                 persistDuration(duration)
             }
         }
     }
 
-    override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
-        return a?.getString(index) ?: defaultDuration.toString()
-    }
-
-    override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any?) {
-        if (restorePersistedValue) {
-            setDuration(getPersistedDuration(defaultDuration))
-        } else {
-            setDuration(duration(defaultValue as String) ?: defaultDuration)
-        }
-    }
-
-    private fun getPersistedDuration(defaultDuration: Duration): Duration {
-        val read = getPersistedString(defaultDuration.toString())
-        return duration(read) ?: defaultDuration
+    private fun getPersistedDuration(): Duration {
+        val read = getPersistedString("")
+        return duration(read) ?: getCurrentDuration()
     }
 
     private fun persistDuration(duration: Duration) = persistString(duration.toString())

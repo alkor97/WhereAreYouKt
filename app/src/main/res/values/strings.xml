@@ -13,7 +13,7 @@
 
     <string name="location_query_timeout_title">Location query timeout</string>
     <string name="location_query_timeout_dialog_message">Maximal time to await for location information in seconds</string>
-    <string name="location_query_timeout_default" translatable="false">30s</string>
+    <string name="location_query_timeout_default" translatable="false">30sec</string>
 
     <string name="location_query_string_title">Location query string</string>
     <string name="location_query_string_dialog_message">The key word used to indicate location request</string>

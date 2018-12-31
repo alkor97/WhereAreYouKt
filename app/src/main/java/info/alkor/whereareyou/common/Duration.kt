@@ -38,15 +38,14 @@ data class Duration(val value: Long, val unit: TimeUnit) {
 
     fun <T : TimeUnit> convertValue(unit: T) = unit.convert(this.value, this.unit)
 
-    operator fun plus(other: Duration): Duration {
+    operator fun plus(other: Duration): Duration = if (other.value != 0L) {
         val resultUnit = if (other.unit < unit) other.unit else unit
-        return Duration(convertValue(resultUnit) + other.convertValue(resultUnit), resultUnit)
-    }
+        Duration(convertValue(resultUnit) + other.convertValue(resultUnit), resultUnit)
+    } else this
 
-    operator fun minus(other: Duration): Duration {
-        val resultUnit = if (other.unit < unit) other.unit else unit
-        return Duration(convertValue(resultUnit) - other.convertValue(resultUnit), resultUnit)
-    }
+    operator fun minus(other: Duration): Duration = this + (-other)
+
+    operator fun unaryMinus() = Duration(-value, unit)
 
     fun toNanos() = unit.toNanos(value)
     fun toMicros() = unit.toMicros(value)
@@ -72,8 +71,8 @@ fun <T : Number> hours(value: T) = Duration(value.toLong(), TimeUnit.HOURS)
 fun <T : Number> days(value: T) = Duration(value.toLong(), TimeUnit.DAYS)
 
 fun <T : Number> duration(days: T? = null, hours: T? = null, minutes: T? = null, seconds: T? = null, millis: T? = null, micros: T? = null, nanos: T? = null): Duration {
-    return nanos(nanos ?: 0) + micros(micros ?: 0) + millis(millis ?: 0) + seconds(seconds
-            ?: 0) + minutes(minutes ?: 0) + hours(hours ?: 0) + days(days ?: 0)
+    return days(days ?: 0) + hours(hours ?: 0) + minutes(minutes ?: 0) + seconds(seconds
+            ?: 0) + millis(millis ?: 0) + micros(micros ?: 0) + nanos(nanos ?: 0)
 }
 
 fun duration(text: String) = TimeUnit.values()

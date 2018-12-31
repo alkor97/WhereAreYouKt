@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.preference.PreferenceFragment
+import info.alkor.whereareyou.impl.settings.SettingsAccess
 import info.alkor.whereareyou.impl.settings.SettingsKey
 import info.alkor.whereareyoukt.R
 
@@ -35,9 +36,8 @@ class SettingsFragment : PreferenceFragment(), OnSharedPreferenceChangeListener 
             if (typedKey != null) {
                 val preference = preferenceScreen.findPreference(key)
                 if (preference != null) {
-                    val defaultValue = resources.getString(typedKey.defaultId)
-                    val value = sharedPreferences.getString(key, defaultValue)
-                    val summary = typedKey.getSummary(resources, value)
+                    val access = SettingsAccess(sharedPreferences, resources)
+                    val summary = typedKey.getSummary(access)
                     preference.summary = summary
                 }
             }

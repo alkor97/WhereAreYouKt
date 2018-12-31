@@ -38,7 +38,7 @@ class SimpleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple)
         setSupportActionBar(toolbar)
-        PreferenceManager.setDefaultValues(this, R.xml.settings, false)
+        PreferenceManager.setDefaultValues(this, R.xml.settings, true)
 
         val fragmentAdapter = prepareFragmentAdapter()
         viewpager_main.adapter = fragmentAdapter
