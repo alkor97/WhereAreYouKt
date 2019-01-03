@@ -120,6 +120,7 @@
     <string name="receive_sms_permission_needed">Aplikacja wymaga zezwolenia na filtrowanie przychodzących wiadomości tekstowych w celu obsługi żądań lokalizacji.</string>
     <string name="read_contacts_permission_needed">Aplikacja wymaga zezwolenia na czytanie podstawowych danych Twoich kontaktów w celul ich prezentacji w kontekście żądań lokalizacji.</string>
     <string name="send_sms_permission_needed">Aplikacja wymaga zezwolenia na wysyłanie wiadomości tekstowych z lokalizacją.</string>
+    <string name="read_phone_state_permission_needed">Aplikacja wymaga zezwolenia na odczytywanie stanu w celu wysyłania wiadomości tekstowych z lokalizacją.</string>
 
     <string name="query_someones_location">Pytasz o położenie osoby</string>
     <string name="query_my_location">Twoje położenie jest szukane przez osobę</string>

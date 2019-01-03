@@ -24,7 +24,7 @@ abstract class MessageSenderImpl(private val context: AppContext) : MessageSende
     }
 
     private fun doSend(person: Person, message: String, callback: SendingStatusCallback) {
-        if (canSendSms())
+        if (canSendSms() && canReadPhoneState())
             sendMessage(person, message, callback)
         else
             callback(SendingStatus.SENDING_FAILED)
@@ -33,4 +33,6 @@ abstract class MessageSenderImpl(private val context: AppContext) : MessageSende
     protected abstract fun sendMessage(person: Person, message: String, callback: SendingStatusCallback)
 
     private fun canSendSms() = context.permissionAccessor.isPermissionGranted(android.Manifest.permission.SEND_SMS)
+
+    private fun canReadPhoneState() = context.permissionAccessor.isPermissionGranted(android.Manifest.permission.READ_PHONE_STATE)
 }

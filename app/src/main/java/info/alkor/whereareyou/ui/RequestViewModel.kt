@@ -7,6 +7,7 @@ import android.text.format.DateUtils
 import android.view.View
 import info.alkor.whereareyou.api.persistence.*
 import info.alkor.whereareyou.model.action.PhoneNumber
+import info.alkor.whereareyou.model.action.SendingStatus
 import info.alkor.whereareyou.model.location.Bearing
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.Speed
@@ -94,7 +95,32 @@ class RequestViewModel(application: Application) : AndroidViewModel(application)
                 } else speedVisible.postValue(View.GONE)
             } ?: speedVisible.postValue(View.GONE)
         }
+        is SendingStatusUpdated -> postStatus(event.status)
         else -> Unit
+    }
+
+    private fun postStatus(eventStatus: SendingStatus) = when (eventStatus) {
+        SendingStatus.PENDING -> {
+            status.postValue(resources.getString(R.string.status_sending))
+            postInProgress()
+        }
+        SendingStatus.SENDING_FAILED -> {
+            status.postValue(resources.getString(R.string.status_sending))
+            postFailed()
+        }
+        SendingStatus.SENT -> {
+            postSucceeded()
+            status.postValue(resources.getString(R.string.status_delivery))
+            postInProgress()
+        }
+        SendingStatus.DELIVERY_FAILED -> {
+            status.postValue(resources.getString(R.string.status_delivery))
+            postFailed()
+        }
+        SendingStatus.DELIVERED -> {
+            status.postValue(resources.getString(R.string.status_delivery))
+            postSucceeded()
+        }
     }
 
     private fun formatPhone(phone: PhoneNumber) = "✆ ${phone.toHumanReadable()}"

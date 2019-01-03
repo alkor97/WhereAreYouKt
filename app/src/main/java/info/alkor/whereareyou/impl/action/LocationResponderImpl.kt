@@ -38,7 +38,7 @@ class LocationResponderImpl(private val context: AppContext) : LocationResponder
             if (final) {
                 if (person.phone != PhoneNumber.OWN) {
                     launch {
-                        sendResponse(request, response)
+                        sendResponse(newRequest, response)
                         ticker.stop()
                     }
                 } else {

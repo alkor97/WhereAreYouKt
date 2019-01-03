@@ -64,7 +64,8 @@ class PermissionRequester(private val context: Context) {
                 Manifest.permission.ACCESS_FINE_LOCATION to R.string.location_permission_needed,
                 Manifest.permission.RECEIVE_SMS to R.string.receive_sms_permission_needed,
                 Manifest.permission.READ_CONTACTS to R.string.read_contacts_permission_needed,
-                Manifest.permission.SEND_SMS to R.string.send_sms_permission_needed
+                Manifest.permission.SEND_SMS to R.string.send_sms_permission_needed,
+                Manifest.permission.READ_PHONE_STATE to R.string.read_phone_state_permission_needed
         )
     }
 
@@ -73,6 +74,7 @@ class PermissionRequester(private val context: Context) {
         Manifest.permission.RECEIVE_SMS -> 2
         Manifest.permission.READ_CONTACTS -> 4
         Manifest.permission.SEND_SMS -> 8
+        Manifest.permission.READ_PHONE_STATE -> 16
         else -> throw IllegalArgumentException("Permission $permission has no unique request code.")
     }
 
