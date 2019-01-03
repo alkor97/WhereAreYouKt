@@ -123,4 +123,19 @@
     <string name="receive_sms_permission_needed">This application requires a permission to read incoming text messages to react on location requests.</string>
     <string name="read_contacts_permission_needed">This application requires a permission to read contacts in process of location requesting.</string>
     <string name="send_sms_permission_needed">This application requires a permission to send text messages to transport location responses.</string>
+
+    <string name="query_someones_location">You have asked location of</string>
+    <string name="query_my_location">Your location was asked by</string>
+    <string name="your_location_is">Your location is</string>
+
+    <string name="status_sending">sending</string>
+    <string name="status_delivery">delivery</string>
+    <string name="status_locating">locating</string>
+
+    <string name="result_inProgress" translatable="false">…</string>
+    <string name="result_succeeded" translatable="false">✓</string>
+    <string name="result_failed" translatable="false">✗</string>
+
+    <string name="above_sea_level">%s above sea level</string>
+    <string name="speed_and_bearing">%s in direction %s (%s)</string>
 </resources>

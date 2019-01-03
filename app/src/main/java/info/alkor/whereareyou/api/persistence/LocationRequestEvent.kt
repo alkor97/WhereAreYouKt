@@ -8,8 +8,12 @@ import info.alkor.whereareyou.model.location.Location
 sealed class LocationRequestEvent
 object NoLocation : LocationRequestEvent()
 data class LocationRequested(val person: Person) : LocationRequestEvent()
-data class FinalLocation(val location: Location) : LocationRequestEvent()
-data class IntermediateLocation(val location: Location) : LocationRequestEvent()
+interface WithLocation {
+    val location: Location
+}
+
+data class FinalLocation(override val location: Location) : WithLocation, LocationRequestEvent()
+data class IntermediateLocation(override val location: Location) : WithLocation, LocationRequestEvent()
 data class SendingStatusUpdated(val status: SendingStatus) : LocationRequestEvent()
 data class ExecutionProgress(val elapsed: Duration) : LocationRequestEvent()
 data class ExecutionCompleted(val elapsed: Duration) : LocationRequestEvent()

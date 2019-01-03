@@ -129,7 +129,8 @@ class SimpleActivity : AppCompatActivity() {
 
     private fun prepareFragmentAdapter() = GenericPagerAdapter(supportFragmentManager,
             listOf(
-                    FragmentDescriptor(getString(R.string.tab_location)) { SimpleActivityFragment() }
+                    FragmentDescriptor(getString(R.string.tab_location)) { SimpleActivityFragment() },
+                    FragmentDescriptor("Requests") { RequestFragment.newInstance() }
             )
     )
 

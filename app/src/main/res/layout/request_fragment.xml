@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="info.alkor.whereareyou.ui.RequestViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        tools:context="info.alkor.whereareyou.ui.RequestFragment"
+        tools:showIn="@layout/activity_simple">
+
+        <ImageButton
+            android:id="@+id/detailsPopup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:contentDescription="@string/popup_content_desc"
+            android:onClick="showPopup"
+            android:src="@drawable/ic_action_more_vert"
+            android:visibility="@{safeUnbox(model.menuVisible)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/timeStamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:singleLine="true"
+            android:text="@{model.timeStamp}"
+            app:layout_constraintBottom_toBottomOf="@+id/detailsPopup"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Space
+            android:id="@+id/timeStampSeparator"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeStamp" />
+
+        <TextView
+            android:id="@+id/query"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:singleLine="true"
+            android:text="@{model.query}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeStampSeparator" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
+            android:text="@{model.status}"
+            app:layout_constraintEnd_toStartOf="@+id/detailsPopup"
+            app:layout_constraintTop_toBottomOf="@+id/timeStampSeparator" />
+
+        <LinearLayout
+            android:id="@+id/result"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/status"
+            app:layout_constraintEnd_toEndOf="@+id/detailsPopup"
+            app:layout_constraintStart_toStartOf="@+id/detailsPopup"
+            app:layout_constraintTop_toTopOf="@+id/status">
+
+            <ProgressBar
+                android:id="@+id/inProgress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:indeterminate="true"
+                android:visibility="@{safeUnbox(model.inProgressVisible)}" />
+
+            <TextView
+                android:id="@+id/succeeded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/result_succeeded"
+                android:textColor="#00FF00"
+                android:visibility="@{safeUnbox(model.succeededVisible)}" />
+
+            <TextView
+                android:id="@+id/failed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/result_failed"
+                android:textColor="#FF0000"
+                android:visibility="@{safeUnbox(model.failedVisible)}" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/person"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@{model.name}"
+            android:textSize="24sp"
+            android:visibility="@{safeUnbox(model.personVisible)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/query" />
+
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@{model.phone}"
+            android:visibility="@{safeUnbox(model.personVisible)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/person" />
+
+        <Space
+            android:id="@+id/personSeparator"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:visibility="@{safeUnbox(model.personVisible)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phone" />
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@{model.coordinates}"
+            android:textSize="18sp"
+            android:visibility="@{safeUnbox(model.coordinatesVisible)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/personSeparator" />
+
+        <TextView
+            android:id="@+id/altitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@{model.altitude}"
+            android:visibility="@{safeUnbox(model.altitudeVisible)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/location" />
+
+        <TextView
+            android:id="@+id/speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@{model.speed}"
+            android:visibility="@{safeUnbox(model.speedVisible)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/altitude" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
