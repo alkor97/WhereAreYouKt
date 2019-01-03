@@ -20,6 +20,11 @@ import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.api.persistence.FinalLocation
 import info.alkor.whereareyou.api.persistence.NoLocation
 import info.alkor.whereareyou.common.Duration
+import info.alkor.whereareyou.impl.settings.GOOGLE_API_KEY
+import info.alkor.whereareyou.model.action.Person
+import info.alkor.whereareyou.model.action.PhoneNumber
+import info.alkor.whereareyou.model.location.Location
+import info.alkor.whereareyou.model.location.LocationFormatter
 import info.alkor.whereareyou.ui.settings.SettingsActivity
 import info.alkor.whereareyoukt.R
 import kotlinx.android.synthetic.main.activity_simple.*
@@ -114,11 +119,21 @@ class SimpleActivity : AppCompatActivity() {
     }
 
     private fun withLocationLink(handle: (link: String) -> Unit) {
-        val locationViewModel = ViewModelProviders.of(this).get(SingleLocationViewModel::class.java)
-        locationViewModel.link?.let {
-            handle(it)
+        val viewModel = ViewModelProviders.of(this).get(RequestViewModel::class.java)
+        viewModel.location?.let {
+            val link = formatLink(it, viewModel.person)
+            handle(link)
         }
     }
+
+    private fun formatLink(location: Location, person: Person?) = resources.getString(R.string.location_presenter_url,
+            LocationFormatter.format(location),
+            if (person?.phone != PhoneNumber.OWN) // TODO: this should contain phone number of located phone
+                person?.phone?.toExternalForm() ?: ""
+            else "",
+            person?.name
+                    ?: resources.getString(R.string.you), // TODO: this should contain name of located phone
+            GOOGLE_API_KEY)
 
     fun showPopup(view: View) {
         val popup = PopupMenu(this, view)
@@ -129,8 +144,7 @@ class SimpleActivity : AppCompatActivity() {
 
     private fun prepareFragmentAdapter() = GenericPagerAdapter(supportFragmentManager,
             listOf(
-                    FragmentDescriptor(getString(R.string.tab_location)) { SimpleActivityFragment() },
-                    FragmentDescriptor("Requests") { RequestFragment.newInstance() }
+                    FragmentDescriptor(getString(R.string.tab_location)) { RequestFragment.newInstance() }
             )
     )
 

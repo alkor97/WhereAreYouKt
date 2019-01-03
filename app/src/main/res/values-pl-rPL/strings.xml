@@ -131,5 +131,5 @@
     <string name="status_locating">lokalizowanie</string>
 
     <string name="above_sea_level">%s nad poziomem morza</string>
-    <string name="speed_and_bearing">%s w kierunku %s (%s)</string>
+    <string name="speed_and_bearing">przy %s w kierunku %s (%s)</string>
 </resources>

@@ -25,12 +25,14 @@ class RequestFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val viewModel = ViewModelProviders.of(this).get(RequestViewModel::class.java)
+        val viewModel = activity?.run {
+            ViewModelProviders.of(this).get(RequestViewModel::class.java)
+        }
 
         if (context != null) {
             val ctx = context?.applicationContext as AppContext
             job = launch {
-                ctx.locationRequestPersistence.events.consumeEach { viewModel.handleEvent(it) }
+                ctx.locationRequestPersistence.events.consumeEach { viewModel?.handleEvent(it) }
             }
         }
 

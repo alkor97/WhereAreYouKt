@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.text.format.DateUtils
 import android.view.View
 import info.alkor.whereareyou.api.persistence.*
+import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.PhoneNumber
 import info.alkor.whereareyou.model.action.SendingStatus
 import info.alkor.whereareyou.model.location.Bearing
@@ -37,6 +38,9 @@ class RequestViewModel(application: Application) : AndroidViewModel(application)
     val altitudeVisible = MutableLiveData<Int>()
     val speedVisible = MutableLiveData<Int>()
 
+    var location: Location? = null
+    var person: Person? = null
+
     private val resources = getApplication<Application>().resources
 
     init {
@@ -53,6 +57,7 @@ class RequestViewModel(application: Application) : AndroidViewModel(application)
     fun handleEvent(event: LocationRequestEvent) = when (event) {
         is LocationRequested -> {
             timeStamp.postValue(formatTimeStamp(Date())) // TODO: this should depend on event data
+            person = event.person
             if (event.person.phone != PhoneNumber.OWN) {
                 name.postValue(event.person.name)
                 phone.postValue(formatPhone(event.person.phone))
@@ -77,6 +82,7 @@ class RequestViewModel(application: Application) : AndroidViewModel(application)
         }
         is WithLocation -> {
             postInProgress()
+            location = event.location
             menuVisible.postValue(View.VISIBLE)
             coordinatesVisible.postValue(View.VISIBLE)
             coordinates.postValue(formatCoordinates(event.location))
