@@ -119,7 +119,7 @@ class SimpleActivity : AppCompatActivity() {
     }
 
     private fun withLocationLink(handle: (link: String) -> Unit) {
-        val viewModel = ViewModelProviders.of(this).get(RequestViewModel::class.java)
+        val viewModel = ViewModelProviders.of(this).get(SingleRequestViewModel::class.java)
         viewModel.location?.let {
             val link = formatLink(it, viewModel.person)
             handle(link)
@@ -144,7 +144,7 @@ class SimpleActivity : AppCompatActivity() {
 
     private fun prepareFragmentAdapter() = GenericPagerAdapter(supportFragmentManager,
             listOf(
-                    FragmentDescriptor(getString(R.string.tab_location)) { RequestFragment.newInstance() }
+                    FragmentDescriptor(getString(R.string.tab_location)) { SingleRequestFragment.newInstance() }
             )
     )
 

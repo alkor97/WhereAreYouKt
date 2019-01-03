@@ -9,16 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyoukt.R
-import info.alkor.whereareyoukt.databinding.RequestFragmentBinding
+import info.alkor.whereareyoukt.databinding.SingleRequestFragmentBinding
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 
 
-class RequestFragment : Fragment() {
+class SingleRequestFragment : Fragment() {
 
     companion object {
-        fun newInstance() = RequestFragment()
+        fun newInstance() = SingleRequestFragment()
     }
 
     private var job: Job? = null
@@ -26,7 +26,7 @@ class RequestFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val viewModel = activity?.run {
-            ViewModelProviders.of(this).get(RequestViewModel::class.java)
+            ViewModelProviders.of(this).get(SingleRequestViewModel::class.java)
         }
 
         if (context != null) {
@@ -36,7 +36,7 @@ class RequestFragment : Fragment() {
             }
         }
 
-        val binding: RequestFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.request_fragment, container, false)
+        val binding: SingleRequestFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.single_request_fragment, container, false)
         binding.setLifecycleOwner(this)
         binding.model = viewModel
 

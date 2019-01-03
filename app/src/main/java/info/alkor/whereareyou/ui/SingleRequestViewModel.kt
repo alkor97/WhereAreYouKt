@@ -16,7 +16,7 @@ import info.alkor.whereareyou.model.location.toKilometersPerHour
 import info.alkor.whereareyoukt.R
 import java.util.*
 
-class RequestViewModel(application: Application) : AndroidViewModel(application) {
+class SingleRequestViewModel(application: Application) : AndroidViewModel(application) {
 
     val timeStamp = MutableLiveData<String>()
     val query = MutableLiveData<String>()

@@ -7,14 +7,14 @@
 
         <variable
             name="model"
-            type="info.alkor.whereareyou.ui.RequestViewModel" />
+            type="info.alkor.whereareyou.ui.SingleRequestViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp"
-        tools:context="info.alkor.whereareyou.ui.RequestFragment"
+        tools:context="info.alkor.whereareyou.ui.SingleRequestFragment"
         tools:showIn="@layout/activity_simple">
 
         <ImageButton
