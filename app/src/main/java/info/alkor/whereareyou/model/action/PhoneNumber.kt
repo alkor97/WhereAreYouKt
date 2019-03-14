@@ -9,20 +9,19 @@ data class PhoneNumber private constructor(val value: String) {
 
     fun toExternalForm() = value.replaceFirst("+", "00")
 
+    fun isValid() = !value.isEmpty()
+
     companion object {
         operator fun invoke(value: String): PhoneNumber {
             val normalized = value.trim()
                     .replace("\\s+".toRegex(), "")
                     .replace("^\\+".toRegex(), "00")
                     .replace("^00+".toRegex(), "+")
-            if (!normalized.matches(normalizedForm))
-                throw IllegalArgumentException(value)
+                    .replace("\\D".toRegex(), "")
             return PhoneNumber(normalized)
         }
 
         private operator fun invoke(): PhoneNumber = PhoneNumber("")
         val OWN = PhoneNumber()
-
-        private val normalizedForm = "^[+^0]\\d+$".toRegex()
     }
 }

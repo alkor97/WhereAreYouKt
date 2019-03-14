@@ -11,12 +11,13 @@ class SmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context != null) {
             val ctx = appContext(context)
-            Telephony.Sms.Intents.getMessagesFromIntent(intent).map {
+            Telephony.Sms.Intents.getMessagesFromIntent(intent).forEach {
                 val phoneNumber = PhoneNumber(it.originatingAddress)
-                val person = ctx.contactProvider.findName(phoneNumber)
-                Pair(person, it.messageBody)
-            }.forEach {
-                ctx.messageReceiver.onReceive(it.first, it.second)
+                if (phoneNumber.isValid()) {
+                    val person = ctx.contactProvider.findName(phoneNumber)
+                    ctx.messageReceiver.onReceive(person, it.messageBody)
+                    Pair(person, it.messageBody)
+                }
             }
         }
     }
