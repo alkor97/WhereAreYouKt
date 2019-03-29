@@ -28,7 +28,7 @@ class AppContextImpl : Application(), AppContext {
     override val settings by lazy { SettingsImpl(this) }
     override val messageSender by lazy { SmsSender(this) }
     override val locationRequestPersistence by lazy { SimpleLocationRequestPersistence() }
-    override val permissionAccessor by lazy {PermissionAccessorImpl(this)}
+    override val permissionAccessor by lazy { PermissionAccessorImpl(this) }
     override val actionsRepository by lazy { LocationActionRepositoryImpl() }
 
     override fun requestMyLocation() = locationResponder.handleLocationRequest(

@@ -32,7 +32,7 @@ class PermissionRequester(private val context: Context) {
         }
         for (permission in missingPermissions) {
             //if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-                showExplanation(activity, permission)
+            showExplanation(activity, permission)
             /*} else {
                 doRequestPermissions(activity, permission)
             }*/

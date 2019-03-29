@@ -42,6 +42,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="info.alkor.whereareyou.ui.SimpleActivity" />
         </activity>
+
         <receiver
             android:name="info.alkor.whereareyou.impl.communication.android.SmsReceiver"
             android:permission="android.permission.BROADCAST_SMS">
