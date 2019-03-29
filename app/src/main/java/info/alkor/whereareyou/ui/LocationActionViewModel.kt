@@ -5,10 +5,7 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import info.alkor.whereareyou.model.action.*
-import info.alkor.whereareyou.model.location.Bearing
-import info.alkor.whereareyou.model.location.Location
-import info.alkor.whereareyou.model.location.Speed
-import info.alkor.whereareyou.model.location.toKilometersPerHour
+import info.alkor.whereareyou.model.location.*
 import info.alkor.whereareyoukt.R
 import java.util.*
 
@@ -149,7 +146,12 @@ class LocationActionViewModel(private val context: Context) {
 
     private fun formatPhone(phone: PhoneNumber) = "✆ ${phone.toHumanReadable()}"
 
-    private fun formatCoordinates(location: Location) = location.coordinates.toString()
+    private fun formatCoordinates(location: Location) = location.coordinates.toString() + " (" + formatProvider(location) + ")"
+
+    private fun formatProvider(location: Location) = when (location.provider) {
+        Provider.GPS -> context.getString(R.string.provider_gps)
+        Provider.NETWORK -> context.getString(R.string.provider_network)
+    }
 
     private fun formatAltitude(location: Location) = resources.getString(
             R.string.above_sea_level,

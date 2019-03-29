@@ -135,4 +135,7 @@
     <string name="speed_and_bearing">przy %s w kierunku %s (%s)</string>
 
     <string name="location_unknown">nieznane</string>
+
+    <string name="provider_gps">GPS</string>
+    <string name="provider_network">sieć</string>
 </resources>

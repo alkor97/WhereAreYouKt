@@ -142,4 +142,7 @@
     <string name="speed_and_bearing">at %s heading %s (%s)</string>
 
     <string name="location_unknown">unknown</string>
+
+    <string name="provider_gps">GPS</string>
+    <string name="provider_network">network</string>
 </resources>
