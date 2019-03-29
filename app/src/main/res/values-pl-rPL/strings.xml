@@ -35,6 +35,7 @@
     <string name="popup_content_desc">Akcje</string>
 
     <string name="tab_location">Położenie</string>
+    <string name="tab_actions">Akcje</string>
 
     <plurals name="duration_days">
         <item quantity="one">%d dzień</item>
@@ -118,13 +119,13 @@
     <string name="permission_needed_title">Wymagane uprawnienie</string>
     <string name="location_permission_needed">Aplikacja wymaga zezwolenia na używanie lokalizacji urządzenia w celu jej prezentacji użytkownikowi.</string>
     <string name="receive_sms_permission_needed">Aplikacja wymaga zezwolenia na filtrowanie przychodzących wiadomości tekstowych w celu obsługi żądań lokalizacji.</string>
-    <string name="read_contacts_permission_needed">Aplikacja wymaga zezwolenia na czytanie podstawowych danych Twoich kontaktów w celul ich prezentacji w kontekście żądań lokalizacji.</string>
+    <string name="read_contacts_permission_needed">Aplikacja wymaga zezwolenia na czytanie podstawowych danych Twoich kontaktów w celu ich prezentacji w kontekście żądań lokalizacji.</string>
     <string name="send_sms_permission_needed">Aplikacja wymaga zezwolenia na wysyłanie wiadomości tekstowych z lokalizacją.</string>
-    <string name="read_phone_state_permission_needed">Aplikacja wymaga zezwolenia na odczytywanie stanu w celu wysyłania wiadomości tekstowych z lokalizacją.</string>
+    <string name="read_phone_state_permission_needed">Aplikacja wymaga zezwolenia na odczytywanie stanu telefonu w celu wysyłania wiadomości tekstowych z lokalizacją.</string>
 
     <string name="query_someones_location">Pytasz o położenie osoby</string>
     <string name="query_my_location">Twoje położenie jest szukane przez osobę</string>
-    <string name="your_location_is">Twoje położenie to</string>
+    <string name="your_location_is">Twoje położenie</string>
 
     <string name="status_sending">wysyłano</string>
     <string name="status_delivery">dostarczono</string>
@@ -132,4 +133,6 @@
 
     <string name="above_sea_level">%s nad poziomem morza</string>
     <string name="speed_and_bearing">przy %s w kierunku %s (%s)</string>
+
+    <string name="location_unknown">nieznane</string>
 </resources>

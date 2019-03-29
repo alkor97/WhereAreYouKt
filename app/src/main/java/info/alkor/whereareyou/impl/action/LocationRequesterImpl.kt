@@ -8,23 +8,23 @@ import info.alkor.whereareyou.model.action.Person
 
 class LocationRequesterImpl(private val context: AppContext) : LocationRequester {
 
-    private val persistence by lazy { context.locationRequestPersistence }
     private val sender by lazy { context.messageSender }
+    private val repository by lazy { context.actionsRepository }
 
     private val loggingTag = "requester"
 
-    override fun requestLocationOf(person: Person) {
-        val request = persistence.onLocationRequested(person)
+    override fun requestLocationOf(target: Person) {
+        val request = repository.onExternalLocationRequested(target)
 
         sender.send(request) {
-            persistence.onCommunicationStatusUpdate(request, it)
-            Log.i(loggingTag, "status of location request sent to $person is $it")
+            repository.onCommunicationStatusUpdate(request, it)
+            Log.i(loggingTag, "status of location request sent to $target is $it")
         }
-        Log.i(loggingTag, "location request sent to $person")
+        Log.i(loggingTag, "location request sent to $target")
     }
 
     override fun onLocationResponse(response: LocationResponse) {
         Log.i(loggingTag, "got location response from ${response.person}")
-        persistence.onLocationResponse(response)
+        repository.onLocationResponse(response)
     }
 }

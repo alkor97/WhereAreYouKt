@@ -1,19 +1,18 @@
 package info.alkor.whereareyou.impl.persistence
 
 import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.common.millis
-import info.alkor.whereareyou.model.action.LocationRequest
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class RegularTicker(context: AppContext, private val resolution: TimeUnit, private val request: LocationRequest) {
-    private val persistence = context.locationRequestPersistence
+class RegularTicker(context: AppContext, private val resolution: TimeUnit, private val callback: (Duration) -> Unit) {
     private val timer = Timer()
     private val startTime by lazy { now() }
 
     private val task = object : TimerTask() {
         override fun run() {
-            persistence.onProgressUpdated(request, elapsedTime())
+            callback(elapsedTime())
         }
     }
 
@@ -29,6 +28,5 @@ class RegularTicker(context: AppContext, private val resolution: TimeUnit, priva
     fun stop() {
         task.cancel()
         timer.cancel()
-        persistence.onProgressCompleted(request, elapsedTime())
     }
 }

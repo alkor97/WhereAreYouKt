@@ -1,26 +1,19 @@
 package info.alkor.whereareyou.ui
 
 import android.annotation.SuppressLint
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.PopupMenu
 import info.alkor.whereareyou.api.context.AppContext
-import info.alkor.whereareyou.api.persistence.FinalLocation
-import info.alkor.whereareyou.api.persistence.NoLocation
 import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.impl.settings.GOOGLE_API_KEY
+import info.alkor.whereareyou.model.action.LocationAction
 import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.PhoneNumber
 import info.alkor.whereareyou.model.location.Location
@@ -28,13 +21,10 @@ import info.alkor.whereareyou.model.location.LocationFormatter
 import info.alkor.whereareyou.ui.settings.SettingsActivity
 import info.alkor.whereareyoukt.R
 import kotlinx.android.synthetic.main.activity_simple.*
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.channels.consumeEach
-import kotlinx.coroutines.experimental.launch
 import java.util.concurrent.TimeUnit
 
-class SimpleActivity : AppCompatActivity() {
+
+class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInteractionListener {
 
     private val permissionRequester by lazy { PermissionRequester(this) }
 
@@ -55,39 +45,16 @@ class SimpleActivity : AppCompatActivity() {
     @Suppress("UNUSED_PARAMETER")
     fun startLocating(view: View) {
         if (permissionRequester.canLocate()) {
-            hideFloatingActionButton(fab)
             val ctx = applicationContext as AppContext
-
-            val listener = Job()
-            launch(parent = listener) {
-                ctx.locationRequestPersistence.events.consumeEach { event ->
-                    when (event) {
-                        is FinalLocation -> handleLocationCompleted(view, listener, true)
-                        is NoLocation -> handleLocationCompleted(view, listener, false)
-                    }
-                }
-            }
-            ctx.requestLocation()
-
-            val queryTimeout = ctx.settings.getLocationQueryTimeout()
-            Snackbar.make(view, getString(R.string.query_started_with_timeout, queryTimeout.toString(resources)), Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-    }
-
-    private fun handleLocationCompleted(view: View, listener: Job, success: Boolean) {
-        launch(UI) {
-            val message = if (success) getString(R.string.query_succeeded) else getString(R.string.query_failed)
-            Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-            showFloatingActionButton(fab)
-            listener.cancel()
+            ctx.requestMyLocation()
+        } else {
+            permissionRequester.ensurePermissionsGranted(this)
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.menu_simple, menu)
+        inflater.inflate(R.menu.menu_settings, menu)
         return true
     }
 
@@ -97,17 +64,25 @@ class SimpleActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun showLocation(item: MenuItem) {
-        withLocationLink { link ->
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-            startActivity(intent)
-        }
-    }
+    private fun formatLink(location: Location, person: Person?) = resources.getString(R.string.location_presenter_url,
+            LocationFormatter.format(location),
+            if (person?.phone != PhoneNumber.OWN)
+                person?.phone?.toExternalForm() ?: ""
+            else "",
+            person?.name
+                    ?: resources.getString(R.string.your_location_is),
+            GOOGLE_API_KEY)
 
-    @Suppress("UNUSED_PARAMETER")
-    fun shareLocation(item: MenuItem) {
-        withLocationLink { link ->
+    private fun prepareFragmentAdapter() = GenericPagerAdapter(supportFragmentManager,
+            listOf(
+                    //FragmentDescriptor(getString(R.string.tab_location)) { SingleRequestFragment.newInstance() },
+                    FragmentDescriptor(getString(R.string.tab_actions)) { ActionFragment.newInstance() }
+            )
+    )
+
+    override fun onShareLocation(action: LocationAction): Boolean {
+        if (action.location != null) {
+            val link = formatLink(action.location, action.person)
             val intent = Intent(Intent.ACTION_SEND)
             with(intent) {
                 type = "text/plain"
@@ -115,58 +90,19 @@ class SimpleActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_TEXT, link)
             }
             startActivity(Intent.createChooser(intent, getString(R.string.share_via)))
+            return true
         }
+        return false
     }
 
-    private fun withLocationLink(handle: (link: String) -> Unit) {
-        val viewModel = ViewModelProviders.of(this).get(SingleRequestViewModel::class.java)
-        viewModel.location?.let {
-            val link = formatLink(it, viewModel.person)
-            handle(link)
+    override fun onShowLocation(action: LocationAction): Boolean {
+        if (action.location != null) {
+            val link = formatLink(action.location, action.person)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+            startActivity(intent)
+            return true
         }
-    }
-
-    private fun formatLink(location: Location, person: Person?) = resources.getString(R.string.location_presenter_url,
-            LocationFormatter.format(location),
-            if (person?.phone != PhoneNumber.OWN) // TODO: this should contain phone number of located phone
-                person?.phone?.toExternalForm() ?: ""
-            else "",
-            person?.name
-                    ?: resources.getString(R.string.you), // TODO: this should contain name of located phone
-            GOOGLE_API_KEY)
-
-    fun showPopup(view: View) {
-        val popup = PopupMenu(this, view)
-        val inflater: MenuInflater = popup.menuInflater
-        inflater.inflate(R.menu.menu_location_popup, popup.menu)
-        popup.show()
-    }
-
-    private fun prepareFragmentAdapter() = GenericPagerAdapter(supportFragmentManager,
-            listOf(
-                    FragmentDescriptor(getString(R.string.tab_location)) { SingleRequestFragment.newInstance() }
-            )
-    )
-
-    private fun hideFloatingActionButton(fab: FloatingActionButton) {
-        val params = fab.layoutParams as CoordinatorLayout.LayoutParams
-        val behavior = params.behavior as FloatingActionButton.Behavior?
-
-        if (behavior != null) {
-            behavior.isAutoHideEnabled = false
-        }
-
-        fab.hide()
-    }
-
-    private fun showFloatingActionButton(fab: FloatingActionButton) {
-        fab.show()
-        val params = fab.layoutParams as CoordinatorLayout.LayoutParams
-        val behavior = params.behavior as FloatingActionButton.Behavior?
-
-        if (behavior != null) {
-            behavior.isAutoHideEnabled = true
-        }
+        return false
     }
 }
 

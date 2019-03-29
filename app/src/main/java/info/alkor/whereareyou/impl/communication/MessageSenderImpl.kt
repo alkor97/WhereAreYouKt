@@ -15,7 +15,7 @@ abstract class MessageSenderImpl(private val context: AppContext) : MessageSende
 
     override fun send(request: LocationRequest, callback: SendingStatusCallback) {
         val message = requestFormatter.formatLocationRequest(request)
-        doSend(request.person, message, callback)
+        doSend(request.from, message, callback)
     }
 
     override fun send(response: LocationResponse, callback: SendingStatusCallback) {

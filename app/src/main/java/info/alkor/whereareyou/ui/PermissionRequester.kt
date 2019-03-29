@@ -31,11 +31,12 @@ class PermissionRequester(private val context: Context) {
             !permissionAccessor.isPermissionGranted(it)
         }
         for (permission in missingPermissions) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+            //if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
                 showExplanation(activity, permission)
-            } else {
+            /*} else {
                 doRequestPermissions(activity, permission)
-            }
+            }*/
+            break
         }
     }
 

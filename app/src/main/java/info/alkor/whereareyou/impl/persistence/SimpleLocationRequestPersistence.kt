@@ -26,7 +26,7 @@ class SimpleLocationRequestPersistence : LocationRequestState {
     override fun onLocationRequested(person: Person): LocationRequest {
         val id = nextMessageId()
         repository.add(PersistentLocationRequest(id, person))
-        sendUpdate(LocationRequested(person))
+        sendUpdate(LocationRequested(id, person))
         return LocationRequest(person, id)
     }
 
@@ -35,7 +35,7 @@ class SimpleLocationRequestPersistence : LocationRequestState {
             val found = findById(request.id)
             found.forEach {
                 it.sendingStatus = status
-                sendUpdate(SendingStatusUpdated(status))
+                sendUpdate(SendingStatusUpdated(request.id, status))
             }
 
             if (found.isEmpty()) {
@@ -76,22 +76,22 @@ class SimpleLocationRequestPersistence : LocationRequestState {
             found.finalLocation = response.final
             if (response.final) {
                 if (response.location != null) {
-                    sendUpdate(FinalLocation(response.location))
+                    sendUpdate(FinalLocation(found.id, response.location))
                 } else {
-                    sendUpdate(NoLocation)
+                    sendUpdate(NoLocation(found.id))
                 }
             } else if (response.location != null) {
-                sendUpdate(IntermediateLocation(response.location))
+                sendUpdate(IntermediateLocation(found.id, response.location))
             }
         }
     }
 
     override fun onProgressUpdated(request: LocationRequest, duration: Duration) {
-        sendUpdate(ExecutionProgress(duration))
+        sendUpdate(ExecutionProgress(request.id!!, duration))
     }
 
     override fun onProgressCompleted(request: LocationRequest, duration: Duration) {
-        sendUpdate(ExecutionCompleted(duration))
+        sendUpdate(ExecutionCompleted(request.id!!, duration))
     }
 
     private fun findById(id: MessageId) = repository.filter { it.id == id }
@@ -107,6 +107,6 @@ class SimpleLocationRequestPersistence : LocationRequestState {
 
     private fun sendUpdate(event: LocationRequestEvent) = launch {
         events.send(event)
-        Log.d(loggingTag, event.toString())
+        Log.d(loggingTag, "sending update: $event")
     }
 }

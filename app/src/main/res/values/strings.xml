@@ -45,6 +45,7 @@
     <string name="popup_content_desc">Actions</string>
 
     <string name="tab_location">Location</string>
+    <string name="tab_actions">Actions</string>
 
     <plurals name="duration_days">
         <item quantity="one">%d day</item>
@@ -139,4 +140,6 @@
 
     <string name="above_sea_level">%s above sea level</string>
     <string name="speed_and_bearing">at %s heading %s (%s)</string>
+
+    <string name="location_unknown">unknown</string>
 </resources>

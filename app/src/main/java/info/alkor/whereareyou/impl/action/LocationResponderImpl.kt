@@ -14,31 +14,35 @@ import kotlin.coroutines.experimental.suspendCoroutine
 
 class LocationResponderImpl(private val context: AppContext) : LocationResponder {
 
-    private val persistence by lazy { context.locationRequestPersistence }
+    private val repository by lazy { context.actionsRepository }
     private val settings by lazy { context.settings }
     private val locationProvider by lazy { context.locationProvider }
     private val sender by lazy { context.messageSender }
 
     private val loggingTag = "responder"
 
-    override fun handleLocationRequest(request: LocationRequest) {
-        val person = request.person
-        Log.i(loggingTag, "received location request from $person")
-        val newRequest = persistence.onLocationRequested(person)
-
-        val ticker = RegularTicker(context, TimeUnit.SECONDS, newRequest)
-        ticker.start()
+    override fun handleLocationRequest(incomingRequest: LocationRequest): LocationRequest {
+        Log.i(loggingTag, "received location request from ${incomingRequest.from}")
+        val request = repository.onMyLocationRequested(incomingRequest.from)
 
         val timeout = settings.getLocationQueryTimeout()
+        val unit = TimeUnit.SECONDS
+        val ticker = RegularTicker(context, unit) { elapsed ->
+            repository.updateProgress(request.id!!,
+                    elapsed.convertValue(unit).toFloat() / timeout.convertValue(unit))
+            Unit
+        }
+        ticker.start()
+
         val maxAge = settings.getLocationMaxAge()
         locationProvider.getLocation(timeout, maxAge) { location, final ->
-            val response = LocationResponse(person, location, final)
-            persistence.onLocationResponse(newRequest, response)
+            val response = LocationResponse(request.from, location, final)
+            repository.onLocationResponse(response, request.id)
 
             if (final) {
-                if (person.phone != PhoneNumber.OWN) {
+                if (request.from.phone != PhoneNumber.OWN) {
                     launch {
-                        sendResponse(newRequest, response)
+                        sendResponse(request, response)
                         ticker.stop()
                     }
                 } else {
@@ -46,12 +50,13 @@ class LocationResponderImpl(private val context: AppContext) : LocationResponder
                 }
             }
         }
+        return request
     }
 
     private suspend fun sendResponse(request: LocationRequest, response: LocationResponse) = suspendCoroutine<Unit> { cont ->
-        val person = request.person
+        val person = request.from
         sender.send(response) {
-            persistence.onCommunicationStatusUpdate(request, it)
+            repository.onCommunicationStatusUpdate(request, it)
             Log.i(loggingTag, "status of location response sent to $person is $it")
             if (it.finishesSending()) {
                 cont.resume(Unit)

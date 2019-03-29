@@ -8,8 +8,10 @@ import info.alkor.whereareyou.api.communication.MessageReceiver
 import info.alkor.whereareyou.api.communication.MessageSender
 import info.alkor.whereareyou.api.contact.ContactProvider
 import info.alkor.whereareyou.api.location.LocationProvider
+import info.alkor.whereareyou.api.persistence.LocationActionRepository
 import info.alkor.whereareyou.api.persistence.LocationRequestState
 import info.alkor.whereareyou.api.settings.Settings
+import info.alkor.whereareyou.model.action.LocationRequest
 
 interface AppContext {
     val contactProvider: ContactProvider
@@ -23,6 +25,7 @@ interface AppContext {
     val messageSender: MessageSender
     val locationRequestPersistence: LocationRequestState
     val permissionAccessor: PermissionAccessor
+    val actionsRepository: LocationActionRepository
 
-    fun requestLocation()
+    fun requestMyLocation(): LocationRequest
 }
