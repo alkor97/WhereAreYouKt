@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,13 +31,18 @@ class ActionFragment : Fragment() {
                 myAdapter = ActionRecyclerViewAdapter(listener)
                 adapter = myAdapter
             }
+
+            val itemTouchHelper = ItemTouchHelper(SwipeHandler())
+            itemTouchHelper.attachToRecyclerView(view)
         }
 
-        (context?.applicationContext as AppContext).actionsRepository.all
+        appContext().actionsRepository.all
                 .observe(this, ActionsObserver(myAdapter))
 
         return view
     }
+
+    private fun appContext() = context?.applicationContext as AppContext
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -59,6 +65,19 @@ class ActionFragment : Fragment() {
 
     companion object {
         fun newInstance() = ActionFragment()
+    }
+
+    inner class SwipeHandler : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        override fun onMove(recyclerView: RecyclerView?,
+                            viewHolder: RecyclerView.ViewHolder?,
+                            target: RecyclerView.ViewHolder?): Boolean = false
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
+            val messageId = (viewHolder as ActionRecyclerViewAdapter.ViewHolder).getBoundObjectId()
+            if (messageId != null) {
+                appContext().actionsRepository.remove(messageId)
+            }
+        }
     }
 
     inner class ActionsObserver(private val adapter: ActionRecyclerViewAdapter) : Observer<List<LocationAction>> {

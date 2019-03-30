@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import info.alkor.whereareyou.model.action.LocationAction
+import info.alkor.whereareyou.model.action.MessageId
 import info.alkor.whereareyou.ui.ActionFragment.OnListFragmentInteractionListener
 import info.alkor.whereareyoukt.R
 import info.alkor.whereareyoukt.databinding.FragmentActionBinding
@@ -42,10 +43,16 @@ class ActionRecyclerViewAdapter(
     fun getItems(): List<LocationAction> = this.items
 
     inner class ViewHolder(private val binding: FragmentActionBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        private var boundObjectId: MessageId? = null
+
+        fun getBoundObjectId() = boundObjectId
+
         fun bind(action: LocationAction) {
             val model = LocationActionViewModel(binding.root.context)
             model.render(action)
             binding.model = model
+            boundObjectId = action.id
 
             if (model.menuVisible == View.VISIBLE) {
                 preparePopup(action)

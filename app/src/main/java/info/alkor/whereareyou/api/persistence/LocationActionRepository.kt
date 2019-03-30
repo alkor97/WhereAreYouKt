@@ -12,4 +12,5 @@ interface LocationActionRepository {
     fun onCommunicationStatusUpdate(request: LocationRequest, status: SendingStatus)
     fun onLocationResponse(response: LocationResponse, id: MessageId? = null)
     fun updateProgress(id: MessageId, progress: Float)
+    fun remove(id: MessageId)
 }

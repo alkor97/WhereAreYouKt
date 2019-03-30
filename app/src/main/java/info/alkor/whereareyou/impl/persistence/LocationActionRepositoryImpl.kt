@@ -16,6 +16,15 @@ class LocationActionRepositoryImpl : LocationActionRepository {
 
     private val loggingTag = "persistence"
 
+    @Synchronized
+    override fun remove(id: MessageId) {
+        val found = findById(id)
+        found.forEach { (index, _) ->
+            data.removeAt(index)
+        }
+        postUpdates()
+    }
+
     override fun onExternalLocationRequested(target: Person): LocationRequest = onLocationRequested(Direction.OUTGOING, target)
 
     override fun onMyLocationRequested(requester: Person): LocationRequest = onLocationRequested(Direction.INCOMING, requester)
