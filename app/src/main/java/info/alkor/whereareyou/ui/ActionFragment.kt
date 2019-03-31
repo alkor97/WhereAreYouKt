@@ -83,7 +83,7 @@ class ActionFragment : Fragment() {
     inner class ActionsObserver(private val adapter: ActionRecyclerViewAdapter) : Observer<List<LocationAction>> {
         override fun onChanged(new: List<LocationAction>?) {
             val newList = new ?: ArrayList()
-            val result = DiffUtil.calculateDiff(DiffCallback(adapter.getItems(), newList))
+            val result = DiffUtil.calculateDiff(DiffCallback(adapter.getItems(), newList), false)
             adapter.setItems(newList)
             result.dispatchUpdatesTo(adapter)
         }
