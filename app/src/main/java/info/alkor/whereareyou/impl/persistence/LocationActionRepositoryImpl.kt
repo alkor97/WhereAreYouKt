@@ -94,12 +94,14 @@ class LocationActionRepositoryImpl : LocationActionRepository {
     private fun indexed() = data.mapIndexed { index, element -> Pair(index, element) }
 
     private fun findMatching(response: LocationResponse) = indexed()
+            .asSequence()
             .filter { (_, action) ->
                 action.person == response.person
                         && !action.final
                         && action.location != response.location
                         && action.status == SendingStatus.PENDING
             }.sortedBy { it.second.id }
+            .toList()
 
     private fun findById(id: MessageId) = indexed()
             .filter { it.second.id == id }
