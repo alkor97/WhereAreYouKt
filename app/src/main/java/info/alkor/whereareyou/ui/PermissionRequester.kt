@@ -14,50 +14,46 @@ class PermissionRequester(private val context: Context) {
     private val permissionAccessor by lazy { (context.applicationContext as AppContext).permissionAccessor }
 
     init {
-        for (permission in getRequestedPermissions()) {
+        for (permission in getRequiredPermissions()) {
             if (permission !in permissionRationale) {
                 throw IllegalStateException("Permission $permission not mapped.")
             }
-            getRequestCode(permission)
         }
     }
 
-    fun ensurePermissionsGranted(activity: Activity) = requestPermissions(activity, *permissionRationale.keys.toTypedArray())
+    fun ensurePermissionsGranted(activity: Activity) = requestNotGrantedPermissions(activity)
 
     fun canLocate() = permissionAccessor.isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)
 
-    private fun requestPermissions(activity: Activity, vararg permissions: String) {
-        val missingPermissions = permissions.filter {
-            !permissionAccessor.isPermissionGranted(it)
-        }
-        for (permission in missingPermissions) {
-            //if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-            showExplanation(activity, permission)
-            /*} else {
-                doRequestPermissions(activity, permission)
-            }*/
-            break
-        }
+    private fun requestNotGrantedPermissions(activity: Activity) {
+        showExplanations(activity, *getRequiredPermissions().filter { !permissionAccessor.isPermissionGranted(it) }.toTypedArray())
     }
 
-    private fun showExplanation(activity: Activity, vararg permissions: String) {
-        permissions.map { permission ->
-            Pair(permission, permissionRationale[permission])
-        }.forEach { (permission, messageId) ->
-            with(AlertDialog.Builder(activity)) {
-                setTitle(R.string.permission_needed_title)
-                setMessage(messageId!!)
-                setPositiveButton(android.R.string.ok) { _, _ ->
-                    doRequestPermissions(activity, permission)
+    private fun showExplanations(activity: Activity, vararg permissions: String) {
+        if (!permissions.isEmpty()) {
+            val listEntrySeparator = "\n" + context.getString(R.string.permission_entry_list_entry_prefix)
+            val message = permissions.mapNotNull { permission ->
+                permissionRationale[permission]?.let {
+                    context.getString(it)
                 }
-                create()
-                show()
+            }.joinToString(listEntrySeparator, context.getString(R.string.permission_required) + listEntrySeparator)
+
+            if (!message.isEmpty()) {
+                with(AlertDialog.Builder(activity)) {
+                    setTitle(R.string.permission_needed_title)
+                    setMessage(message)
+                    setPositiveButton(android.R.string.ok) { _, _ ->
+                        doRequestPermissions(activity, *permissions)
+                    }
+                    create()
+                    show()
+                }
             }
         }
     }
 
-    private fun doRequestPermissions(activity: Activity, permission: String) {
-        ActivityCompat.requestPermissions(activity, arrayOf(permission), getRequestCode(permission))
+    private fun doRequestPermissions(activity: Activity, vararg permissions: String) {
+        ActivityCompat.requestPermissions(activity, permissions, 1)
     }
 
     companion object {
@@ -70,16 +66,7 @@ class PermissionRequester(private val context: Context) {
         )
     }
 
-    private fun getRequestCode(permission: String) = when (permission) {
-        Manifest.permission.ACCESS_FINE_LOCATION -> 1
-        Manifest.permission.RECEIVE_SMS -> 2
-        Manifest.permission.READ_CONTACTS -> 4
-        Manifest.permission.SEND_SMS -> 8
-        Manifest.permission.READ_PHONE_STATE -> 16
-        else -> throw IllegalArgumentException("Permission $permission has no unique request code.")
-    }
-
-    private fun getRequestedPermissions() = context.packageManager
+    private fun getRequiredPermissions() = context.packageManager
             .getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
             .requestedPermissions
 }
