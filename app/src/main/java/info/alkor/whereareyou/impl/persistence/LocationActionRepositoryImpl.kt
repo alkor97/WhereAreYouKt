@@ -3,15 +3,12 @@ package info.alkor.whereareyou.impl.persistence
 import android.arch.lifecycle.MutableLiveData
 import android.util.Log
 import info.alkor.whereareyou.api.persistence.LocationActionRepository
-import info.alkor.whereareyou.api.persistence.LocationRequestEvent
 import info.alkor.whereareyou.model.action.*
 import info.alkor.whereareyou.model.location.Location
-import kotlinx.coroutines.channels.BroadcastChannel
 
 class LocationActionRepositoryImpl : LocationActionRepository {
 
     override val all = MutableLiveData<List<LocationAction>>()
-    override val events = BroadcastChannel<LocationRequestEvent>(5)
     private val data = ArrayList<LocationAction>()
 
     private val loggingTag = "persistence"

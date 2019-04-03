@@ -29,7 +29,7 @@ class LocationResponderImpl(private val context: AppContext) : LocationResponder
 
         val timeout = settings.getLocationQueryTimeout()
         val unit = TimeUnit.SECONDS
-        val ticker = RegularTicker(context, unit) { elapsed ->
+        val ticker = RegularTicker(unit) { elapsed ->
             repository.updateProgress(request.id!!,
                     elapsed.convertValue(unit).toFloat() / timeout.convertValue(unit))
             Unit

@@ -1,12 +1,11 @@
 package info.alkor.whereareyou.impl.persistence
 
-import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.common.millis
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class RegularTicker(context: AppContext, private val resolution: TimeUnit, private val callback: (Duration) -> Unit) {
+class RegularTicker(private val resolution: TimeUnit, private val callback: (Duration) -> Unit) {
     private val timer = Timer()
     private val startTime by lazy { now() }
 
