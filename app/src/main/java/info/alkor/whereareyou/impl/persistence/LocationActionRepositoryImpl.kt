@@ -6,7 +6,7 @@ import info.alkor.whereareyou.api.persistence.LocationActionRepository
 import info.alkor.whereareyou.api.persistence.LocationRequestEvent
 import info.alkor.whereareyou.model.action.*
 import info.alkor.whereareyou.model.location.Location
-import kotlinx.coroutines.experimental.channels.BroadcastChannel
+import kotlinx.coroutines.channels.BroadcastChannel
 
 class LocationActionRepositoryImpl : LocationActionRepository {
 

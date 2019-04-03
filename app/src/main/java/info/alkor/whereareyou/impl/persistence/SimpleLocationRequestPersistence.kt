@@ -5,8 +5,9 @@ import info.alkor.whereareyou.api.persistence.*
 import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.model.action.*
 import info.alkor.whereareyou.model.location.Location
-import kotlinx.coroutines.experimental.channels.BroadcastChannel
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.launch
 
 class SimpleLocationRequestPersistence : LocationRequestState {
 
@@ -105,7 +106,7 @@ class SimpleLocationRequestPersistence : LocationRequestState {
 
     private fun nextMessageId() = MessageId(System.currentTimeMillis())
 
-    private fun sendUpdate(event: LocationRequestEvent) = launch {
+    private fun sendUpdate(event: LocationRequestEvent) = GlobalScope.launch {
         events.send(event)
         Log.d(loggingTag, "sending update: $event")
     }

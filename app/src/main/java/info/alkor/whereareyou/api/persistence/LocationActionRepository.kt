@@ -2,7 +2,7 @@ package info.alkor.whereareyou.api.persistence
 
 import android.arch.lifecycle.LiveData
 import info.alkor.whereareyou.model.action.*
-import kotlinx.coroutines.experimental.channels.BroadcastChannel
+import kotlinx.coroutines.channels.BroadcastChannel
 
 interface LocationActionRepository {
     val all: LiveData<List<LocationAction>>

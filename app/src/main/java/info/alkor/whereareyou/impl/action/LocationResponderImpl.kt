@@ -8,9 +8,11 @@ import info.alkor.whereareyou.model.action.LocationRequest
 import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.PhoneNumber
 import info.alkor.whereareyou.model.action.finishesSending
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class LocationResponderImpl(private val context: AppContext) : LocationResponder {
 
@@ -41,7 +43,7 @@ class LocationResponderImpl(private val context: AppContext) : LocationResponder
 
             if (final) {
                 if (request.from.phone != PhoneNumber.OWN) {
-                    launch {
+                    GlobalScope.launch {
                         sendResponse(request, response)
                         ticker.stop()
                     }

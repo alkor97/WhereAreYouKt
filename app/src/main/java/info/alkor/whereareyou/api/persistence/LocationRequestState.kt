@@ -5,7 +5,7 @@ import info.alkor.whereareyou.model.action.LocationRequest
 import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.SendingStatus
-import kotlinx.coroutines.experimental.channels.BroadcastChannel
+import kotlinx.coroutines.channels.BroadcastChannel
 
 interface LocationRequestState {
     fun onLocationRequested(person: Person): LocationRequest
