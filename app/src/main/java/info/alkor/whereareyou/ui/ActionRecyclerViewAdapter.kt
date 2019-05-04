@@ -11,7 +11,7 @@ import info.alkor.whereareyou.model.action.LocationAction
 import info.alkor.whereareyou.model.action.MessageId
 import info.alkor.whereareyou.ui.ActionFragment.OnListFragmentInteractionListener
 import info.alkor.whereareyoukt.R
-import info.alkor.whereareyoukt.databinding.FragmentActionBinding
+import info.alkor.whereareyoukt.databinding.LayoutActionBinding
 import java.util.*
 
 class ActionRecyclerViewAdapter(
@@ -22,8 +22,8 @@ class ActionRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding: FragmentActionBinding = DataBindingUtil.inflate(inflater,
-                R.layout.fragment_action,
+        val binding: LayoutActionBinding = DataBindingUtil.inflate(inflater,
+                R.layout.layout_action,
                 parent,
                 false)
         return ViewHolder(binding)
@@ -42,21 +42,20 @@ class ActionRecyclerViewAdapter(
 
     fun getItems(): List<LocationAction> = this.items
 
-    inner class ViewHolder(private val binding: FragmentActionBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: LayoutActionBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private var boundObjectId: MessageId? = null
+        private val builder = LocationActionViewModel.Builder(binding.root.context)
 
         fun getBoundObjectId() = boundObjectId
 
         fun bind(action: LocationAction) {
-            val model = LocationActionViewModel(binding.root.context)
-            model.render(action)
-            binding.model = model
-            boundObjectId = action.id
-
-            if (model.menuVisible == View.VISIBLE) {
-                preparePopup(action)
+            binding.model = builder.build(binding.model, action).apply {
+                if (menuVisible == View.VISIBLE) {
+                    preparePopup(action)
+                }
             }
+            boundObjectId = action.id
         }
 
         private fun preparePopup(action: LocationAction) {

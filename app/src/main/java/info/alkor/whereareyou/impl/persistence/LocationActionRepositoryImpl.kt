@@ -38,7 +38,7 @@ class LocationActionRepositoryImpl : LocationActionRepository {
                 SendingStatus.PENDING,
                 0.0f)
 
-        data.add(action)
+        data.add(0, action)
         postUpdates()
 
         return LocationRequest(person, action.id)
@@ -104,7 +104,7 @@ class LocationActionRepositoryImpl : LocationActionRepository {
     private fun nextMessageId() = MessageId(System.currentTimeMillis())
 
     private fun postUpdates() {
-        all.postValue(data.reversed())
+        all.postValue(data)
     }
 }
 

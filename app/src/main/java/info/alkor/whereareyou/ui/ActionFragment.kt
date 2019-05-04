@@ -19,6 +19,7 @@ class ActionFragment : Fragment() {
 
     private var listener: OnListFragmentInteractionListener? = null
     private lateinit var myAdapter: ActionRecyclerViewAdapter
+    private lateinit var myLayoutManager: LinearLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -27,7 +28,9 @@ class ActionFragment : Fragment() {
         // Set the adapter
         if (view is RecyclerView) {
             with(view) {
-                layoutManager = LinearLayoutManager(context)
+                myLayoutManager = LinearLayoutManager(context)
+                layoutManager = myLayoutManager
+
                 myAdapter = ActionRecyclerViewAdapter(listener)
                 adapter = myAdapter
             }
@@ -84,8 +87,14 @@ class ActionFragment : Fragment() {
         override fun onChanged(new: List<LocationAction>?) {
             val newList = new ?: ArrayList()
             val result = DiffUtil.calculateDiff(DiffCallback(adapter.getItems(), newList), false)
+            val oldListSize = adapter.getItems().size
+
             adapter.setItems(newList)
             result.dispatchUpdatesTo(adapter)
+
+            if (newList.size > oldListSize) {
+                myLayoutManager.scrollToPosition(0)
+            }
         }
     }
 
