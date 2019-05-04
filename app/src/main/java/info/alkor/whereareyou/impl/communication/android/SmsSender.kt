@@ -12,7 +12,8 @@ import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.impl.communication.MessageSenderImpl
 import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.SendingStatus
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class SmsSender(private val context: Context) : MessageSenderImpl(context as AppContext) {
 
@@ -41,7 +42,7 @@ class SmsSender(private val context: Context) : MessageSenderImpl(context as App
             intent?.let {
                 val status = getStatus(resultCode, intent.action)
                 if (status != null) {
-                    launch {
+                    GlobalScope.launch {
                         callback(status)
                         if (status in terminators) {
                             context?.unregisterReceiver(this@MessageEventReceiver)

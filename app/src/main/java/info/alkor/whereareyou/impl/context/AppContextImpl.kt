@@ -11,7 +11,6 @@ import info.alkor.whereareyou.impl.communication.android.SmsSender
 import info.alkor.whereareyou.impl.contact.android.ContactProviderImpl
 import info.alkor.whereareyou.impl.location.android.LocationProviderImpl
 import info.alkor.whereareyou.impl.persistence.LocationActionRepositoryImpl
-import info.alkor.whereareyou.impl.persistence.SimpleLocationRequestPersistence
 import info.alkor.whereareyou.impl.settings.SettingsImpl
 import info.alkor.whereareyou.model.action.LocationRequest
 import info.alkor.whereareyou.model.action.Person
@@ -27,7 +26,6 @@ class AppContextImpl : Application(), AppContext {
     override val locationProvider by lazy { LocationProviderImpl(this) }
     override val settings by lazy { SettingsImpl(this) }
     override val messageSender by lazy { SmsSender(this) }
-    override val locationRequestPersistence by lazy { SimpleLocationRequestPersistence() }
     override val permissionAccessor by lazy { PermissionAccessorImpl(this) }
     override val actionsRepository by lazy { LocationActionRepositoryImpl() }
 

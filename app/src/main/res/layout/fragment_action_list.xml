@@ -9,4 +9,4 @@
     android:layout_marginRight="16dp"
     android:padding="2dp"
     tools:context="info.alkor.whereareyou.ui.ActionFragment"
-    tools:listitem="@layout/fragment_action" />
+    tools:listitem="@layout/layout_action" />

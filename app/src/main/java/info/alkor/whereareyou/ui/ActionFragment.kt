@@ -18,6 +18,8 @@ import info.alkor.whereareyoukt.R
 class ActionFragment : Fragment() {
 
     private var listener: OnListFragmentInteractionListener? = null
+    private lateinit var myAdapter: ActionRecyclerViewAdapter
+    private lateinit var myLayoutManager: LinearLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -25,20 +27,20 @@ class ActionFragment : Fragment() {
 
         // Set the adapter
         if (view is RecyclerView) {
-            val owner = this
             with(view) {
-                layoutManager = LinearLayoutManager(context)
+                myLayoutManager = LinearLayoutManager(context)
+                layoutManager = myLayoutManager
 
-                val myAdapter = ActionRecyclerViewAdapter(listener)
+                myAdapter = ActionRecyclerViewAdapter(listener)
                 adapter = myAdapter
-
-                appContext().actionsRepository.all
-                        .observe(owner, ActionsObserver(myAdapter, view.layoutManager))
             }
 
             val itemTouchHelper = ItemTouchHelper(SwipeHandler())
             itemTouchHelper.attachToRecyclerView(view)
         }
+
+        appContext().actionsRepository.all
+                .observe(this, ActionsObserver(myAdapter))
 
         return view
     }
@@ -50,7 +52,7 @@ class ActionFragment : Fragment() {
         if (context is OnListFragmentInteractionListener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnListFragmentInteractionListener")
         }
     }
 
@@ -81,18 +83,17 @@ class ActionFragment : Fragment() {
         }
     }
 
-    inner class ActionsObserver(private val adapter: ActionRecyclerViewAdapter, private val layoutManager: RecyclerView.LayoutManager) : Observer<List<LocationAction>> {
+    inner class ActionsObserver(private val adapter: ActionRecyclerViewAdapter) : Observer<List<LocationAction>> {
         override fun onChanged(new: List<LocationAction>?) {
             val newList = new ?: ArrayList()
-
-            val oldSize = adapter.getItems().size
             val result = DiffUtil.calculateDiff(DiffCallback(adapter.getItems(), newList), false)
+            val oldListSize = adapter.getItems().size
+
             adapter.setItems(newList)
             result.dispatchUpdatesTo(adapter)
 
-            // if size of list increased then scroll to top to show latest entry
-            if (newList.size > oldSize) {
-                layoutManager.scrollToPosition(0)
+            if (newList.size > oldListSize) {
+                myLayoutManager.scrollToPosition(0)
             }
         }
     }

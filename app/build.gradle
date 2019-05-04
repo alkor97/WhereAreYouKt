@@ -43,8 +43,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.27.0-eap13'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.27.0-eap13'
 
     // architecture components
     implementation "android.arch.lifecycle:runtime:$rootProject.archLifecycleVersion"
@@ -53,8 +53,8 @@ dependencies {
     kapt "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
 
     // Room components
-    implementation "android.arch.persistence.room:runtime:$rootProject.roomVersion"
-    annotationProcessor "android.arch.persistence.room:compiler:$rootProject.roomVersion"
-    kapt "android.arch.persistence.room:compiler:$rootProject.roomVersion"
-    androidTestImplementation "android.arch.persistence.room:testing:$rootProject.roomVersion"
+    //implementation "android.arch.persistence.room:runtime:$rootProject.roomVersion"
+    //annotationProcessor "android.arch.persistence.room:compiler:$rootProject.roomVersion"
+    //kapt "android.arch.persistence.room:compiler:$rootProject.roomVersion"
+    //androidTestImplementation "android.arch.persistence.room:testing:$rootProject.roomVersion"
 }

@@ -120,11 +120,13 @@
     </string-array>
 
     <string name="permission_needed_title">Permission needed</string>
-    <string name="location_permission_needed">This application requires a permission to use device location so that it could be presented to user.</string>
-    <string name="receive_sms_permission_needed">This application requires a permission to read incoming text messages to react on location requests.</string>
-    <string name="read_contacts_permission_needed">This application requires a permission to read contacts in process of location requesting.</string>
-    <string name="send_sms_permission_needed">This application requires a permission to send text messages to transport location responses.</string>
-    <string name="read_phone_state_permission_needed">This application requires a permission to read phone and network state to send location responses.</string>
+    <string name="permission_required">This application requires permissions to:</string>
+    <string name="permission_entry_list_entry_prefix" translatable="false">\u00A0•\u00A0</string>
+    <string name="location_permission_needed">use device location so that it could be presented to user.</string>
+    <string name="receive_sms_permission_needed">read incoming text messages to react on location requests.</string>
+    <string name="read_contacts_permission_needed">read contacts in process of location requesting.</string>
+    <string name="send_sms_permission_needed">send text messages to transport location responses.</string>
+    <string name="read_phone_state_permission_needed">read phone and network state to send location responses.</string>
 
     <string name="query_someones_location">You have asked location of</string>
     <string name="query_my_location">Your location was asked by</string>
