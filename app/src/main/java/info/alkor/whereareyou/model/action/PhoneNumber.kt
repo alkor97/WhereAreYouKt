@@ -17,11 +17,10 @@ data class PhoneNumber private constructor(val value: String) {
                     .replace("\\s+".toRegex(), "")
                     .replace("^\\+".toRegex(), "00")
                     .replace("^00+".toRegex(), "+")
-                    .replace("\\D".toRegex(), "")
             return PhoneNumber(normalized)
         }
 
-        private operator fun invoke(): PhoneNumber = PhoneNumber("")
+        private operator fun invoke() = PhoneNumber("")
         val OWN = PhoneNumber()
     }
 }

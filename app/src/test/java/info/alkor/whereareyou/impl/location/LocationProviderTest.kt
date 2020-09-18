@@ -4,12 +4,13 @@ import info.alkor.whereareyou.common.*
 import info.alkor.whereareyou.model.location.Coordinates
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.Provider
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import java.util.*
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class LocationProviderTest {
 

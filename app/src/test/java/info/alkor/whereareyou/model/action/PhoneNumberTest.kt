@@ -23,21 +23,6 @@ class PhoneNumberTest {
         Assert.assertEquals("0048123456789", PhoneNumber("+48123456789").toExternalForm())
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun verifyRejectingEmptyPhone() {
-        PhoneNumber("")
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun verifyRejectingNumberWithLetters() {
-        PhoneNumber("123abc456")
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun verifyRejectingPlusOnWrongPosition() {
-        PhoneNumber("00+123456789")
-    }
-
     @Test
     fun verifyAcceptingNumberInLocalFormat() {
         Assert.assertEquals("091461546978", PhoneNumber("091461546978").value)
@@ -46,10 +31,5 @@ class PhoneNumberTest {
     @Test
     fun verifyOwnPhoneNumber() {
         Assert.assertTrue(PhoneNumber.OWN.value.isEmpty())
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun verifyOwnPhoneNumberCannotBeCreatedViaUsualConstructor() {
-        PhoneNumber(PhoneNumber.OWN.value)
     }
 }
