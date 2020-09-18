@@ -59,6 +59,8 @@ class PermissionRequester(private val context: Context) {
     companion object {
         val permissionRationale = hashMapOf(
                 Manifest.permission.ACCESS_FINE_LOCATION to R.string.location_permission_needed,
+                Manifest.permission.ACCESS_COARSE_LOCATION to R.string.location_permission_needed,
+                "android.permission.ACCESS_BACKGROUND_LOCATION" to R.string.location_permission_needed,
                 Manifest.permission.RECEIVE_SMS to R.string.receive_sms_permission_needed,
                 Manifest.permission.READ_CONTACTS to R.string.read_contacts_permission_needed,
                 Manifest.permission.SEND_SMS to R.string.send_sms_permission_needed,
