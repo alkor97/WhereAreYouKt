@@ -139,4 +139,7 @@
 
     <string name="provider_gps">GPS</string>
     <string name="provider_network">sieć</string>
+
+    <string name="entry_deletion">Usuwanie</string>
+    <string name="entry_deletion_confirmation_query">Na pewno usunąć wpis?</string>
 </resources>

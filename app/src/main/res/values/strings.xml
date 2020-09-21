@@ -147,4 +147,7 @@
 
     <string name="provider_gps">GPS</string>
     <string name="provider_network">network</string>
+
+    <string name="entry_deletion">Deletion</string>
+    <string name="entry_deletion_confirmation_query">Are you sure to remove this entry?</string>
 </resources>

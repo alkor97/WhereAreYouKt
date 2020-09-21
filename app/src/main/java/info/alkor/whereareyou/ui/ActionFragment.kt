@@ -1,5 +1,6 @@
 package info.alkor.whereareyou.ui
 
+import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.os.Bundle
@@ -78,7 +79,18 @@ class ActionFragment : Fragment() {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
             val messageId = (viewHolder as ActionRecyclerViewAdapter.ViewHolder).getBoundObjectId()
             if (messageId != null) {
-                appContext().actionsRepository.remove(messageId)
+                with(AlertDialog.Builder(context)) {
+                    setTitle(R.string.entry_deletion)
+                    setMessage(R.string.entry_deletion_confirmation_query)
+                    setIcon(android.R.drawable.ic_dialog_alert)
+                    setPositiveButton(android.R.string.yes) { _, _ ->
+                        appContext().actionsRepository.remove(messageId)
+                    }
+                    setNegativeButton(android.R.string.no) { _, _ ->
+                        myAdapter.notifyItemChanged(viewHolder.getAdapterPosition())
+                    }
+                    show()
+                }
             }
         }
     }
