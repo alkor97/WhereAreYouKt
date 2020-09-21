@@ -4,7 +4,8 @@ import android.content.SharedPreferences
 import android.content.res.Resources
 import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.common.duration
-import info.alkor.whereareyou.ui.toString
+import info.alkor.whereareyoukt.R
+import java.util.concurrent.TimeUnit
 
 class SettingsAccess(private val preferences: SharedPreferences, private val resources: Resources) {
 
@@ -21,5 +22,18 @@ class SettingsAccess(private val preferences: SharedPreferences, private val res
     fun getDurationValueAsString(key: SettingsKey) = getDurationValue(key).toString(resources)
 
     private fun fromResources(key: SettingsKey): String = resources.getString(key.defaultId)
-    private fun fromPreferences(key: SettingsKey, defaultValue: String): String = preferences.getString(key.toString(), defaultValue)
+    private fun fromPreferences(key: SettingsKey, defaultValue: String): String = preferences.getString(key.toString(), defaultValue)!!
+}
+
+fun Duration.toString(resources: Resources) = byUnit().joinToString(" ") { (value, unit) ->
+    val plural = when (unit) {
+        TimeUnit.DAYS -> R.plurals.duration_days
+        TimeUnit.HOURS -> R.plurals.duration_hours
+        TimeUnit.MINUTES -> R.plurals.duration_minutes
+        TimeUnit.SECONDS -> R.plurals.duration_seconds
+        TimeUnit.MILLISECONDS -> R.plurals.duration_milliseconds
+        TimeUnit.MICROSECONDS -> R.plurals.duration_microseconds
+        TimeUnit.NANOSECONDS -> R.plurals.duration_nanoseconds
+    }
+    resources.getQuantityString(plural, value.toInt(), value)
 }

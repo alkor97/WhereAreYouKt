@@ -11,6 +11,7 @@ import info.alkor.whereareyou.api.location.LocationProvider
 import info.alkor.whereareyou.api.persistence.LocationActionRepository
 import info.alkor.whereareyou.api.settings.Settings
 import info.alkor.whereareyou.model.action.LocationRequest
+import info.alkor.whereareyou.model.action.Person
 
 interface AppContext {
     val contactProvider: ContactProvider
@@ -26,4 +27,5 @@ interface AppContext {
     val actionsRepository: LocationActionRepository
 
     fun requestMyLocation(): LocationRequest
+    fun requestLocationOf(person: Person)
 }

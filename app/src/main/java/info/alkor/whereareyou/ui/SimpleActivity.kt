@@ -1,17 +1,18 @@
 package info.alkor.whereareyou.ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.provider.ContactsContract
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import info.alkor.whereareyou.api.context.AppContext
-import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.impl.settings.GOOGLE_API_KEY
 import info.alkor.whereareyou.model.action.LocationAction
 import info.alkor.whereareyou.model.action.Person
@@ -21,11 +22,11 @@ import info.alkor.whereareyou.model.location.LocationFormatter
 import info.alkor.whereareyou.ui.settings.SettingsActivity
 import info.alkor.whereareyoukt.R
 import kotlinx.android.synthetic.main.activity_simple.*
-import java.util.concurrent.TimeUnit
 
 
 class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInteractionListener {
 
+    private val PICK_CONTACT_TO_LOCATE = 13579
     private val permissionRequester by lazy { PermissionRequester(this) }
 
     @SuppressLint("MissingPermission")
@@ -39,17 +40,20 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         viewpager_main.adapter = fragmentAdapter
         tabs_main.setupWithViewPager(viewpager_main)
 
+        fab.setOnLongClickListener { locateMe() }
+        fab.setOnClickListener { locatePerson() }
+
         permissionRequester.ensurePermissionsGranted(this)
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun startLocating(view: View) {
+    fun locateMe(): Boolean {
         if (permissionRequester.canLocate()) {
             val ctx = applicationContext as AppContext
             ctx.requestMyLocation()
         } else {
             permissionRequester.ensurePermissionsGranted(this)
         }
+        return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -104,17 +108,57 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         }
         return false
     }
+
+    fun locatePerson() {
+        val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        startActivityForResult(intent, PICK_CONTACT_TO_LOCATE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        if (requestCode == PICK_CONTACT_TO_LOCATE && resultCode == Activity.RESULT_OK && intent != null) {
+            extractPerson(intent)?.let {
+                confirmLocationRequest(it)
+            }
+        }
+    }
+
+    private fun extractPerson(intent: Intent): Person? {
+        val uri = intent.data
+        if (uri != null) {
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            cursor?.use {
+                val displayNameIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                val phoneIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA)
+                if (it.moveToFirst()) {
+                    val displayName = it.getString(displayNameIdx)
+                    val phoneNumber = PhoneNumber(it.getString(phoneIdx))
+                    return Person(phoneNumber, displayName)
+                }
+            }
+        }
+        return null
+    }
+
+    private fun confirmLocationRequest(person: Person) {
+        with(AlertDialog.Builder(this)) {
+            setTitle(R.string.location_request)
+            setMessage(person.toQueryConfirmation(context.resources))
+            setIcon(android.R.drawable.ic_dialog_alert)
+            setPositiveButton(android.R.string.yes) { _, _ ->
+                val ctx = applicationContext as AppContext
+                ctx.requestLocationOf(person)
+            }
+            setNegativeButton(android.R.string.no, null)
+            show()
+        }
+    }
 }
 
-fun Duration.toString(resources: Resources) = byUnit().joinToString(" ") { (value, unit) ->
-    val plural = when (unit) {
-        TimeUnit.DAYS -> R.plurals.duration_days
-        TimeUnit.HOURS -> R.plurals.duration_hours
-        TimeUnit.MINUTES -> R.plurals.duration_minutes
-        TimeUnit.SECONDS -> R.plurals.duration_seconds
-        TimeUnit.MILLISECONDS -> R.plurals.duration_milliseconds
-        TimeUnit.MICROSECONDS -> R.plurals.duration_microseconds
-        TimeUnit.NANOSECONDS -> R.plurals.duration_nanoseconds
-    }
-    resources.getQuantityString(plural, value.toInt(), value)
-}
+fun Person.toQueryConfirmation(resources: Resources) = resources.getString(
+        R.string.location_request_confirmation_query, toHumanReadable())
+
+fun Person.toHumanReadable() = if (name != null)
+    "$name (${phone.toHumanReadable()})"
+else
+    phone.toHumanReadable()

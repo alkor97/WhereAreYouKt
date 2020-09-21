@@ -19,8 +19,8 @@ class ContactProviderImpl(private val context: Context) : ContactProvider {
 
         val cursor = context.contentResolver.query(uri, projection, null, null, null)
         cursor?.use {
-            if (cursor.moveToFirst()) {
-                return Person(phone, cursor.getString(0))
+            if (it.moveToFirst()) {
+                return Person(phone, it.getString(0))
             }
         }
         return Person(phone)

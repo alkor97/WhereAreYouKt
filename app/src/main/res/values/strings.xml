@@ -27,10 +27,10 @@
     <string name="host" translatable="false">&host;</string>
     <string name="pathPrefix" translatable="false">/&pathPrefix;</string>
 
-    <!-- http://loc.alkor.info/?q=<location> -->
-    <string name="location_response_format" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s</string>
-    <!-- http://loc.alkor.info/?q=<location>,<phone>,<name>,<key> -->
-    <string name="location_presenter_url" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s,%s,%s,%s</string>
+    <!-- http://alkor.info/loc/?q=<location> -->
+    <string name="location_response_format" translatable="false">&scheme;://&host;/&pathPrefix;/?q=%s</string>
+    <!-- http://alkor.info/loc/?q=<location>,<phone>,<name>,<key> -->
+    <string name="location_presenter_url" translatable="false">&scheme;://&host;/&pathPrefix;/?q=%s,%s,%s,%s</string>
     <string name="show">Show</string>
     <string name="you">You</string>
 
@@ -150,4 +150,7 @@
 
     <string name="entry_deletion">Deletion</string>
     <string name="entry_deletion_confirmation_query">Are you sure to remove this entry?</string>
+
+    <string name="location_request">Location request</string>
+    <string name="location_request_confirmation_query">Are you sure to send location request to %s?</string>
 </resources>

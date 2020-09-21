@@ -31,4 +31,6 @@ class AppContextImpl : Application(), AppContext {
 
     override fun requestMyLocation() = locationResponder.handleLocationRequest(
             LocationRequest(Person(PhoneNumber.OWN)))
+
+    override fun requestLocationOf(person: Person) = locationRequester.requestLocationOf(person)
 }

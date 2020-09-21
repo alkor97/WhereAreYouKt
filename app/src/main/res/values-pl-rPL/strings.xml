@@ -142,4 +142,7 @@
 
     <string name="entry_deletion">Usuwanie</string>
     <string name="entry_deletion_confirmation_query">Na pewno usunąć wpis?</string>
+
+    <string name="location_request">Zapytanie o lokalizację</string>
+    <string name="location_request_confirmation_query">Na pewno wysłać zapytanie lokalizacyjne do %s?</string>
 </resources>

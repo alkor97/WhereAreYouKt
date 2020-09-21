@@ -4,7 +4,6 @@ import android.arch.lifecycle.MutableLiveData
 import info.alkor.whereareyou.model.action.LocationAction
 import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.MessageId
-import info.alkor.whereareyou.model.action.SendingStatus
 import java.util.concurrent.atomic.AtomicLong
 
 class InMemoryStorage {
@@ -31,7 +30,6 @@ class InMemoryStorage {
                     action.person == response.person
                             && !action.final
                             && action.location != response.location
-                            && action.status == SendingStatus.PENDING
                 }.sortedBy { it.second.id }
 
         fun removeAt(index: Int) = data.removeAt(index)
