@@ -28,10 +28,12 @@ abstract class AbstractLocationProvider(
             withTimeoutOrNull(timeout.toMillis()) {
                 deferred.awaitAll()
             }
-            val location = deferred.asSequence().filter { it.isCompleted }
-                    .mapNotNull { it.getCompleted() }
-                    .filter { it.time.notOlderThan(totalTimeout) }
-                    .sortedWith(compareBy<Location, Double?>(nullsLast()) { it.coordinates.accuracy?.value })
+            val location = deferred.asSequence()
+                    .onEach { it.cancel() } // ensure all tasks are completed
+                    .filter { it.isCompleted } // filter out non-completed ones
+                    .mapNotNull { it.getCompleted() } // get non-null location
+                    .filter { it.time.notOlderThan(totalTimeout) } // filter out too old locations
+                    .sortedWith(compareBy<Location, Double?>(nullsLast()) { it.coordinates.accuracy?.value }) // sort by accuracy
                     .firstOrNull()
             callback(location, true)
         }

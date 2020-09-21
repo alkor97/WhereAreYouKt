@@ -12,10 +12,10 @@ import info.alkor.whereareyou.impl.location.AbstractLocationProvider
 import info.alkor.whereareyou.model.location.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.android.Main
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class LocationProviderImpl(
         private val context: Context,
@@ -23,17 +23,22 @@ class LocationProviderImpl(
     : AbstractLocationProvider(Provider.values(), Dispatchers.Main) {
 
     @SuppressLint("MissingPermission")
-    override suspend fun requestLocation(provider: Provider): info.alkor.whereareyou.model.location.Location? = suspendCoroutine { continuation ->
+    override suspend fun requestLocation(provider: Provider): info.alkor.whereareyou.model.location.Location? = suspendCancellableCoroutine { continuation ->
         try {
-            locationManager.requestSingleUpdate(provider.toAndroidProvider(), object : LocationListener {
+            val listener = object : LocationListener {
                 override fun onLocationChanged(location: Location?) {
+                    locationManager.removeUpdates(this)
                     continuation.resume(location?.toModelLocation())
                 }
 
                 override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
                 override fun onProviderEnabled(provider: String?) {}
                 override fun onProviderDisabled(provider: String?) {}
-            }, null)
+            }
+            continuation.invokeOnCancellation {
+                locationManager.removeUpdates(listener)
+            }
+            locationManager.requestSingleUpdate(provider.toAndroidProvider(), listener, null)
         } catch (e: Exception) {
             continuation.resumeWithException(e)
         }
