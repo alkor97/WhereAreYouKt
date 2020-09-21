@@ -23,8 +23,8 @@ object LocationFormatter {
 
     private fun formatTime(location: Location): String = DATE_FORMAT.format(location.time)
     private fun parseTime(text: String) = DATE_FORMAT.parse(text)
-    private fun formatProvider(provider: Provider) = provider.name
-    private fun parseProvider(text: String) = Provider.valueOf(text)
+    private fun formatProvider(provider: Provider) = provider.name.toLowerCase(Locale.US)
+    private fun parseProvider(text: String) = Provider.valueOf(text.toUpperCase(Locale.US))
     private fun formatProvider(location: Location): String = formatProvider(location.provider)
     private fun formatLatitude(location: Location): String = COORDINATE_FORMAT.format(location.coordinates.latitude.value)
     private fun parseLatitude(text: String) = Latitude(COORDINATE_FORMAT.parse(text).toDouble())
