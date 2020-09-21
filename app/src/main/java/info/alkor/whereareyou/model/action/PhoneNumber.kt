@@ -16,6 +16,7 @@ data class PhoneNumber private constructor(val value: String) {
             val normalized = value.trim()
                     .replace("\\s+".toRegex(), "")
                     .replace("^\\+".toRegex(), "00")
+                    .replace("\\D".toRegex(), "")
                     .replace("^00+".toRegex(), "+")
             return PhoneNumber(normalized)
         }

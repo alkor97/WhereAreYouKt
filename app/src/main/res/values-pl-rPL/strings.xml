@@ -125,7 +125,7 @@
     <string name="read_phone_state_permission_needed">odczytywanie stanu telefonu w celu wysyłania wiadomości tekstowych z lokalizacją.</string>
 
     <string name="query_someones_location">Pytasz o położenie osoby</string>
-    <string name="query_my_location">Twoje położenie jest szukane przez osobę</string>
+    <string name="query_my_location">Twoje położenie jest szukane przez</string>
     <string name="your_location_is">Twoje położenie</string>
 
     <string name="status_sending">wysyłano</string>
