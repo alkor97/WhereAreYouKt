@@ -7,14 +7,14 @@ import info.alkor.whereareyou.model.action.Person
 
 class LocationRequestParserImpl(private val context: AppContext) : LocationRequestParser {
 
-    private val requestString by lazy { context.settings.getLocationRequestString() }
-
     override fun parseLocationRequest(person: Person, text: String): LocationRequest? {
-        if (requestString == text.trim()) {
+        if (getRequestString() == text.trim()) {
             return LocationRequest(person)
         }
         return null
     }
 
-    override fun formatLocationRequest(request: LocationRequest) = requestString
+    override fun formatLocationRequest(request: LocationRequest) = getRequestString()
+
+    private fun getRequestString() = context.settings.getLocationRequestString()
 }
