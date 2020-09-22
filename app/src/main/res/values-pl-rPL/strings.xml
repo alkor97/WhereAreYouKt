@@ -36,6 +36,7 @@
 
     <string name="tab_location">Położenie</string>
     <string name="tab_actions">Akcje</string>
+    <string name="tab_persons">Osoby</string>
 
     <plurals name="duration_days">
         <item quantity="one">%d dzień</item>
@@ -140,9 +141,14 @@
     <string name="provider_gps">GPS</string>
     <string name="provider_network">sieć</string>
 
-    <string name="entry_deletion">Usuwanie</string>
-    <string name="entry_deletion_confirmation_query">Na pewno usunąć wpis?</string>
+    <string name="action_deletion">Usuwanie</string>
+    <string name="action_deletion_confirmation_query">Na pewno usunąć wpis?</string>
 
     <string name="location_request">Zapytanie o lokalizację</string>
     <string name="location_request_confirmation_query">Na pewno wysłać zapytanie lokalizacyjne do %s?</string>
+
+    <string name="person_unknown">Nieznany</string>
+
+    <string name="person_deletion">Usuwanie</string>
+    <string name="person_deletion_confirmation_query">Na pewno usunąć wpis?</string>
 </resources>

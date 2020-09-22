@@ -161,7 +161,7 @@ class LocationActionViewModel {
             }
         }
 
-        private fun formatPhone(phone: PhoneNumber) = "✆ ${phone.toHumanReadable()}"
+        private fun formatPhone(phone: PhoneNumber) = resources.getString(R.string.phone, phone.toHumanReadable())
 
         private fun formatCoordinates(location: Location) = location.coordinates.toString() + " (" + formatProvider(location) + ")"
 

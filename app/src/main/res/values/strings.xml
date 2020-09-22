@@ -46,6 +46,7 @@
 
     <string name="tab_location">Location</string>
     <string name="tab_actions">Actions</string>
+    <string name="tab_persons">Persons</string>
 
     <plurals name="duration_days">
         <item quantity="one">%d day</item>
@@ -148,9 +149,16 @@
     <string name="provider_gps">GPS</string>
     <string name="provider_network">network</string>
 
-    <string name="entry_deletion">Deletion</string>
-    <string name="entry_deletion_confirmation_query">Are you sure to remove this entry?</string>
+    <string name="action_deletion">Deletion</string>
+    <string name="action_deletion_confirmation_query">Are you sure to remove this entry?</string>
 
     <string name="location_request">Location request</string>
     <string name="location_request_confirmation_query">Are you sure to send location request to %s?</string>
+
+    <string name="person_unknown">Unknown</string>
+
+    <string name="phone" translatable="false">✆ %s</string>
+
+    <string name="person_deletion">Deletion</string>
+    <string name="person_deletion_confirmation_query">Are you sure to remove this entry?</string>
 </resources>

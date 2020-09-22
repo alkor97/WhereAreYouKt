@@ -9,6 +9,7 @@ import info.alkor.whereareyou.api.communication.MessageSender
 import info.alkor.whereareyou.api.contact.ContactProvider
 import info.alkor.whereareyou.api.location.LocationProvider
 import info.alkor.whereareyou.api.persistence.LocationActionRepository
+import info.alkor.whereareyou.api.persistence.PersonRepository
 import info.alkor.whereareyou.api.settings.Settings
 import info.alkor.whereareyou.model.action.LocationRequest
 import info.alkor.whereareyou.model.action.Person
@@ -25,6 +26,7 @@ interface AppContext {
     val messageSender: MessageSender
     val permissionAccessor: PermissionAccessor
     val actionsRepository: LocationActionRepository
+    val personsRepository: PersonRepository
 
     fun requestMyLocation(): LocationRequest
     fun requestLocationOf(person: Person)

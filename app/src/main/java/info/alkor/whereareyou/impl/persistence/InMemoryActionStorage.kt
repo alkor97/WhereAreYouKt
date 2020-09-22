@@ -6,7 +6,7 @@ import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.MessageId
 import java.util.concurrent.atomic.AtomicLong
 
-class InMemoryStorage {
+class InMemoryActionStorage {
     private val data = ArrayList<LocationAction>()
     private val idGenerator = AtomicLong(0)
 
@@ -19,7 +19,7 @@ class InMemoryStorage {
 
     fun nextMessageId() = MessageId(idGenerator.incrementAndGet())
 
-    class Session(private val data: ArrayList<LocationAction>) {
+    inner class Session(private val data: ArrayList<LocationAction>) {
 
         private fun indexed() = data.mapIndexed { index, element -> Pair(index, element) }
 

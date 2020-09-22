@@ -9,7 +9,7 @@ import info.alkor.whereareyou.model.location.Location
 class LocationActionRepositoryImpl : LocationActionRepository {
 
     override val all = MutableLiveData<List<LocationAction>>()
-    private val data = InMemoryStorage()
+    private val data = InMemoryActionStorage()
 
     private val loggingTag = "persistence"
 

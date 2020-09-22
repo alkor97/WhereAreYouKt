@@ -24,7 +24,7 @@ import info.alkor.whereareyoukt.R
 import kotlinx.android.synthetic.main.activity_simple.*
 
 
-class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInteractionListener {
+class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInteractionListener, PersonFragment.OnListFragmentInteractionListener {
 
     private val PICK_CONTACT_TO_LOCATE = 13579
     private val permissionRequester by lazy { PermissionRequester(this) }
@@ -79,8 +79,8 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
 
     private fun prepareFragmentAdapter() = GenericPagerAdapter(supportFragmentManager,
             listOf(
-                    //FragmentDescriptor(getString(R.string.tab_location)) { SingleRequestFragment.newInstance() },
-                    FragmentDescriptor(getString(R.string.tab_actions)) { ActionFragment.newInstance() }
+                    FragmentDescriptor(getString(R.string.tab_actions)) { ActionFragment.newInstance() },
+                    FragmentDescriptor(getString(R.string.tab_persons)) { PersonFragment.newInstance() }
             )
     )
 
@@ -118,9 +118,15 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         super.onActivityResult(requestCode, resultCode, intent)
         if (requestCode == PICK_CONTACT_TO_LOCATE && resultCode == Activity.RESULT_OK && intent != null) {
             extractPerson(intent)?.let {
-                confirmLocationRequest(it)
+                addPersonToFavourites(it)
+                onPersonLocationRequested(it)
             }
         }
+    }
+
+    private fun addPersonToFavourites(person: Person) {
+        val ctx = applicationContext as AppContext
+        ctx.personsRepository.addPerson(person)
     }
 
     private fun extractPerson(intent: Intent): Person? {
@@ -140,7 +146,7 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         return null
     }
 
-    private fun confirmLocationRequest(person: Person) {
+    override fun onPersonLocationRequested(person: Person) {
         with(AlertDialog.Builder(this)) {
             setTitle(R.string.location_request)
             setMessage(person.toQueryConfirmation(context.resources))

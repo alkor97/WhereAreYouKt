@@ -13,18 +13,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import info.alkor.whereareyou.api.context.AppContext
-import info.alkor.whereareyou.model.action.LocationAction
+import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyoukt.R
 
-class ActionFragment : Fragment() {
+class PersonFragment : Fragment() {
 
     private var listener: OnListFragmentInteractionListener? = null
-    private lateinit var myAdapter: ActionRecyclerViewAdapter
+    private lateinit var myAdapter: PersonRecyclerViewAdapter
     private lateinit var myLayoutManager: LinearLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_action_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_person_list, container, false)
 
         // Set the adapter
         if (view is RecyclerView) {
@@ -32,7 +32,7 @@ class ActionFragment : Fragment() {
                 myLayoutManager = LinearLayoutManager(context)
                 layoutManager = myLayoutManager
 
-                myAdapter = ActionRecyclerViewAdapter(listener)
+                myAdapter = PersonRecyclerViewAdapter(listener)
                 adapter = myAdapter
             }
 
@@ -40,13 +40,17 @@ class ActionFragment : Fragment() {
             itemTouchHelper.attachToRecyclerView(view)
         }
 
-        appContext().actionsRepository.all
-                .observe(this, ActionsObserver(myAdapter))
+        appContext().personsRepository.all
+                .observe(this, PersonsObserver(myAdapter))
 
         return view
     }
 
     private fun appContext() = context?.applicationContext as AppContext
+
+    companion object {
+        fun newInstance() = PersonFragment()
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -63,12 +67,7 @@ class ActionFragment : Fragment() {
     }
 
     interface OnListFragmentInteractionListener {
-        fun onShareLocation(action: LocationAction): Boolean
-        fun onShowLocation(action: LocationAction): Boolean
-    }
-
-    companion object {
-        fun newInstance() = ActionFragment()
+        fun onPersonLocationRequested(person: Person)
     }
 
     inner class SwipeHandler : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -77,14 +76,14 @@ class ActionFragment : Fragment() {
                             target: RecyclerView.ViewHolder?): Boolean = false
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
-            val messageId = (viewHolder as ActionRecyclerViewAdapter.ViewHolder).getBoundObjectId()
-            if (messageId != null) {
+            val person = (viewHolder as PersonRecyclerViewAdapter.ViewHolder).getBoundPerson()
+            if (person != null) {
                 with(AlertDialog.Builder(context)) {
-                    setTitle(R.string.action_deletion)
-                    setMessage(R.string.action_deletion_confirmation_query)
+                    setTitle(R.string.person_deletion)
+                    setMessage(R.string.person_deletion_confirmation_query)
                     setIcon(android.R.drawable.ic_dialog_alert)
                     setPositiveButton(android.R.string.yes) { _, _ ->
-                        appContext().actionsRepository.remove(messageId)
+                        appContext().personsRepository.removePerson(person)
                     }
                     setNegativeButton(android.R.string.no) { _, _ ->
                         myAdapter.notifyItemChanged(viewHolder.getAdapterPosition())
@@ -95,8 +94,8 @@ class ActionFragment : Fragment() {
         }
     }
 
-    inner class ActionsObserver(private val adapter: ActionRecyclerViewAdapter) : Observer<List<LocationAction>> {
-        override fun onChanged(new: List<LocationAction>?) {
+    inner class PersonsObserver(private val adapter: PersonRecyclerViewAdapter) : Observer<List<Person>> {
+        override fun onChanged(new: List<Person>?) {
             val newList = new ?: ArrayList()
             val result = DiffUtil.calculateDiff(DiffCallback(adapter.getItems(), newList), false)
             val oldListSize = adapter.getItems().size
@@ -110,16 +109,10 @@ class ActionFragment : Fragment() {
         }
     }
 
-    inner class DiffCallback(private val old: List<LocationAction>, private val new: List<LocationAction>) : DiffUtil.Callback() {
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = old[oldItemPosition].id == new[newItemPosition].id
+    inner class DiffCallback(private val old: List<Person>, private val new: List<Person>) : DiffUtil.Callback() {
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = areContentsTheSame(oldItemPosition, newItemPosition)
         override fun getOldListSize(): Int = old.size
         override fun getNewListSize(): Int = new.size
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldElement = old[oldItemPosition]
-            val newElement = new[newItemPosition]
-            return oldElement.id == newElement.id && oldElement.direction == newElement.direction
-                    && oldElement.person == newElement.person && oldElement.location == newElement.location
-                    && oldElement.final == newElement.final && oldElement.status == newElement.status
-        }
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = old[oldItemPosition] == new[newItemPosition]
     }
 }
