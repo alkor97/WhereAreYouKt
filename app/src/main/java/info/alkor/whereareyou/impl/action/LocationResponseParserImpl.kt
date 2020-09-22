@@ -14,7 +14,7 @@ class LocationResponseParserImpl(private val context: AppContext) : LocationResp
         if (trimmedText.startsWith(prefix)) {
             val location = LocationFormatter.parse(trimmedText.substring(prefix.length))
             if (location != null) {
-                return LocationResponse(person, location, false)
+                return LocationResponse(person, location, true)
             }
         }
         return null

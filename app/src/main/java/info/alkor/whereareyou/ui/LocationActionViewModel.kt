@@ -99,11 +99,11 @@ class LocationActionViewModel {
                     postFailed(model)
                 }
             } else {
-                postStatus(model, action.status)
+                postStatus(model, action.direction, action.status, action.final)
             }
         }
 
-        private fun postStatus(model: LocationActionViewModel, eventStatus: SendingStatus) = when (eventStatus) {
+        private fun postStatus(model: LocationActionViewModel, direction: Direction, eventStatus: SendingStatus, completed: Boolean) = when (eventStatus) {
             SendingStatus.PENDING -> {
                 model.status = resources.getString(R.string.status_sending)
                 postInProgress(model)
@@ -121,9 +121,12 @@ class LocationActionViewModel {
                 model.status = resources.getString(R.string.status_delivery)
                 postFailed(model)
             }
-            SendingStatus.DELIVERED -> {
+            SendingStatus.DELIVERED -> if (direction == Direction.INCOMING || completed) {
                 model.status = resources.getString(R.string.status_delivery)
                 postSucceeded(model)
+            } else {
+                model.status = resources.getString(R.string.status_locating)
+                postInProgress(model)
             }
         }
 
