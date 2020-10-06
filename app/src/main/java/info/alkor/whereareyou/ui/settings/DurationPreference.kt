@@ -9,10 +9,10 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import info.alkor.whereareyou.R
 import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.common.asString
 import info.alkor.whereareyou.common.duration
-import info.alkor.whereareyoukt.R
 
 class DurationPreference(ctx: Context, attrs: AttributeSet) : DialogPreference(ctx, attrs) {
 

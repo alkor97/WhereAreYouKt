@@ -1,4 +1,4 @@
-<!DOCTYPE resources [<!ENTITY appName "Where are you?"><!ENTITY scheme "http"><!ENTITY host "alkor.info"><!ENTITY pathPrefix "loc">]>
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE resources [<!ENTITY scheme "http"><!ENTITY host "alkor.info"><!ENTITY pathPrefix "loc">]>
 <resources>
     <string name="app_name">Where am I?</string>
     <string name="title_activity_simple">Where am I?</string>
@@ -27,10 +27,10 @@
     <string name="host" translatable="false">&host;</string>
     <string name="pathPrefix" translatable="false">/&pathPrefix;</string>
 
-    <!-- http://alkor.info/loc/?q=<location> -->
-    <string name="location_response_format" translatable="false">&scheme;://&host;/&pathPrefix;/?q=%s</string>
-    <!-- http://alkor.info/loc/?q=<location>,<phone>,<name>,<key> -->
-    <string name="location_presenter_url" translatable="false">&scheme;://&host;/&pathPrefix;/?q=%s,%s,%s,%s</string>
+    <!-- http://loc.alkor.info/?q=<location> -->
+    <string name="location_response_format" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s</string>
+    <!-- http://loc.alkor.info/?q=<location>,<phone>,<name>,<key> -->
+    <string name="location_presenter_url" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s,%s,%s,%s</string>
     <string name="show">Show</string>
     <string name="you">You</string>
 

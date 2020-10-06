@@ -6,8 +6,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
+import info.alkor.whereareyou.R
 import info.alkor.whereareyou.api.context.AppContext
-import info.alkor.whereareyoukt.R
 
 class PermissionRequester(private val context: Context) {
 
@@ -36,7 +36,7 @@ class PermissionRequester(private val context: Context) {
                 permissionRationale[permission]?.let {
                     context.getString(it)
                 }
-            }.joinToString(listEntrySeparator, context.getString(R.string.permission_required) + listEntrySeparator)
+            }.distinct().joinToString(listEntrySeparator, context.getString(R.string.permission_required) + listEntrySeparator)
 
             if (!message.isEmpty()) {
                 with(AlertDialog.Builder(activity)) {

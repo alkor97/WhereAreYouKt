@@ -2,9 +2,9 @@ package info.alkor.whereareyou.impl.settings
 
 import android.content.SharedPreferences
 import android.content.res.Resources
+import info.alkor.whereareyou.R
 import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.common.duration
-import info.alkor.whereareyoukt.R
 import java.util.concurrent.TimeUnit
 
 class SettingsAccess(private val preferences: SharedPreferences, private val resources: Resources) {

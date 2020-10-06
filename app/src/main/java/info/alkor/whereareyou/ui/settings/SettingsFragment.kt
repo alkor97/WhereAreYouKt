@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.preference.PreferenceFragment
+import info.alkor.whereareyou.R
 import info.alkor.whereareyou.impl.settings.SettingsAccess
 import info.alkor.whereareyou.impl.settings.SettingsKey
-import info.alkor.whereareyoukt.R
 
 class SettingsFragment : PreferenceFragment(), OnSharedPreferenceChangeListener {
     override fun onCreate(savedInstanceState: Bundle?) {

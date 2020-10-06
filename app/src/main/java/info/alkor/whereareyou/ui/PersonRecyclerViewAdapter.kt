@@ -4,9 +4,9 @@ import android.databinding.DataBindingUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import info.alkor.whereareyou.R
+import info.alkor.whereareyou.databinding.LayoutPersonBinding
 import info.alkor.whereareyou.model.action.Person
-import info.alkor.whereareyoukt.R
-import info.alkor.whereareyoukt.databinding.LayoutPersonBinding
 import java.util.*
 
 class PersonRecyclerViewAdapter(private val listener: PersonFragment.OnListFragmentInteractionListener?)

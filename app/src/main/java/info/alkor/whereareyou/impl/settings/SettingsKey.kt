@@ -1,6 +1,6 @@
 package info.alkor.whereareyou.impl.settings
 
-import info.alkor.whereareyoukt.R
+import info.alkor.whereareyou.R
 
 enum class SettingsKey(val defaultId: Int) {
     // enum names must match keys from settings.xml (lowercase)

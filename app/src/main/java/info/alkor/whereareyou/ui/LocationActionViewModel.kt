@@ -4,9 +4,9 @@ import android.content.Context
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
+import info.alkor.whereareyou.R
 import info.alkor.whereareyou.model.action.*
 import info.alkor.whereareyou.model.location.*
-import info.alkor.whereareyoukt.R
 import java.util.*
 
 class LocationActionViewModel {

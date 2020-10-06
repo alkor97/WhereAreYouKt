@@ -2,8 +2,8 @@ package info.alkor.whereareyou.impl.settings
 
 import android.content.Context
 import android.preference.PreferenceManager
+import info.alkor.whereareyou.R
 import info.alkor.whereareyou.api.settings.Settings
-import info.alkor.whereareyoukt.R
 
 class SettingsImpl(context: Context) : Settings {
 

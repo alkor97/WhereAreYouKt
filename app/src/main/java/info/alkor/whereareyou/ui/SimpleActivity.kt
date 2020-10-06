@@ -12,6 +12,7 @@ import android.provider.ContactsContract
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import info.alkor.whereareyou.R
 import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.impl.settings.GOOGLE_API_KEY
 import info.alkor.whereareyou.model.action.LocationAction
@@ -20,7 +21,6 @@ import info.alkor.whereareyou.model.action.PhoneNumber
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.LocationFormatter
 import info.alkor.whereareyou.ui.settings.SettingsActivity
-import info.alkor.whereareyoukt.R
 import kotlinx.android.synthetic.main.activity_simple.*
 
 
