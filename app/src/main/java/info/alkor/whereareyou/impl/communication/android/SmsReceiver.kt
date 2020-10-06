@@ -12,7 +12,7 @@ class SmsReceiver : BroadcastReceiver() {
         if (context != null) {
             val ctx = appContext(context)
             Telephony.Sms.Intents.getMessagesFromIntent(intent).forEach {
-                val phoneNumber = PhoneNumber(it.originatingAddress)
+                val phoneNumber = PhoneNumber(it.originatingAddress!!)
                 if (phoneNumber.isValid()) {
                     val person = ctx.contactProvider.findName(phoneNumber)
                     ctx.messageReceiver.onReceive(person, it.messageBody)

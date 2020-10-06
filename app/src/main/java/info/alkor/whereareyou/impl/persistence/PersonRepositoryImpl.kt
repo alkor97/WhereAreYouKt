@@ -1,6 +1,6 @@
 package info.alkor.whereareyou.impl.persistence
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import info.alkor.whereareyou.api.persistence.PersonRepository
 import info.alkor.whereareyou.model.action.Person
 

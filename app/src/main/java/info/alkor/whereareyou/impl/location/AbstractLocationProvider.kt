@@ -13,6 +13,7 @@ abstract class AbstractLocationProvider(
         private val coroutineContext: CoroutineContext = Dispatchers.Default
 ) : LocationProvider {
 
+    @ExperimentalCoroutinesApi
     override fun getLocation(timeout: Duration, maxAge: Duration, callback: (location: Location?, final: Boolean) -> Unit) {
         val totalTimeout = maxAge + timeout
         val deferred = providers.map {

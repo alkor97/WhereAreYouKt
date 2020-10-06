@@ -1,7 +1,5 @@
 package info.alkor.whereareyou.ui
 
-import android.databinding.DataBindingUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.MenuInflater
 import android.view.View
@@ -9,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import info.alkor.whereareyou.R
 import info.alkor.whereareyou.databinding.LayoutActionBinding
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.RecyclerView
 import info.alkor.whereareyou.model.action.LocationAction
 import info.alkor.whereareyou.model.action.MessageId
 import info.alkor.whereareyou.ui.ActionFragment.OnListFragmentInteractionListener

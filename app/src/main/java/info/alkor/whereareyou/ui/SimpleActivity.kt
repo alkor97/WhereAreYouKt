@@ -7,12 +7,12 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.provider.ContactsContract
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import info.alkor.whereareyou.R
+import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.impl.settings.GOOGLE_API_KEY
 import info.alkor.whereareyou.model.action.LocationAction

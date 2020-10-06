@@ -40,7 +40,7 @@ class SmsSender(private val context: Context) : MessageSenderImpl(context as App
     private class MessageEventReceiver(val callback: SendingStatusCallback, val terminators: Array<SendingStatus>) : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
-                val status = getStatus(resultCode, intent.action)
+                val status = getStatus(resultCode, intent.action!!)
                 if (status != null) {
                     GlobalScope.launch {
                         callback(status)

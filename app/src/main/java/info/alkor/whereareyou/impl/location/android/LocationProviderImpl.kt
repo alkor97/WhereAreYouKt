@@ -11,7 +11,6 @@ import info.alkor.whereareyou.common.*
 import info.alkor.whereareyou.impl.location.AbstractLocationProvider
 import info.alkor.whereareyou.model.location.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.android.Main
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
 import kotlin.coroutines.resume

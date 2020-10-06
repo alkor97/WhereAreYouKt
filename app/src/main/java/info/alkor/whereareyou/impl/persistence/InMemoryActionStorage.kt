@@ -1,6 +1,6 @@
 package info.alkor.whereareyou.impl.persistence
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import info.alkor.whereareyou.model.action.LocationAction
 import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.MessageId
