@@ -12,9 +12,9 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import info.alkor.whereareyou.R
 import info.alkor.whereareyou.api.context.AppContext
 import info.alkor.whereareyou.model.action.Person
-import info.alkor.whereareyoukt.R
 
 class PersonFragment : Fragment() {
 

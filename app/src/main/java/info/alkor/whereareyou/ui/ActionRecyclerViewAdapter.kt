@@ -7,11 +7,11 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import info.alkor.whereareyou.R
+import info.alkor.whereareyou.databinding.LayoutActionBinding
 import info.alkor.whereareyou.model.action.LocationAction
 import info.alkor.whereareyou.model.action.MessageId
 import info.alkor.whereareyou.ui.ActionFragment.OnListFragmentInteractionListener
-import info.alkor.whereareyoukt.R
-import info.alkor.whereareyoukt.databinding.LayoutActionBinding
 import java.util.*
 
 class ActionRecyclerViewAdapter(

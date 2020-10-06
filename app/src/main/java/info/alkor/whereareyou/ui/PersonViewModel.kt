@@ -2,8 +2,8 @@ package info.alkor.whereareyou.ui
 
 import android.content.Context
 import android.util.Log
+import info.alkor.whereareyou.R
 import info.alkor.whereareyou.model.action.Person
-import info.alkor.whereareyoukt.R
 
 class PersonViewModel {
 

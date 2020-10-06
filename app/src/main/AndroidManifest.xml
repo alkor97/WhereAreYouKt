@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="info.alkor.whereareyoukt">
+    package="info.alkor.whereareyou">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name="info.alkor.whereareyou.impl.context.AppContextImpl"
+        android:name=".impl.context.AppContextImpl"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/ic_whereareyou_icon"
@@ -17,12 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="info.alkor.whereareyou.ui.SimpleActivity"
+            android:name=".ui.SimpleActivity"
             android:label="@string/title_activity_simple"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="info.alkor.whereareyou" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -36,14 +37,14 @@
                     android:scheme="@string/scheme" />
             </intent-filter>
         </activity>
-        <activity android:name="info.alkor.whereareyou.ui.settings.SettingsActivity">
+        <activity android:name=".ui.settings.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.alkor.whereareyou.ui.SimpleActivity" />
+                android:value=".ui.SimpleActivity" />
         </activity>
 
         <receiver
-            android:name="info.alkor.whereareyou.impl.communication.android.SmsReceiver"
+            android:name=".impl.communication.android.SmsReceiver"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
