@@ -30,7 +30,7 @@ class AppContextImpl : Application(), AppContext {
     override val messageSender by lazy { SmsSender(this) }
     override val permissionAccessor by lazy { PermissionAccessorImpl(this) }
     override val actionsRepository by lazy { LocationActionRepositoryImpl() }
-    override val personsRepository: PersonRepository by lazy { PersonRepositoryImpl() }
+    override val personsRepository: PersonRepository by lazy { PersonRepositoryImpl(this) }
 
     override fun requestMyLocation() = locationResponder.handleLocationRequest(
             LocationRequest(Person(PhoneNumber.OWN)))

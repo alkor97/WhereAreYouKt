@@ -1,24 +1,36 @@
 package info.alkor.whereareyou.impl.persistence
 
-import androidx.lifecycle.MutableLiveData
+import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.room.Room
 import info.alkor.whereareyou.api.persistence.PersonRepository
 import info.alkor.whereareyou.model.action.Person
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class PersonRepositoryImpl : PersonRepository {
-    override val all = MutableLiveData<List<Person>>()
-    private val data = InMemoryPersonStorage()
+class PersonRepositoryImpl(context: Context) : PersonRepository {
+    private val db: AppDatabase by lazy {
+        Room.databaseBuilder(context, AppDatabase::class.java, "WhereAreYouDb").build()
+    }
+
+    private val persons: PersonDao by lazy { db.personRecords() }
+
+    override val all: LiveData<List<Person>> by lazy {
+        Transformations.map(persons.all()) {
+            it.map { it.toModel() }
+        }
+    }
 
     override fun addPerson(person: Person) {
-        data.access { session -> session.add(person) }
-        postUpdates()
+        GlobalScope.launch {
+            persons.insert(person.toRecord())
+        }
     }
 
     override fun removePerson(person: Person) {
-        data.access { session -> session.remove(person) }
-        postUpdates()
-    }
-
-    private fun postUpdates() {
-        data.postUpdates(all)
+        GlobalScope.launch {
+            persons.delete(person.toRecord())
+        }
     }
 }
