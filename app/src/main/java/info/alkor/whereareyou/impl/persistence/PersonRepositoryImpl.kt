@@ -3,16 +3,13 @@ package info.alkor.whereareyou.impl.persistence
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.room.Room
 import info.alkor.whereareyou.api.persistence.PersonRepository
 import info.alkor.whereareyou.model.action.Person
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class PersonRepositoryImpl(context: Context) : PersonRepository {
-    private val db: AppDatabase by lazy {
-        Room.databaseBuilder(context, AppDatabase::class.java, "WhereAreYouDb").build()
-    }
+    private val db: AppDatabase by lazy { AppDatabase.getInstance(context) }
 
     private val persons: PersonDao by lazy { db.personRecords() }
 
