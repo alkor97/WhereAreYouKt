@@ -5,10 +5,10 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import info.alkor.whereareyou.R
-import info.alkor.whereareyou.databinding.LayoutActionBinding
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import info.alkor.whereareyou.R
+import info.alkor.whereareyou.databinding.LayoutActionBinding
 import info.alkor.whereareyou.model.action.LocationAction
 import info.alkor.whereareyou.model.action.MessageId
 import info.alkor.whereareyou.ui.ActionFragment.OnListFragmentInteractionListener
@@ -50,6 +50,7 @@ class ActionRecyclerViewAdapter(
         fun getBoundObjectId() = boundObjectId
 
         fun bind(action: LocationAction) {
+            binding.root.setOnClickListener { listener?.onShowLocation(action) }
             binding.model = builder.build(binding.model, action).apply {
                 if (menuVisible == View.VISIBLE) {
                     preparePopup(action)
@@ -69,7 +70,7 @@ class ActionRecyclerViewAdapter(
                         R.id.action_share -> listener?.onShareLocation(action)
                         R.id.action_show -> listener?.onShowLocation(action)
                     }
-                    false
+                    true
                 }
                 popup.show()
             }
