@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import info.alkor.whereareyou.R
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.R
+import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.model.action.LocationAction
 
 class ActionFragment : Fragment() {

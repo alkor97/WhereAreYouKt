@@ -1,8 +1,7 @@
 package info.alkor.whereareyou.impl.action
 
 import android.util.Log
-import info.alkor.whereareyou.api.action.LocationResponder
-import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.impl.persistence.RegularTicker
 import info.alkor.whereareyou.model.action.LocationRequest
 import info.alkor.whereareyou.model.action.LocationResponse
@@ -14,7 +13,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class LocationResponderImpl(private val context: AppContext) : LocationResponder {
+class LocationResponder(private val context: AppContext) {
 
     private val repository by lazy { context.actionsRepository }
     private val settings by lazy { context.settings }
@@ -23,7 +22,7 @@ class LocationResponderImpl(private val context: AppContext) : LocationResponder
 
     private val loggingTag = "responder"
 
-    override fun handleLocationRequest(incomingRequest: LocationRequest): LocationRequest {
+    fun handleLocationRequest(incomingRequest: LocationRequest): LocationRequest {
         Log.i(loggingTag, "received location request from ${incomingRequest.from}")
         val request = repository.onMyLocationRequested(incomingRequest.from)
 
@@ -32,7 +31,6 @@ class LocationResponderImpl(private val context: AppContext) : LocationResponder
         val ticker = RegularTicker(unit) { elapsed ->
             repository.updateProgress(request.id!!,
                     elapsed.convertValue(unit).toFloat() / timeout.convertValue(unit))
-            Unit
         }
         ticker.start()
 

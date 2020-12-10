@@ -4,13 +4,12 @@ import android.Manifest
 import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
-import info.alkor.whereareyou.api.contact.ContactProvider
-import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.PhoneNumber
 
-class ContactProviderImpl(private val context: Context) : ContactProvider {
-    override fun findName(phone: PhoneNumber): Person {
+class ContactProvider(private val context: Context) {
+    fun findName(phone: PhoneNumber): Person {
         if (!canReadContacts())
             return Person(phone)
 

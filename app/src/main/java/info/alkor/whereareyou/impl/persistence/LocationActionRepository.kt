@@ -2,18 +2,17 @@ package info.alkor.whereareyou.impl.persistence
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import info.alkor.whereareyou.api.persistence.LocationActionRepository
 import info.alkor.whereareyou.model.action.*
 import info.alkor.whereareyou.model.location.Location
 
-class LocationActionRepositoryImpl : LocationActionRepository {
+class LocationActionRepository {
 
-    override val all = MutableLiveData<List<LocationAction>>()
+    val all = MutableLiveData<List<LocationAction>>()
     private val data = InMemoryActionStorage()
 
     private val loggingTag = "persistence"
 
-    override fun remove(id: MessageId) {
+    fun remove(id: MessageId) {
         data.access {
             it.findById(id).forEach { (index, _) ->
                 it.removeAt(index)
@@ -22,9 +21,9 @@ class LocationActionRepositoryImpl : LocationActionRepository {
         postUpdates()
     }
 
-    override fun onExternalLocationRequested(target: Person): LocationRequest = onLocationRequested(Direction.OUTGOING, target)
+    fun onExternalLocationRequested(target: Person): LocationRequest = onLocationRequested(Direction.OUTGOING, target)
 
-    override fun onMyLocationRequested(requester: Person): LocationRequest = onLocationRequested(Direction.INCOMING, requester)
+    fun onMyLocationRequested(requester: Person): LocationRequest = onLocationRequested(Direction.INCOMING, requester)
 
     private fun onLocationRequested(direction: Direction, person: Person): LocationRequest {
         Log.d(loggingTag, "onLocationRequested: $direction $person")
@@ -43,7 +42,7 @@ class LocationActionRepositoryImpl : LocationActionRepository {
         return LocationRequest(person, action.id)
     }
 
-    override fun onCommunicationStatusUpdate(request: LocationRequest, status: SendingStatus) {
+    fun onCommunicationStatusUpdate(request: LocationRequest, status: SendingStatus) {
         Log.d(loggingTag, "onCommunicationStatusUpdate: $request $status")
         if (request.id != null) {
             val found = data.access {
@@ -62,7 +61,7 @@ class LocationActionRepositoryImpl : LocationActionRepository {
         }
     }
 
-    override fun onLocationResponse(response: LocationResponse, id: MessageId?) {
+    fun onLocationResponse(response: LocationResponse, id: MessageId? = null) {
         Log.d(loggingTag, "onLocationResponse: $response $id")
 
         val found = data.access {
@@ -87,7 +86,7 @@ class LocationActionRepositoryImpl : LocationActionRepository {
         }
     }
 
-    override fun updateProgress(id: MessageId, progress: Float) {
+    fun updateProgress(id: MessageId, progress: Float) {
         data.access {
             it.findById(id).forEach { (index, action) ->
                 it.setAt(index, action.updateProgress(progress))

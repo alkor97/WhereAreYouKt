@@ -5,9 +5,9 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
-import info.alkor.whereareyou.R
 import androidx.core.app.ActivityCompat
-import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.R
+import info.alkor.whereareyou.impl.context.AppContext
 
 class PermissionRequester(private val context: Context) {
 

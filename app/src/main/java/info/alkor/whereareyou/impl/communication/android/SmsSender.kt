@@ -7,15 +7,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.telephony.SmsManager
-import info.alkor.whereareyou.api.communication.SendingStatusCallback
-import info.alkor.whereareyou.api.context.AppContext
-import info.alkor.whereareyou.impl.communication.MessageSenderImpl
+import info.alkor.whereareyou.impl.communication.AbstractMessageSender
+import info.alkor.whereareyou.impl.communication.SendingStatusCallback
+import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.SendingStatus
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class SmsSender(private val context: Context) : MessageSenderImpl(context as AppContext) {
+class SmsSender(private val context: Context) : AbstractMessageSender(context as AppContext) {
 
     override fun sendMessage(person: Person, message: String, callback: SendingStatusCallback) {
         callback(SendingStatus.PENDING)
@@ -53,10 +53,10 @@ class SmsSender(private val context: Context) : MessageSenderImpl(context as App
         }
 
         private fun getStatus(resultCode: Int, action: String) = when (resultCode to action) {
-            Pair(Activity.RESULT_OK, SmsSender.SMS_SENT) -> SendingStatus.SENT
-            Pair(Activity.RESULT_OK, SmsSender.SMS_DELIVERED) -> SendingStatus.DELIVERED
-            Pair(Activity.RESULT_CANCELED, SmsSender.SMS_SENT) -> SendingStatus.SENDING_FAILED
-            Pair(Activity.RESULT_CANCELED, SmsSender.SMS_DELIVERED) -> SendingStatus.DELIVERY_FAILED
+            Pair(Activity.RESULT_OK, SMS_SENT) -> SendingStatus.SENT
+            Pair(Activity.RESULT_OK, SMS_DELIVERED) -> SendingStatus.DELIVERED
+            Pair(Activity.RESULT_CANCELED, SMS_SENT) -> SendingStatus.SENDING_FAILED
+            Pair(Activity.RESULT_CANCELED, SMS_DELIVERED) -> SendingStatus.DELIVERY_FAILED
             else -> null
         }
     }

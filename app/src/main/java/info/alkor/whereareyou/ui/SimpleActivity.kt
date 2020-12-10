@@ -10,10 +10,10 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
-import info.alkor.whereareyou.R
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
-import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.R
+import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.impl.settings.GOOGLE_API_KEY
 import info.alkor.whereareyou.model.action.LocationAction
 import info.alkor.whereareyou.model.action.Person

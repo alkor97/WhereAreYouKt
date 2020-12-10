@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
-import info.alkor.whereareyou.api.context.AppContext
+import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.model.action.PhoneNumber
 
 class SmsReceiver : BroadcastReceiver() {
