@@ -27,7 +27,7 @@ class InMemoryActionStorage {
 
         fun findMatching(response: LocationResponse) = indexed()
                 .filter { (_, action) ->
-                    action.person == response.person
+                    action.person.phone == response.person.phone
                             && !action.final
                             && action.location != response.location
                 }.sortedBy { it.second.id }
