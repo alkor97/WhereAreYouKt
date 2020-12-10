@@ -4,13 +4,14 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import info.alkor.whereareyou.model.action.Person
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PersonRepository(context: Context) {
-    private val db: AppDatabase by lazy { AppDatabase.getInstance(context) }
 
-    private val persons: PersonDao by lazy { db.personRecords() }
+    private val scope = CoroutineScope(Dispatchers.IO)
+    private val persons: PersonDao by lazy { AppDatabase.getInstance(context).personRecords() }
 
     val all: LiveData<List<Person>> by lazy {
         Transformations.map(persons.all()) {
@@ -19,13 +20,13 @@ class PersonRepository(context: Context) {
     }
 
     fun addPerson(person: Person) {
-        GlobalScope.launch {
+        scope.launch {
             persons.insert(person.toRecord())
         }
     }
 
     fun removePerson(person: Person) {
-        GlobalScope.launch {
+        scope.launch {
             persons.delete(person.toRecord())
         }
     }

@@ -9,10 +9,10 @@ interface PersonDao {
     fun all(): LiveData<List<PersonRecord>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg persons: PersonRecord)
+    suspend fun insert(vararg persons: PersonRecord)
 
     @Delete
-    fun delete(person: PersonRecord)
+    suspend fun delete(person: PersonRecord)
 }
 
 @Entity(tableName = "person")
