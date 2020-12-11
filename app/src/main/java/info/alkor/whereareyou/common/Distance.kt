@@ -1,14 +1,16 @@
 package info.alkor.whereareyou.common
 
+import java.util.*
+
 sealed class DistanceUnit(private val meters: Double) {
     fun toMeters(value: Double) = value * meters
     fun fromMeters(value: Double) = value / meters
     override fun toString(): String {
-        return javaClass.simpleName.toLowerCase()
+        return javaClass.simpleName.toLowerCase(Locale.getDefault())
     }
 }
 
-data class Distance(val value: Double, val unit: DistanceUnit = Meter) {
+data class Distance(override val value: Double, val unit: DistanceUnit = Meter) : WithDouble {
     private fun toMeters() = unit.toMeters(value)
     override fun equals(other: Any?) = (other as? Distance)?.toMeters() == toMeters()
     override fun hashCode() = toMeters().hashCode() + unit.hashCode()

@@ -5,7 +5,7 @@ sealed class VelocityUnit(private val metersPerSecond: Double) {
     fun fromMetersPerSecond(value: Double) = value * metersPerSecond
 }
 
-data class Velocity(val value: Double, val unit: VelocityUnit = MetersPerSecond) {
+data class Velocity(override val value: Double, val unit: VelocityUnit = MetersPerSecond) : WithDouble {
     private fun toBaseValue() = unit.toMetersPerSecond(value)
     override fun equals(other: Any?) = (other as? Velocity)?.toBaseValue() == toBaseValue()
     override fun hashCode() = toBaseValue().hashCode() + unit.hashCode()

@@ -4,10 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
-@Database(entities = [PersonRecord::class], version = 1, exportSchema = false)
+@Database(entities = [PersonRecord::class, LocationActionRecord::class], version = 3, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun personRecords(): PersonDao
+    abstract fun locationActionRecords(): LocationActionDao
 
     companion object {
         @Volatile

@@ -54,7 +54,7 @@ fun <T : Number> longitudeDegrees(value: T) = Longitude(value.toDouble())
 
 class AzimuthDegree : Degree(0.0, 360.0)
 
-data class Azimuth private constructor(val value: Double) {
+data class Azimuth private constructor(override val value: Double) : WithDouble {
     companion object {
         val unit: AzimuthDegree = AzimuthDegree()
         operator fun invoke(value: Double): Azimuth {

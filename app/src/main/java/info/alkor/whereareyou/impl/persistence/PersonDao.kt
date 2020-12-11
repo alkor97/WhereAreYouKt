@@ -5,7 +5,7 @@ import androidx.room.*
 
 @Dao
 interface PersonDao {
-    @Query("SELECT * from person")
+    @Query("SELECT * FROM person ORDER BY name")
     fun all(): LiveData<List<PersonRecord>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

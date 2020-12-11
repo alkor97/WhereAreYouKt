@@ -43,7 +43,7 @@ class PersonFragment : Fragment() {
 
     private fun observePersons(myAdapter: PersonRecyclerViewAdapter) {
         viewModel.persons.observe(viewLifecycleOwner) { newList ->
-            val result = DiffUtil.calculateDiff(DiffCallback(myAdapter.getItems(), newList), false)
+            val result = DiffUtil.calculateDiff(DiffCallback(myAdapter.getItems(), newList), true)
             val oldListSize = myAdapter.getItems().size
 
             myAdapter.setItems(newList)

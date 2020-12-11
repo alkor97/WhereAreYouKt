@@ -24,7 +24,7 @@ class LocationResponder(private val context: AppContext) {
 
     private val loggingTag = "responder"
 
-    fun handleLocationRequest(incomingRequest: LocationRequest): LocationRequest {
+    suspend fun handleLocationRequest(incomingRequest: LocationRequest): LocationRequest {
         Log.i(loggingTag, "received location request from ${incomingRequest.from}")
         val request = repository.onMyLocationRequested(incomingRequest.from)
 

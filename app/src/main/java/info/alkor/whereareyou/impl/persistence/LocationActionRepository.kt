@@ -1,34 +1,43 @@
 package info.alkor.whereareyou.impl.persistence
 
+import android.content.Context
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import info.alkor.whereareyou.model.action.*
-import info.alkor.whereareyou.model.location.Location
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class LocationActionRepository {
+class LocationActionRepository(context: Context) {
 
-    val all = MutableLiveData<List<LocationAction>>()
-    private val data = InMemoryActionStorage()
+    private val scope = CoroutineScope(Dispatchers.IO)
+    private val appDatabase by lazy { AppDatabase.getInstance(context) }
+    private val actions: LocationActionDao by lazy { appDatabase.locationActionRecords() }
+    private val persons: PersonDao by lazy { appDatabase.personRecords() }
+
+    val all: LiveData<List<LocationAction>> by lazy {
+        Transformations.map(actions.all()) {
+            it.map { it.toModel() }
+        }
+    }
 
     private val loggingTag = "persistence"
 
     fun remove(id: MessageId) {
-        data.access {
-            it.findById(id).forEach { (index, _) ->
-                it.removeAt(index)
-            }
+        scope.launch {
+            actions.deleteAction(id)
         }
-        postUpdates()
     }
 
-    fun onExternalLocationRequested(target: Person): LocationRequest = onLocationRequested(Direction.OUTGOING, target)
+    suspend fun onExternalLocationRequested(target: Person): LocationRequest = onLocationRequested(Direction.OUTGOING, target)
 
-    fun onMyLocationRequested(requester: Person): LocationRequest = onLocationRequested(Direction.INCOMING, requester)
+    suspend fun onMyLocationRequested(requester: Person): LocationRequest = onLocationRequested(Direction.INCOMING, requester)
 
-    private fun onLocationRequested(direction: Direction, person: Person): LocationRequest {
+    private suspend fun onLocationRequested(direction: Direction, person: Person): LocationRequest {
         Log.d(loggingTag, "onLocationRequested: $direction $person")
         val action = LocationAction(
-                data.nextMessageId(),
+                0,
                 direction,
                 person,
                 null,
@@ -36,27 +45,15 @@ class LocationActionRepository {
                 SendingStatus.PENDING,
                 0.0f)
 
-        data.access { it.addAtFront(action) }
-        postUpdates()
-
-        return LocationRequest(person, action.id)
+        val id = actions.addAction(action.toRecord())
+        return LocationRequest(person, id)
     }
 
     fun onCommunicationStatusUpdate(request: LocationRequest, status: SendingStatus) {
         Log.d(loggingTag, "onCommunicationStatusUpdate: $request $status")
         if (request.id != null) {
-            val found = data.access {
-                val found = it.findById(request.id)
-                found.forEach { (index, action) ->
-                    it.setAt(index, action.updateStatus(status))
-                }
-                found
-            }
-
-            if (found.isEmpty()) {
-                Log.w(loggingTag, "no record found for request $request")
-            } else {
-                postUpdates()
+            scope.launch {
+                actions.updateSendingStatus(request.id, status)
             }
         }
     }
@@ -64,65 +61,21 @@ class LocationActionRepository {
     fun onLocationResponse(response: LocationResponse, id: MessageId? = null) {
         Log.d(loggingTag, "onLocationResponse: $response $id")
 
-        val found = data.access {
-            val found = if (id != null)
-                it.findById(id)
-            else
-                it.findMatching(response)
-            found.forEach { (index, action) ->
-                it.setAt(index, action.updateLocationAndFinal(response.location, response.final))
+        scope.launch {
+            val found = if (id != null) actions.findById(id) else actions.findMatching(response.person.phone.toExternalForm())
+            if (found != null) {
+                found.location = response.location?.toRecord()
+                found.isFinal = response.final
+                actions.updateAction(found)
+            } else {
+                Log.w(loggingTag, "no match found for location response $response")
             }
-            found
-        }
-
-        val list = found.toList()
-        when {
-            list.isEmpty() -> Log.w(loggingTag, "no match found for location response $response")
-            list.size > 1 -> {
-                Log.w(loggingTag, "${list.size} matches found location response $response")
-                postUpdates()
-            }
-            else -> postUpdates()
         }
     }
 
     fun updateProgress(id: MessageId, progress: Float) {
-        data.access {
-            it.findById(id).forEach { (index, action) ->
-                it.setAt(index, action.updateProgress(progress))
-            }
+        scope.launch {
+            actions.updateProgress(id, progress)
         }
-        postUpdates()
-    }
-
-    private fun postUpdates() {
-        data.postUpdates(all)
     }
 }
-
-fun LocationAction.updateStatus(status: SendingStatus) = LocationAction(
-        this.id,
-        this.direction,
-        this.person,
-        this.location,
-        this.final,
-        status,
-        this.progress)
-
-fun LocationAction.updateLocationAndFinal(location: Location?, final: Boolean) = LocationAction(
-        this.id,
-        this.direction,
-        this.person,
-        location,
-        final,
-        this.status,
-        if (final) null else this.progress)
-
-fun LocationAction.updateProgress(progress: Float) = if (!final) LocationAction(
-        this.id,
-        this.direction,
-        this.person,
-        this.location,
-        this.final,
-        this.status,
-        progress) else this

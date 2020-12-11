@@ -15,6 +15,9 @@ import info.alkor.whereareyou.impl.settings.Settings
 import info.alkor.whereareyou.model.action.LocationRequest
 import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.PhoneNumber
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AppContext : Application() {
     val contactProvider by lazy { ContactProvider(this) }
@@ -27,11 +30,13 @@ class AppContext : Application() {
     val settings by lazy { Settings(this) }
     val messageSender by lazy { SmsSender(this) }
     val permissionAccessor by lazy { PermissionAccessor(this) }
-    val actionsRepository by lazy { LocationActionRepository() }
+    val actionsRepository by lazy { LocationActionRepository(this) }
     val personsRepository by lazy { PersonRepository(this) }
+    private val scope = CoroutineScope(Dispatchers.IO)
 
-    fun requestMyLocation() = locationResponder.handleLocationRequest(
-            LocationRequest(Person(PhoneNumber.OWN)))
+    fun requestMyLocation() = scope.launch {
+        locationResponder.handleLocationRequest(LocationRequest(Person(PhoneNumber.OWN)))
+    }
 
     fun requestLocationOf(person: Person) = locationRequester.requestLocationOf(person)
 }
