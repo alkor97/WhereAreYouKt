@@ -8,7 +8,7 @@ data class Coordinates(
         val latitude: Latitude,
         val longitude: Longitude,
         val accuracy: Distance? = null) {
-    override fun toString() = "$latitude,$longitude" + if (accuracy != null) " ±$accuracy" else ""
+    override fun toString() = "$latitude $longitude" + if (accuracy != null) " ±$accuracy" else ""
 }
 
 typealias Altitude = AccurateValue<Distance>

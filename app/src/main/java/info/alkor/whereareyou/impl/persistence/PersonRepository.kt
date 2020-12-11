@@ -30,4 +30,6 @@ class PersonRepository(context: Context) {
             persons.delete(person.toRecord())
         }
     }
+
+    suspend fun isPersonRegistered(person: Person): Boolean = persons.getPersonByPhone(person.toRecord().phone) != null
 }

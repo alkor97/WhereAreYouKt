@@ -13,6 +13,9 @@ interface PersonDao {
 
     @Delete
     suspend fun delete(person: PersonRecord)
+
+    @Query("SELECT * FROM person WHERE phone = :phone")
+    suspend fun getPersonByPhone(phone: String): PersonRecord?
 }
 
 @Entity(tableName = "person")
