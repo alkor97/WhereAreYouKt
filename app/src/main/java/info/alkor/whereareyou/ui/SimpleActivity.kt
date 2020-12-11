@@ -11,6 +11,7 @@ import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import info.alkor.whereareyou.R
 import info.alkor.whereareyou.impl.context.AppContext
@@ -125,8 +126,8 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
     }
 
     private fun addPersonToFavourites(person: Person) {
-        val ctx = applicationContext as AppContext
-        ctx.personsRepository.addPerson(person)
+        val viewModel = ViewModelProvider(this).get(PersonListViewModel::class.java)
+        viewModel.addPerson(person)
     }
 
     private fun extractPerson(intent: Intent): Person? {
