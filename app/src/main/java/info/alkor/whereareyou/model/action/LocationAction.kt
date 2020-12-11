@@ -2,6 +2,7 @@ package info.alkor.whereareyou.model.action
 
 import info.alkor.whereareyou.model.location.Location
 
+typealias MessageId = Long
 enum class Direction { INCOMING, OUTGOING }
 
 data class LocationAction(

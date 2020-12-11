@@ -17,7 +17,7 @@ class InMemoryActionStorage {
         liveData.postValue(data)
     }
 
-    fun nextMessageId() = MessageId(idGenerator.incrementAndGet())
+    fun nextMessageId(): MessageId = idGenerator.incrementAndGet()
 
     inner class Session(private val data: ArrayList<LocationAction>) {
 
