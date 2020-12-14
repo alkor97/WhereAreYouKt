@@ -67,7 +67,7 @@ fun LocationRecord.toModel() = Location(
 )
 
 fun LocationAction.toRecord() = LocationActionRecord(
-        id = null,
+        id = id,
         direction = direction,
         phone = person.phone.toExternalForm(),
         name = person.name,
