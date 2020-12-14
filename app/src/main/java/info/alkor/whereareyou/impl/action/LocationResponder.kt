@@ -1,6 +1,7 @@
 package info.alkor.whereareyou.impl.action
 
 import android.util.Log
+import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.impl.persistence.RegularTicker
 import info.alkor.whereareyou.model.action.LocationRequest
@@ -9,6 +10,8 @@ import info.alkor.whereareyou.model.action.PhoneNumber
 import info.alkor.whereareyou.model.action.finishesSending
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
@@ -16,7 +19,6 @@ import kotlin.coroutines.suspendCoroutine
 
 class LocationResponder(private val context: AppContext) {
 
-    private val scope = CoroutineScope(Dispatchers.IO)
     private val repository by lazy { context.actionsRepository }
     private val settings by lazy { context.settings }
     private val locationProvider by lazy { context.locationProvider }
@@ -24,32 +26,29 @@ class LocationResponder(private val context: AppContext) {
 
     private val loggingTag = "responder"
 
+    @ExperimentalCoroutinesApi
     suspend fun handleLocationRequest(incomingRequest: LocationRequest): LocationRequest {
         Log.i(loggingTag, "received location request from ${incomingRequest.from}")
         val request = repository.onMyLocationRequested(incomingRequest.from)
 
         val timeout = settings.getLocationQueryTimeout()
         val unit = TimeUnit.SECONDS
-        val ticker = RegularTicker(unit) { elapsed ->
+
+        val ticker = startTicker(timeout.convertTo(unit)) { elapsed ->
             repository.updateProgress(request.id!!,
                     elapsed.convertValue(unit).toFloat() / timeout.convertValue(unit))
         }
-        ticker.start()
 
         val maxAge = settings.getLocationMaxAge()
-        locationProvider.getLocation(timeout, maxAge) { location, final ->
-            val response = LocationResponse(request.from, location, final)
+        locationProvider.getLocationChannel(timeout, maxAge).consumeEach { found ->
+            val response = LocationResponse(request.from, found.location, found.final)
             repository.onLocationResponse(response, request.id)
 
-            if (final) {
+            if (found.final) {
                 if (request.from.phone != PhoneNumber.OWN) {
-                    scope.launch {
-                        sendResponse(request, response)
-                        ticker.stop()
-                    }
-                } else {
-                    ticker.stop()
+                    sendResponse(request, response)
                 }
+                ticker.stop()
             }
         }
         return request
@@ -65,5 +64,15 @@ class LocationResponder(private val context: AppContext) {
             }
             Log.i(loggingTag, "location response sent to $person")
         }
+    }
+
+    @ExperimentalCoroutinesApi
+    private fun startTicker(timeout: Duration, handler: (Duration) -> Unit): RegularTicker {
+        val unit = TimeUnit.SECONDS
+        val ticker = RegularTicker(Duration(1, unit), timeout)
+        CoroutineScope(Dispatchers.Default).launch {
+            ticker.start().consumeEach(handler)
+        }
+        return ticker
     }
 }

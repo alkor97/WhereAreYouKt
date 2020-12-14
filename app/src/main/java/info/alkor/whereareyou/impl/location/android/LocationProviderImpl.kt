@@ -13,13 +13,15 @@ import info.alkor.whereareyou.model.location.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 class LocationProviderImpl(
         private val context: Context,
-        private val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager)
-    : AbstractLocationProvider(Provider.values(), Dispatchers.Main) {
+        private val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager,
+        locationCoroutineContext: CoroutineContext = Dispatchers.Main)
+    : AbstractLocationProvider(Provider.values(), locationCoroutineContext) {
 
     @SuppressLint("MissingPermission")
     override suspend fun requestLocation(provider: Provider): info.alkor.whereareyou.model.location.Location? = suspendCancellableCoroutine { continuation ->

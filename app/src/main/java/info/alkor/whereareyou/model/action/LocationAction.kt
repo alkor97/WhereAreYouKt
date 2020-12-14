@@ -6,7 +6,7 @@ typealias MessageId = Long
 enum class Direction { INCOMING, OUTGOING }
 
 data class LocationAction(
-        val id: MessageId,
+        val id: MessageId?,
         val direction: Direction,
         val person: Person,
         val location: Location?,

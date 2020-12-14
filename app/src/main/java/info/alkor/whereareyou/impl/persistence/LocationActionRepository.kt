@@ -37,7 +37,7 @@ class LocationActionRepository(context: Context) {
     private suspend fun onLocationRequested(direction: Direction, person: Person): LocationRequest {
         Log.d(loggingTag, "onLocationRequested: $direction $person")
         val action = LocationAction(
-                0,
+                null,
                 direction,
                 person,
                 null,

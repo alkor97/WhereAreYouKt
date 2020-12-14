@@ -4,29 +4,42 @@ import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.Provider
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
+data class LocationFound(val location: Location?, val final: Boolean)
+
 abstract class AbstractLocationProvider(
         private val providers: Array<Provider> = Provider.values(),
-        private val coroutineContext: CoroutineContext = Dispatchers.Default
+        private val locationCoroutineContext: CoroutineContext = Dispatchers.Main
 ) {
+    private val scope = CoroutineScope(Dispatchers.IO)
+
     @ExperimentalCoroutinesApi
-    fun getLocation(timeout: Duration, maxAge: Duration, callback: (location: Location?, final: Boolean) -> Unit) {
+    fun getLocationChannel(timeout: Duration, maxAge: Duration): Channel<LocationFound> {
+        val channel = Channel<LocationFound>()
         val totalTimeout = maxAge + timeout
-        val deferred = providers.map {
-            GlobalScope.async(coroutineContext) {
-                val location = requestLocation(it)
+
+        // request location for all providers in parallel
+        val deferred = providers.map { provider ->
+            scope.async(locationCoroutineContext) {
+                val location = requestLocation(provider)
                 if (location != null && location.time.notOlderThan(totalTimeout)) {
-                    callback(location, false)
+                    // report any location found as non-final one
+                    channel.send(LocationFound(location, false))
                 }
                 location
             }
         }
-        GlobalScope.launch {
+
+        scope.launch {
+            // await no more than requested
             withTimeoutOrNull(timeout.toMillis()) {
                 deferred.awaitAll()
             }
+
+            // find first reasonable location
             val location = deferred.asSequence()
                     .onEach { it.cancel() } // ensure all tasks are completed
                     .filter { it.isCompleted } // filter out non-completed ones
@@ -34,8 +47,12 @@ abstract class AbstractLocationProvider(
                     .filter { it.time.notOlderThan(totalTimeout) } // filter out too old locations
                     .sortedWith(compareBy<Location, Double?>(nullsLast()) { it.coordinates.accuracy?.value }) // sort by accuracy
                     .firstOrNull()
-            callback(location, true)
+
+            // send reasonable location as final one
+            channel.send(LocationFound(location, true))
+            channel.close()
         }
+        return channel
     }
 
     protected abstract suspend fun requestLocation(provider: Provider): Location?

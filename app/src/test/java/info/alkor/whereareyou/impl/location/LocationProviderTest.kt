@@ -4,19 +4,23 @@ import info.alkor.whereareyou.common.*
 import info.alkor.whereareyou.model.location.Coordinates
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.Provider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Test
 import java.util.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
+@ExperimentalCoroutinesApi
 class LocationProviderTest {
 
     data class Response(val delay: Long, val accuracy: Double?)
 
-    class LocationProviderImpl(private val responses: Map<Provider, Response>) : AbstractLocationProvider() {
+    class LocationProviderImpl(private val responses: Map<Provider, Response>)
+        : AbstractLocationProvider(locationCoroutineContext = Dispatchers.Default) {
         override suspend fun requestLocation(provider: Provider): Location? {
             val response = responses[provider]
             if (response != null) {
@@ -32,39 +36,40 @@ class LocationProviderTest {
         }
     }
 
-    private fun getLocationBlocking(timeout: Duration, responses: Map<Provider, Response>): Location? = runBlocking {
-        suspendCoroutine<Location?> { cont ->
-            LocationProviderImpl(responses).getLocation(timeout, minutes(1)) { location, final -> if (final) cont.resume(location) }
+    @Test
+    fun testNoLocationResponse() = runBlocking {
+        val locationProvider = LocationProviderImpl(EnumMap(Provider::class.java))
+        var index = 0
+        locationProvider.getLocationChannel(seconds(0), minutes(1)).consumeEach { msg ->
+            when (index) {
+                0 -> assertEquals(LocationFound(null, true), msg)
+                else -> fail("too many messages")
+            }
+            index++
         }
     }
 
     @Test
-    fun testNullResponse() {
-        val responses = HashMap<Provider, Response>()
-        Assert.assertNull(getLocationBlocking(millis(0), responses))
+    fun testTimeAndAccuracyBasedLocationResponse() = runBlocking {
+        val responses = hashMapOf(
+                Provider.GPS to Response(600, 10.0),
+                Provider.NETWORK to Response(400, 100.0)
+        )
+        val locationProvider = LocationProviderImpl(responses)
+        var index = 0
+        locationProvider.getLocationChannel(seconds(1), minutes(1)).consumeEach { msg ->
+            when (index) {
+                0 -> expect(Provider.NETWORK, false, msg)
+                1 -> expect(Provider.GPS, false, msg)
+                2 -> expect(Provider.GPS, true, msg)
+                else -> fail("too many messages")
+            }
+            index++
+        }
     }
 
-    @Test
-    fun testTimeAndAccuracyBasedLocationResponse() {
-        val responses = HashMap<Provider, Response>()
-        responses[Provider.GPS] = Response(600, 10.0)
-        responses[Provider.NETWORK] = Response(400, 100.0)
-
-        fun getLocation(type: Provider) = getLocationBlocking(millis((responses[type]?.delay
-                ?: 0) + 100), responses)
-
-        Assert.assertEquals(Provider.NETWORK, getLocation(Provider.NETWORK)?.provider)
-        Assert.assertEquals(Provider.GPS, getLocation(Provider.GPS)?.provider)
-    }
-
-    @Test
-    fun testAccuracyLessLocationResponse() {
-        val responses = HashMap<Provider, Response>()
-        responses[Provider.GPS] = Response(100, 10.0)
-
-        fun getLocation(type: Provider) = getLocationBlocking(millis((responses[type]?.delay
-                ?: 0) + 50), responses)
-
-        Assert.assertEquals(Provider.GPS, getLocation(Provider.GPS)?.provider)
+    private fun expect(provider: Provider, final: Boolean, locationFound: LocationFound) {
+        assertEquals(provider, locationFound.location?.provider)
+        assertEquals(final, locationFound.final)
     }
 }
