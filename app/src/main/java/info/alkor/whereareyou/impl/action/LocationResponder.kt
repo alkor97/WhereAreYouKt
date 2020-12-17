@@ -7,15 +7,12 @@ import info.alkor.whereareyou.impl.persistence.RegularTicker
 import info.alkor.whereareyou.model.action.LocationRequest
 import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.PhoneNumber
-import info.alkor.whereareyou.model.action.finishesSending
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class LocationResponder(private val context: AppContext) {
 
@@ -23,6 +20,8 @@ class LocationResponder(private val context: AppContext) {
     private val settings by lazy { context.settings }
     private val locationProvider by lazy { context.locationProvider }
     private val sender by lazy { context.messageSender }
+
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     private val loggingTag = "responder"
 
@@ -54,15 +53,11 @@ class LocationResponder(private val context: AppContext) {
         return request
     }
 
-    private suspend fun sendResponse(request: LocationRequest, response: LocationResponse) = suspendCoroutine<Unit> { cont ->
-        val person = request.from
-        sender.send(response) {
-            repository.onCommunicationStatusUpdate(request, it)
-            Log.i(loggingTag, "status of location response sent to $person is $it")
-            if (it.finishesSending()) {
-                cont.resume(Unit)
-            }
-            Log.i(loggingTag, "location response sent to $person")
+    private suspend fun sendResponse(request: LocationRequest, response: LocationResponse) {
+        val channel = sender.send(response)
+        for (status in channel) {
+            repository.onCommunicationStatusUpdate(request, status)
+            Log.i(loggingTag, "status of location response sent to ${request.from} is $status")
         }
     }
 
@@ -70,7 +65,7 @@ class LocationResponder(private val context: AppContext) {
     private fun startTicker(timeout: Duration, handler: (Duration) -> Unit): RegularTicker {
         val unit = TimeUnit.SECONDS
         val ticker = RegularTicker(Duration(1, unit), timeout)
-        CoroutineScope(Dispatchers.Default).launch {
+        scope.launch {
             ticker.start().consumeEach(handler)
         }
         return ticker

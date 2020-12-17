@@ -19,11 +19,11 @@ class LocationRequester(private val context: AppContext) {
     fun requestLocationOf(target: Person) {
         scope.launch {
             val request = repository.onExternalLocationRequested(target)
-            sender.send(request) {
-                repository.onCommunicationStatusUpdate(request, it)
-                Log.i(loggingTag, "status of location request sent to $target is $it")
+            val channel = sender.send(request)
+            for (status in channel) {
+                repository.onCommunicationStatusUpdate(request, status)
+                Log.i(loggingTag, "status of location request sent to $target is $status")
             }
-            Log.i(loggingTag, "location request sent to $target")
         }
     }
 

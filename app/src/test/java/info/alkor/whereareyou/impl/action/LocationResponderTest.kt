@@ -4,7 +4,6 @@ import info.alkor.whereareyou.common.latitudeDegrees
 import info.alkor.whereareyou.common.longitudeDegrees
 import info.alkor.whereareyou.common.minutes
 import info.alkor.whereareyou.common.seconds
-import info.alkor.whereareyou.impl.communication.SendingStatusCallback
 import info.alkor.whereareyou.impl.communication.android.SmsSender
 import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.impl.location.LocationFound
@@ -16,11 +15,8 @@ import info.alkor.whereareyou.model.location.Coordinates
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.Provider
 import io.mockk.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import java.util.*
@@ -66,11 +62,15 @@ class LocationResponderTest {
             every { locationProvider.getLocationChannel(timeout, maxAge) } returns channel
 
             val statuses = arrayListOf(SendingStatus.SENT, SendingStatus.DELIVERED)
-            every { messageSender.send(LocationResponse(incoming.from, foundLocations[2].location, foundLocations[2].final), any()) } coAnswers {
-                val cb = lastArg() as SendingStatusCallback
-                statuses.forEach {
-                    cb.invoke(it)
+            val statusChannel = Channel<SendingStatus>()
+            coEvery { messageSender.send(LocationResponse(incoming.from, foundLocations[2].location, foundLocations[2].final)) } answers {
+                CoroutineScope(Dispatchers.IO).launch {
+                    statuses.forEach {
+                        statusChannel.send(it)
+                    }
+                    statusChannel.close()
                 }
+                statusChannel
             }
 
             statuses.forEach {

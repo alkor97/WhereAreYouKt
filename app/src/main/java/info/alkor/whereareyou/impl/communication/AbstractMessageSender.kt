@@ -5,32 +5,41 @@ import info.alkor.whereareyou.model.action.LocationRequest
 import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.SendingStatus
-
-typealias SendingStatusCallback = (SendingStatus) -> Unit
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 
 abstract class AbstractMessageSender(private val context: AppContext) {
 
     private val requestFormatter by lazy { context.locationRequestParser }
     private val responseFormatter by lazy { context.locationResponseParser }
 
-    fun send(request: LocationRequest, callback: SendingStatusCallback) {
+    suspend fun send(request: LocationRequest): Channel<SendingStatus> {
         val message = requestFormatter.formatLocationRequest(request)
-        doSend(request.from, message, callback)
+        return doSend(request.from, message)
     }
 
-    fun send(response: LocationResponse, callback: SendingStatusCallback) {
+    suspend fun send(response: LocationResponse): Channel<SendingStatus> {
         val message = responseFormatter.formatLocationResponse(response)
-        doSend(response.person, message, callback)
+        return doSend(response.person, message)
     }
 
-    private fun doSend(person: Person, message: String, callback: SendingStatusCallback) {
-        if (canSendSms() && canReadPhoneState())
-            sendMessage(person, message, callback)
-        else
-            callback(SendingStatus.SENDING_FAILED)
+    private suspend fun doSend(person: Person, message: String): Channel<SendingStatus> {
+        val channel = Channel<SendingStatus>()
+
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            if (canSendSms() && canReadPhoneState())
+                sendMessage(person, message, channel)
+            else
+                channel.send(SendingStatus.SENDING_FAILED)
+        }
+
+        return channel
     }
 
-    protected abstract fun sendMessage(person: Person, message: String, callback: SendingStatusCallback)
+    protected abstract suspend fun sendMessage(person: Person, message: String, channel: Channel<SendingStatus>)
 
     private fun canSendSms() = context.permissionAccessor.isPermissionGranted(android.Manifest.permission.SEND_SMS)
 
