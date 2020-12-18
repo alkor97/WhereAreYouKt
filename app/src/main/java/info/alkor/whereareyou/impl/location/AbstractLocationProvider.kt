@@ -1,5 +1,6 @@
 package info.alkor.whereareyou.impl.location
 
+import android.util.Log
 import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.Provider
@@ -12,9 +13,10 @@ data class LocationFound(val location: Location?, val final: Boolean)
 
 abstract class AbstractLocationProvider(
         private val providers: Array<Provider> = Provider.values(),
-        private val locationCoroutineContext: CoroutineContext = Dispatchers.Main
+        protected val locationCoroutineContext: CoroutineContext = Dispatchers.Main
 ) {
     private val scope = CoroutineScope(Dispatchers.IO)
+    protected val loggingTag = "locating"
 
     @ExperimentalCoroutinesApi
     fun getLocationChannel(timeout: Duration, maxAge: Duration): Channel<LocationFound> {
@@ -38,14 +40,16 @@ abstract class AbstractLocationProvider(
             withTimeoutOrNull(timeout.toMillis()) {
                 deferred.awaitAll()
             }
+            Log.d(loggingTag, "$timeout timeout is completed")
 
             // find first reasonable location
             val location = deferred.asSequence()
-                    .onEach { it.cancel() } // ensure all tasks are completed
+                    .onEach { if (it.isActive) it.cancel() } // ensure all tasks are completed
                     .filter { it.isCompleted } // filter out non-completed ones
+                    .filter { !it.isCancelled } // filter out cancelled ones
                     .mapNotNull { it.getCompleted() } // get non-null location
                     .filter { it.time.notOlderThan(totalTimeout) } // filter out too old locations
-                    .sortedWith(compareBy<Location, Double?>(nullsLast()) { it.coordinates.accuracy?.value }) // sort by accuracy
+                    .sortedWith(compareBy(nullsLast()) { it.coordinates.accuracy?.value }) // sort by accuracy
                     .firstOrNull()
 
             // send reasonable location as final one

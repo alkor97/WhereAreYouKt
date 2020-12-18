@@ -7,10 +7,13 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import info.alkor.whereareyou.common.*
 import info.alkor.whereareyou.impl.location.AbstractLocationProvider
 import info.alkor.whereareyou.model.location.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -37,7 +40,10 @@ class LocationProviderImpl(
                 override fun onProviderDisabled(provider: String?) {}
             }
             continuation.invokeOnCancellation {
-                locationManager.removeUpdates(listener)
+                CoroutineScope(locationCoroutineContext).launch {
+                    Log.d(loggingTag, "cancelling location request from $provider")
+                    locationManager.removeUpdates(listener)
+                }
             }
             locationManager.requestSingleUpdate(provider.toAndroidProvider(), listener, null)
         } catch (e: Exception) {

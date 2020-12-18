@@ -26,7 +26,7 @@ class LocationResponder(private val context: AppContext) {
     private val loggingTag = "responder"
 
     @ExperimentalCoroutinesApi
-    suspend fun handleLocationRequest(incomingRequest: LocationRequest): LocationRequest {
+    suspend fun handleLocationRequest(incomingRequest: LocationRequest) {
         Log.i(loggingTag, "received location request from ${incomingRequest.from}")
         val request = repository.onMyLocationRequested(incomingRequest.from)
 
@@ -50,7 +50,6 @@ class LocationResponder(private val context: AppContext) {
                 ticker.stop()
             }
         }
-        return request
     }
 
     private suspend fun sendResponse(request: LocationRequest, response: LocationResponse) {
