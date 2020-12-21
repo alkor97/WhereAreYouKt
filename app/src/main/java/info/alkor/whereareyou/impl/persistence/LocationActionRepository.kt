@@ -64,7 +64,9 @@ class LocationActionRepository(context: Context) {
         scope.launch {
             val found = if (id != null) actions.findById(id) else actions.findMatching(response.person.phone.toExternalForm())
             if (found != null) {
-                found.location = response.location?.toRecord()
+                if (response.location != null) {
+                    found.location = response.location.toRecord()
+                }
                 found.isFinal = response.final
                 actions.updateAction(found)
             } else {
