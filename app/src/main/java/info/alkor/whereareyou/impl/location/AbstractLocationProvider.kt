@@ -31,6 +31,7 @@ abstract class AbstractLocationProvider(
                     // report any location found as non-final one
                     channel.send(LocationFound(location, false))
                 }
+                println("completed with $location")
                 location
             }
         }

@@ -1,44 +1,64 @@
 package info.alkor.whereareyou.impl.location
 
-import info.alkor.whereareyou.common.*
-import info.alkor.whereareyou.model.location.Coordinates
-import info.alkor.whereareyou.model.location.Location
+import android.content.Context
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import info.alkor.whereareyou.common.minutes
+import info.alkor.whereareyou.common.seconds
+import info.alkor.whereareyou.impl.location.android.LocationProviderImpl
 import info.alkor.whereareyou.model.location.Provider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Test
-import java.util.*
 
 @ExperimentalCoroutinesApi
 class LocationProviderTest {
 
-    data class Response(val delay: Long, val accuracy: Double?)
+    private val scope = CoroutineScope(Dispatchers.Default)
+    private val context = mockk<Context>()
+    private val locationManager = mockk<LocationManager>()
+    private lateinit var locationProvider: LocationProviderImpl
+    private lateinit var gpsListener: LocationListener
+    private lateinit var netListener: LocationListener
+    private var gpsHandler: ((LocationListener) -> Unit)? = null
+    private var netHandler: ((LocationListener) -> Unit)? = null
 
-    class LocationProviderImpl(private val responses: Map<Provider, Response>)
-        : AbstractLocationProvider(locationCoroutineContext = Dispatchers.Default) {
-        override suspend fun requestLocation(provider: Provider): Location? {
-            val response = responses[provider]
-            if (response != null) {
-                delay(response.delay)
-                return Location(provider,
-                        Date(),
-                        Coordinates(
-                                latitudeDegrees(0.0),
-                                longitudeDegrees(0.0),
-                                if (response.accuracy != null) meters(response.accuracy) else null))
-            }
-            return null
+    @Before
+    fun beforeTest() {
+        every { context.getSystemService(Context.LOCATION_SERVICE) } returns locationManager
+        locationProvider = LocationProviderImpl(context, Dispatchers.Default)
+
+        every { locationManager.requestSingleUpdate("gps", any(), null) } answers {
+            gpsListener = arg(1)
+            gpsHandler?.invoke(gpsListener)
+        }
+        every { locationManager.requestSingleUpdate("network", any(), null) } answers {
+            netListener = arg(1)
+            netHandler?.invoke(netListener)
+        }
+        every { locationManager.removeUpdates(any<LocationListener>()) } answers {}
+    }
+
+    @After
+    fun afterTest() {
+        verify {
+            locationManager.requestSingleUpdate("gps", gpsListener, null)
+            locationManager.requestSingleUpdate("network", netListener, null)
+            locationManager.removeUpdates(gpsListener)
+            locationManager.removeUpdates(netListener)
         }
     }
 
     @Test
-    fun testNoLocationResponse() = runBlocking {
-        val locationProvider = LocationProviderImpl(EnumMap(Provider::class.java))
+    fun `test no location response generated`() = runBlocking {
         var index = 0
         locationProvider.getLocationChannel(seconds(0), minutes(1)).consumeEach { msg ->
             when (index) {
@@ -50,12 +70,10 @@ class LocationProviderTest {
     }
 
     @Test
-    fun testTimeAndAccuracyBasedLocationResponse() = runBlocking {
-        val responses = hashMapOf(
-                Provider.GPS to Response(600, 10.0),
-                Provider.NETWORK to Response(400, 100.0)
-        )
-        val locationProvider = LocationProviderImpl(responses)
+    fun `test select location with better accuracy`() = runBlocking {
+        gpsHandler = setupHandler(600, Provider.GPS, 10.0f)
+        netHandler = setupHandler(400, Provider.NETWORK, 100.0f)
+
         var index = 0
         locationProvider.getLocationChannel(seconds(1), minutes(1)).consumeEach { msg ->
             when (index) {
@@ -68,8 +86,45 @@ class LocationProviderTest {
         }
     }
 
+    @Test
+    fun `test GPS location is timed out`() = runBlocking {
+        netHandler = setupHandler(200, Provider.NETWORK, 100.0f)
+
+        var index = 0
+        locationProvider.getLocationChannel(seconds(1), minutes(1)).consumeEach { msg ->
+            when (index) {
+                0 -> expect(Provider.NETWORK, false, msg)
+                1 -> expect(Provider.NETWORK, true, msg)
+                else -> fail("too many messages")
+            }
+            index++
+        }
+    }
+
+    private fun setupHandler(delay: Long, provider: Provider, accuracy: Float) = fun(listener: LocationListener) {
+        scope.launch {
+            delay(delay)
+            listener.onLocationChanged(mockLocation(provider, accuracy))
+        }
+    }
+
     private fun expect(provider: Provider, final: Boolean, locationFound: LocationFound) {
         assertEquals(provider, locationFound.location?.provider)
         assertEquals(final, locationFound.final)
+    }
+
+    private fun mockLocation(provider: Provider, accuracy: Float): Location {
+        val location = mockk<Location>()
+        every { location.provider } returns provider.name.toLowerCase()
+        every { location.hasAccuracy() } returns true
+        every { location.accuracy } returns accuracy
+        every { location.time } returns System.currentTimeMillis()
+        every { location.latitude } returns 53.0
+        every { location.longitude } returns 14.0
+        every { location.hasAltitude() } returns true
+        every { location.altitude } returns 99.0
+        every { location.hasBearing() } returns false
+        every { location.hasSpeed() } returns false
+        return location
     }
 }
