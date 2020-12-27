@@ -28,7 +28,8 @@ class LocationRequester(private val context: AppContext) {
     }
 
     fun onLocationResponse(response: LocationResponse) {
-        Log.i(loggingTag, "got location response from ${response.person}")
+        val type = if (response.location != null) "non-null" else "null"
+        Log.i(loggingTag, "got $type location response from ${response.person}")
         repository.onLocationResponse(response)
     }
 }

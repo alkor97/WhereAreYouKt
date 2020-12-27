@@ -82,7 +82,9 @@ class LocationActionViewModel {
             } else {
                 model.coordinatesVisible = View.VISIBLE
                 model.coordinates = resources.getString(R.string.location_unknown)
-                model.maxProgress = 0
+                if (!action.final) {
+                    model.maxProgress = 0
+                }
             }
             Log.i("render", "$action")
             return model

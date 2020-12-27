@@ -14,5 +14,7 @@ class Settings(context: Context) {
     fun getLocationResponseString(location: String): String = resources.getString(
             R.string.location_response_format, location)
 
+    fun getNonExistingLocationResponse() = resources.getString(R.string.no_location_response)
+
     fun getLocationMaxAge() = access.getDurationValue(SettingsKey.LOCATION_RESPONSE_MAX_AGE)
 }

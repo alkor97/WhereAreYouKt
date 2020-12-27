@@ -4,6 +4,7 @@ import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.model.action.Person
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 class MessageReceiver(private val context: AppContext) {
@@ -17,6 +18,7 @@ class MessageReceiver(private val context: AppContext) {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val personRepository by lazy { context.personsRepository }
 
+    @ExperimentalCoroutinesApi
     fun onReceive(from: Person, message: String) {
         requestParser.parseLocationRequest(from, message)?.let {
             scope.launch {
@@ -26,9 +28,7 @@ class MessageReceiver(private val context: AppContext) {
             }
             return
         }
-        responseParser.parseLocationResponse(from, message)?.let {
-            locationRequester.onLocationResponse(it)
-            return
-        }
+        val locationResponse = responseParser.parseLocationResponse(from, message)
+        locationRequester.onLocationResponse(locationResponse)
     }
 }
