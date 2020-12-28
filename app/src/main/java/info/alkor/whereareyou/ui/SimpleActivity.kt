@@ -23,13 +23,18 @@ import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.LocationFormatter
 import info.alkor.whereareyou.ui.settings.SettingsActivity
 import kotlinx.android.synthetic.main.activity_simple.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInteractionListener, PersonFragment.OnListFragmentInteractionListener {
 
-    private val PICK_CONTACT_TO_LOCATE = 13579
+    companion object {
+        private const val PICK_CONTACT_TO_LOCATE = 13579
+    }
+
     private val permissionRequester by lazy { PermissionRequester(this) }
 
+    @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +52,11 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         permissionRequester.ensurePermissionsGranted(this)
     }
 
+    @ExperimentalCoroutinesApi
     fun locateMe(): Boolean {
         if (permissionRequester.canLocate()) {
             val ctx = applicationContext as AppContext
-            ctx.requestMyLocation()
+            ctx.handleOwnLocation()
         } else {
             permissionRequester.ensurePermissionsGranted(this)
         }
@@ -162,7 +168,7 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
     }
 }
 
-fun Person.toQueryConfirmation(resources: Resources) = resources.getString(
+fun Person.toQueryConfirmation(resources: Resources): String = resources.getString(
         R.string.location_request_confirmation_query, toHumanReadable())
 
 fun Person.toHumanReadable() = if (name != null)

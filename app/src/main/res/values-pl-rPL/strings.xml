@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Gdzie jestem?</string>
-    <string name="title_activity_simple">Gdzie jestem?</string>
+    <string name="app_name">Gdzie jesteś?</string>
+    <string name="title_activity_simple">Gdzie jesteś?</string>
     <string name="action_settings">Ustawienia</string>
 
     <string name="provider">źródło</string>
@@ -21,7 +21,7 @@
     <string name="location_response_max_age_title">Maksymalny wiek lokalizacji</string>
     <string name="location_response_max_age_dialog_message">Jeśli uzyskana lokalizacja jest starsza niż wartość progowa to jest ona odrzucana.</string>
 
-    <string name="no_location_response" tools:ignore="TypographyEllipsis">Przykro mi, nie mogę znaleźć mojego położenia... :(</string>
+    <string name="no_location_response" tools:ignore="TypographyEllipsis">Przykro mi, nie mogę uzyskać swego położenia... :(</string>
 
     <string name="show">Pokaż</string>
     <string name="you">Ty</string>

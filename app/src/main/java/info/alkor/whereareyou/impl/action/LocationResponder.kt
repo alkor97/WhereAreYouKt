@@ -34,8 +34,10 @@ class LocationResponder(private val context: AppContext) {
         val unit = TimeUnit.SECONDS
 
         val ticker = startTicker(timeout.convertTo(unit)) { elapsed ->
-            repository.updateProgress(request.id!!,
-                    elapsed.convertValue(unit).toFloat() / timeout.convertValue(unit))
+            scope.launch {
+                repository.updateProgress(request.id!!,
+                        elapsed.convertValue(unit).toFloat() / timeout.convertValue(unit))
+            }
         }
 
         val maxAge = settings.getLocationMaxAge()

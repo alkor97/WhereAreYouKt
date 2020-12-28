@@ -14,7 +14,6 @@ class LocationActionRepository(context: Context) {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val appDatabase by lazy { AppDatabase.getInstance(context) }
     private val actions: LocationActionDao by lazy { appDatabase.locationActionRecords() }
-    private val persons: PersonDao by lazy { appDatabase.personRecords() }
 
     val all: LiveData<List<LocationAction>> by lazy {
         Transformations.map(actions.all()) {
@@ -24,10 +23,8 @@ class LocationActionRepository(context: Context) {
 
     private val loggingTag = "persistence"
 
-    fun remove(id: MessageId) {
-        scope.launch {
-            actions.deleteAction(id)
-        }
+    fun remove(id: MessageId) = scope.launch {
+        actions.deleteAction(id)
     }
 
     suspend fun onExternalLocationRequested(target: Person): LocationRequest = onLocationRequested(Direction.OUTGOING, target)
@@ -49,35 +46,31 @@ class LocationActionRepository(context: Context) {
         return LocationRequest(person, id)
     }
 
-    fun onCommunicationStatusUpdate(request: LocationRequest, status: SendingStatus) {
+    suspend fun onCommunicationStatusUpdate(request: LocationRequest, status: SendingStatus) {
         Log.d(loggingTag, "onCommunicationStatusUpdate: $request $status")
         if (request.id != null) {
-            scope.launch {
-                actions.updateSendingStatus(request.id, status)
-            }
+            actions.updateSendingStatus(request.id, status)
         }
     }
 
-    fun onLocationResponse(response: LocationResponse, id: MessageId? = null) {
+    suspend fun onLocationResponse(response: LocationResponse, id: MessageId? = null): MessageId? {
         Log.d(loggingTag, "onLocationResponse: $response $id")
 
-        scope.launch {
-            val found = if (id != null) actions.findById(id) else actions.findMatching(response.person.phone.toExternalForm())
-            if (found != null) {
-                if (response.location != null) {
-                    found.location = response.location.toRecord()
-                }
-                found.isFinal = response.final
-                actions.updateAction(found)
-            } else {
-                Log.w(loggingTag, "no match found for location response $response")
+        val found = if (id != null) actions.findById(id) else actions.findMatching(response.person.phone.toExternalForm())
+        if (found != null) {
+            if (response.location != null) {
+                found.location = response.location.toRecord()
             }
+            found.isFinal = response.final
+            actions.updateAction(found)
+            return found.id
+        } else {
+            Log.w(loggingTag, "no match found for location response $response")
+            return null
         }
     }
 
-    fun updateProgress(id: MessageId, progress: Float) {
-        scope.launch {
-            actions.updateProgress(id, progress)
-        }
+    suspend fun updateProgress(id: MessageId, progress: Float) {
+        actions.updateProgress(id, progress)
     }
 }

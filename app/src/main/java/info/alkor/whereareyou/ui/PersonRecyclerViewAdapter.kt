@@ -2,9 +2,9 @@ package info.alkor.whereareyou.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import info.alkor.whereareyou.R
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import info.alkor.whereareyou.R
 import info.alkor.whereareyou.databinding.LayoutPersonBinding
 import info.alkor.whereareyou.model.action.Person
 import java.util.*

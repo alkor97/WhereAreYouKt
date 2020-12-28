@@ -14,7 +14,10 @@ import info.alkor.whereareyou.model.action.*
 import info.alkor.whereareyou.model.location.Coordinates
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.Provider
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import org.junit.Before
@@ -56,7 +59,7 @@ class LocationResponderTest {
             val timeout = seconds(1 + foundLocations.size)
 
             coEvery { repository.onMyLocationRequested(incoming.from) } returns requestWithId
-            every { repository.updateProgress(requestWithId.id!!, any()) } answers {}
+            coEvery { repository.updateProgress(requestWithId.id!!, any()) } answers {}
             every { settings.getLocationQueryTimeout() } returns timeout
             every { settings.getLocationMaxAge() } returns maxAge
             every { locationProvider.getLocationChannel(timeout, maxAge) } returns channel
@@ -74,11 +77,11 @@ class LocationResponderTest {
             }
 
             statuses.forEach {
-                every { repository.onCommunicationStatusUpdate(requestWithId, it) } answers {}
+                coEvery { repository.onCommunicationStatusUpdate(requestWithId, it) } answers {}
             }
 
             foundLocations.forEach {
-                every { repository.onLocationResponse(LocationResponse(incoming.from, it.location, it.final), requestWithId.id) } answers {}
+                coEvery { repository.onLocationResponse(LocationResponse(incoming.from, it.location, it.final), requestWithId.id) } coAnswers { requestWithId.id }
             }
 
             launch {
@@ -91,7 +94,7 @@ class LocationResponderTest {
             impl.handleLocationRequest(incoming)
 
             coVerify { repository.onMyLocationRequested(incoming.from) }
-            verify {
+            coVerify {
                 repository.updateProgress(requestWithId.id!!, any())
                 foundLocations.forEach {
                     repository.onLocationResponse(LocationResponse(incoming.from, it.location, it.final), requestWithId.id)
