@@ -1,0 +1,66 @@
+
+static def getLatestVersionTag() {
+    def prefix = 'v'
+
+    def process = ['git', 'tag', '-l', '--sort', '-refname', "${prefix}*"].execute()
+    process.err.eachLine {line -> println 'ERROR: ' + line}
+    process.waitFor()
+
+    def output = process.text.trim()
+    return output.split("\n")[0]
+}
+
+static def hasNotCommittedFiles() {
+    def process = ['git', 'status', '-s'].execute()
+    process.err.eachLine {line -> println 'ERROR: ' + line}
+    process.waitFor()
+
+    return !process.text.trim().isEmpty()
+}
+
+static def hashOf(tag) {
+    def process = ['git', 'rev-list', '-n', '1', tag].execute()
+    process.err.eachLine {line -> println 'ERROR: ' + line}
+    process.waitFor()
+
+    return process.text.trim()
+}
+
+def tag = getLatestVersionTag()
+def version = tag.substring(1).split('\\.')
+
+def dirty = ''
+if (hasNotCommittedFiles()) {
+    dirty = '+'
+    project.logger.lifecycle("Non-committed files exist in repository.")
+} else {
+    def hashOfHead = hashOf('HEAD')
+    def hashOfTag = hashOf("tags/$tag")
+    if (!hashOfHead.equals(hashOfTag)) {
+        dirty = '+'
+        project.logger.lifecycle("HEAD does not match $tag. Consider creating new tag representing bumped version.")
+    }
+}
+
+def NAMES = ["major", "minor", "patch"]
+def MAX_VALUES = [99, 99, 99]
+def code = 0
+
+for (int i = 0; i < version.length; ++i) {
+    def component = version[i].toInteger()
+    def name = NAMES[i]
+    if (component > MAX_VALUES[i])
+        throw new GradleException("${name} version ${component} exceeds limit")
+    def multiplier = MAX_VALUES.subList(i + 1, version.length).inject(1, {result, entry -> result * (entry + 1) })
+    code += component * multiplier
+}
+
+def name = version.join('.') + dirty
+project.logger.lifecycle("Computed application version is $name")
+
+android {
+    defaultConfig {
+        versionCode code
+        versionName name
+    }
+}
