@@ -13,6 +13,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import info.alkor.whereareyou.BuildConfig
 import info.alkor.whereareyou.R
 import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.impl.settings.GOOGLE_API_KEY
@@ -24,6 +25,8 @@ import info.alkor.whereareyou.model.location.LocationFormatter
 import info.alkor.whereareyou.ui.settings.SettingsActivity
 import kotlinx.android.synthetic.main.activity_simple.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInteractionListener, PersonFragment.OnListFragmentInteractionListener {
@@ -69,10 +72,31 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         return true
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun showSettings(item: MenuItem) {
+    fun showMenu(item: MenuItem) = when (item.itemId) {
+        R.id.action_settings -> showSettings()
+        R.id.action_about -> showAbout()
+        else -> throw UnsupportedOperationException("Unsupported menu item $item")
+    }
+
+    private fun showSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun showAbout() {
+        val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.US)
+        timeFormat.timeZone = TimeZone.getTimeZone("GMT")
+
+        val version = resources.getString(R.string.app_version, BuildConfig.VERSION_NAME)
+        val timestamp = resources.getString(R.string.app_timestamp, timeFormat.format(BuildConfig.TIMESTAMP))
+
+        Date(BuildConfig.TIMESTAMP)
+        with(AlertDialog.Builder(this)) {
+            setTitle(R.string.app_name)
+            setMessage("\n$version\n$timestamp")
+            setIcon(R.drawable.ic_whereareyou_icon)
+            show()
+        }
     }
 
     private fun formatLink(location: Location, person: Person?) = resources.getString(R.string.location_presenter_url,

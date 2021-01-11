@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Gdzie jesteś?</string>
+    <string name="app_version">Wersja %s</string>
+    <string name="app_timestamp">Zbudowano o %s</string>
     <string name="title_activity_simple">Gdzie jesteś?</string>
     <string name="action_settings">Ustawienia</string>
+    <string name="action_about">O programie</string>
 
     <string name="provider">źródło</string>
     <string name="time">czas</string>
@@ -25,11 +28,6 @@
 
     <string name="show">Pokaż</string>
     <string name="you">Ty</string>
-
-    <string name="completed_within_duration">Ukończono w %s</string>
-    <string name="query_started_with_timeout">Rozpoczęto zapytanie o położenie (maksymalny czas oczekiwania to %s)</string>
-    <string name="query_succeeded">Znaleziono lokalizację</string>
-    <string name="query_failed">Nie znaleziono lokalizacji</string>
 
     <string name="share">Udostępnij&#8230;</string>
     <string name="hera_i_am">Tu jestem</string>
