@@ -16,7 +16,7 @@ abstract class AbstractMessageSender(private val context: AppContext) {
     private val responseFormatter by lazy { context.locationResponseParser }
 
     suspend fun send(request: LocationRequest): Channel<SendingStatus> {
-        val message = requestFormatter.formatLocationRequest(request)
+        val message = requestFormatter.formatLocationRequest()
         return doSend(request.from, message)
     }
 

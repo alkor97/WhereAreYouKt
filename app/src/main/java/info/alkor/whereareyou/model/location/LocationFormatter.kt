@@ -31,7 +31,10 @@ object LocationFormatter {
         SPEED, SPEED_ACCURACY
     }
 
-    private class ParserException(text: String, e: Throwable) : Exception(text, e)
+    class ParserException : Exception {
+        constructor(text: String, e: Throwable) : super(text, e)
+        constructor(text: String) : super(text)
+    }
 
     private abstract class AbstractHandler<E>(private val field: Field) {
         abstract fun format(value: E): String
@@ -47,7 +50,7 @@ object LocationFormatter {
 
     private object DateHandler : AbstractHandler<Date>(Field.TIME) {
         override fun format(value: Date): String = DATE_FORMAT.format(value)
-        override fun doParse(text: String?): Date = DATE_FORMAT.parse(text)
+        override fun doParse(text: String?): Date = DATE_FORMAT.parseDate(text)
     }
 
     private object ProviderHandler : AbstractHandler<Provider>(Field.PROVIDER) {
@@ -58,18 +61,18 @@ object LocationFormatter {
 
     private object LatitudeHandler : AbstractHandler<Latitude>(Field.LATITUDE) {
         override fun format(value: Latitude): String = COORDINATE_FORMAT.format(value.value)
-        override fun doParse(text: String?): Latitude = Latitude(COORDINATE_FORMAT.parse(text).toDouble())
+        override fun doParse(text: String?): Latitude = Latitude(COORDINATE_FORMAT.parseDouble(text))
     }
 
     private object LongitudeHandler : AbstractHandler<Longitude>(Field.LONGITUDE) {
         override fun format(value: Longitude): String = COORDINATE_FORMAT.format(value.value)
-        override fun doParse(text: String?): Longitude = Longitude(COORDINATE_FORMAT.parse(text).toDouble())
+        override fun doParse(text: String?): Longitude = Longitude(COORDINATE_FORMAT.parseDouble(text))
     }
 
     private class DistanceHandler(field: Field) : AbstractHandler<Distance?>(field) {
         override fun format(value: Distance?): String = if (value != null) DISTANCE_FORMAT.format(value.value) else ""
         override fun doParse(text: String?): Distance? = if (!text.isNullOrEmpty())
-            Distance(DISTANCE_FORMAT.parse(text).toDouble())
+            Distance(DISTANCE_FORMAT.parseDouble(text))
         else
             null
     }
@@ -77,7 +80,7 @@ object LocationFormatter {
     private class AzimuthHandler(field: Field) : AbstractHandler<Azimuth?>(field) {
         override fun format(value: Azimuth?): String = if (value != null) BEARING_FORMAT.format(value.value) else ""
         override fun doParse(text: String?): Azimuth? = if (!text.isNullOrEmpty())
-            Azimuth(BEARING_FORMAT.parse(text).toDouble())
+            Azimuth(BEARING_FORMAT.parseDouble(text))
         else
             null
     }
@@ -85,7 +88,7 @@ object LocationFormatter {
     private class VelocityHandler(field: Field) : AbstractHandler<Velocity?>(field) {
         override fun format(value: Velocity?): String = if (value != null) SPEED_FORMAT.format(value.value) else ""
         override fun doParse(text: String?): Velocity? = if (!text.isNullOrEmpty())
-            Velocity(SPEED_FORMAT.parse(text).toDouble())
+            Velocity(SPEED_FORMAT.parseDouble(text))
         else
             null
     }
@@ -148,8 +151,23 @@ object LocationFormatter {
                     else null
             )
         } catch (e: ParserException) {
-            Log.e(loggingTag, e.localizedMessage)
+            Log.e(loggingTag, "Parsing exception", e)
             null
         }
     }
+}
+
+fun NumberFormat.parseDouble(text: String?): Double {
+    if (text.isNullOrEmpty())
+        throw LocationFormatter.ParserException("Text is null")
+    val value = parse(text)
+    return value?.toDouble()
+            ?: throw LocationFormatter.ParserException("Unable to parse $text to double")
+}
+
+fun SimpleDateFormat.parseDate(text: String?): Date {
+    if (text.isNullOrEmpty())
+        throw LocationFormatter.ParserException("Text is null")
+    val value = parse(text)
+    return value ?: throw LocationFormatter.ParserException("Unable to parse $text to date")
 }

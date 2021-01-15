@@ -7,13 +7,6 @@
     <string name="action_settings">Ustawienia</string>
     <string name="action_about">O programie</string>
 
-    <string name="provider">źródło</string>
-    <string name="time">czas</string>
-    <string name="coords">położenie</string>
-    <string name="altitude">wysokość</string>
-    <string name="bearing">kierunek</string>
-    <string name="speed">prędkość</string>
-
     <string name="location_query_timeout_title">Maksymalny czas oczekiwania na lokalizację</string>
     <string name="location_query_timeout_dialog_message">Maksymalny czas oczekiwania na uzyskanie bieżącego położenia w sekundach</string>
 
@@ -27,14 +20,12 @@
     <string name="no_location_response" tools:ignore="TypographyEllipsis">Przykro mi, nie mogę uzyskać swego położenia... :(</string>
 
     <string name="show">Pokaż</string>
-    <string name="you">Ty</string>
 
     <string name="share">Udostępnij&#8230;</string>
     <string name="hera_i_am">Tu jestem</string>
     <string name="share_via">Udostępnij przez</string>
     <string name="popup_content_desc">Akcje</string>
 
-    <string name="tab_location">Położenie</string>
     <string name="tab_actions">Akcje</string>
     <string name="tab_persons">Osoby</string>
 
@@ -151,4 +142,7 @@
 
     <string name="person_deletion">Usuwanie</string>
     <string name="person_deletion_confirmation_query">Na pewno usunąć wpis?</string>
+
+    <string name="positive_number">liczba</string>
+    <string name="find_person_location">Znajdź położenie osoby</string>
 </resources>

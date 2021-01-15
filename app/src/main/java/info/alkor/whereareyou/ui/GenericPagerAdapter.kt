@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 
 data class FragmentDescriptor(val title: String, val creator: () -> Fragment)
 
-class GenericPagerAdapter(fragmentManager: FragmentManager, private val tabs: List<FragmentDescriptor>) : FragmentPagerAdapter(fragmentManager) {
+class GenericPagerAdapter(fragmentManager: FragmentManager, private val tabs: List<FragmentDescriptor>) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getItem(position: Int) = tabs[position].creator()
     override fun getCount() = tabs.size
     override fun getPageTitle(position: Int) = tabs[position].title

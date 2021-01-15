@@ -37,3 +37,16 @@ fun Duration.toString(resources: Resources) = byUnit().joinToString(" ") { (valu
     }
     resources.getQuantityString(plural, value.toInt(), value)
 }
+
+fun Duration.toElapsedString(resources: Resources) = byUnit().joinToString(" ") { (value, unit) ->
+    val plural = when (unit) {
+        TimeUnit.DAYS -> R.plurals.elapsed_duration_days
+        TimeUnit.HOURS -> R.plurals.elapsed_duration_hours
+        TimeUnit.MINUTES -> R.plurals.elapsed_duration_minutes
+        TimeUnit.SECONDS -> R.plurals.elapsed_duration_seconds
+        TimeUnit.MILLISECONDS -> R.plurals.elapsed_duration_milliseconds
+        TimeUnit.MICROSECONDS -> R.plurals.elapsed_duration_microseconds
+        TimeUnit.NANOSECONDS -> R.plurals.elapsed_duration_nanoseconds
+    }
+    resources.getQuantityString(plural, value.toInt(), value)
+}

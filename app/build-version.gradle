@@ -1,5 +1,5 @@
 
-static def getLatestVersionTag() {
+static String getLatestVersionTag() {
     def prefix = 'v'
 
     def process = ['git', 'tag', '-l', '--sort', '-refname', "${prefix}*"].execute()
@@ -10,7 +10,7 @@ static def getLatestVersionTag() {
     return output.split("\n")[0]
 }
 
-static def hasNotCommittedFiles() {
+static boolean hasNotCommittedFiles() {
     def process = ['git', 'status', '-s'].execute()
     process.err.eachLine {line -> println 'ERROR: ' + line}
     process.waitFor()
@@ -18,7 +18,7 @@ static def hasNotCommittedFiles() {
     return !process.text.trim().isEmpty()
 }
 
-static def hashOf(tag) {
+static String hashOf(String tag) {
     def process = ['git', 'rev-list', '-n', '1', tag].execute()
     process.err.eachLine {line -> println 'ERROR: ' + line}
     process.waitFor()

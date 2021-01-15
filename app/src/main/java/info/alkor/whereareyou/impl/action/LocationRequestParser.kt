@@ -13,7 +13,7 @@ class LocationRequestParser(private val context: AppContext) {
         return null
     }
 
-    fun formatLocationRequest(request: LocationRequest) = getRequestString()
+    fun formatLocationRequest() = getRequestString()
 
     private fun getRequestString() = context.settings.getLocationRequestString()
 }

@@ -9,13 +9,14 @@ apply plugin: 'kotlin-kapt'
 apply from: 'build-version.gradle'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "info.alkor.whereareyoukt"
         minSdkVersion 23
-        targetSdkVersion 28
+        targetSdkVersion 29
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        archivesBaseName = "WhereAreYouKt-$versionName"
     }
     buildTypes {
         release {
@@ -28,7 +29,7 @@ android {
     }
 }
 
-def roomVersion = '2.2.5'
+def roomVersion = '2.2.6'
 def lifecycleVersion = '2.2.0'
 
 dependencies {
