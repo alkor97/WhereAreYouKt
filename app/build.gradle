@@ -9,6 +9,14 @@ apply plugin: 'kotlin-kapt'
 apply from: 'build-version.gradle'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file(System.getProperty("user.home") + "/.android/debug.keystore")
+            keyAlias 'androiddebugkey'
+            storePassword 'android'
+            keyPassword 'android'
+        }
+    }
     compileSdkVersion 29
     defaultConfig {
         applicationId "info.alkor.whereareyoukt"
@@ -22,6 +30,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     buildFeatures {
