@@ -2,7 +2,6 @@ package info.alkor.whereareyou.ui
 
 import android.content.Context
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.View
 import info.alkor.whereareyou.R
 import info.alkor.whereareyou.model.action.*
@@ -82,11 +81,12 @@ class LocationActionViewModel {
             } else {
                 model.coordinatesVisible = View.VISIBLE
                 model.coordinates = resources.getString(R.string.location_unknown)
+                model.altitudeVisible = View.GONE
+                model.speedVisible = View.GONE
                 if (!action.final) {
                     model.maxProgress = 0
                 }
             }
-            Log.i("render", "$action")
             return model
         }
 
