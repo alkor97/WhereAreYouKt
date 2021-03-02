@@ -4,12 +4,15 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.HandlerThread
+import android.os.Looper
 import info.alkor.whereareyou.common.minutes
 import info.alkor.whereareyou.common.seconds
 import info.alkor.whereareyou.impl.location.android.LocationProviderImpl
 import info.alkor.whereareyou.model.location.Provider
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkConstructor
 import io.mockk.verify
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
@@ -30,17 +33,23 @@ class LocationProviderTest {
     private lateinit var netListener: LocationListener
     private var gpsHandler: ((LocationListener) -> Unit)? = null
     private var netHandler: ((LocationListener) -> Unit)? = null
+    private val looper = mockk<Looper>()
 
     @Before
     fun beforeTest() {
-        every { context.getSystemService(Context.LOCATION_SERVICE) } returns locationManager
-        locationProvider = LocationProviderImpl(context, Dispatchers.Default)
+        mockkConstructor(HandlerThread::class)
+        every { anyConstructed<HandlerThread>().quitSafely() } returns true
+        every { anyConstructed<HandlerThread>().looper } returns looper
+        every { anyConstructed<HandlerThread>().run() } answers {}
 
-        every { locationManager.requestSingleUpdate("gps", any(), null) } answers {
+        every { context.getSystemService(Context.LOCATION_SERVICE) } returns locationManager
+        locationProvider = LocationProviderImpl(context)
+
+        every { locationManager.requestSingleUpdate("gps", any(), looper) } answers {
             gpsListener = arg(1)
             gpsHandler?.invoke(gpsListener)
         }
-        every { locationManager.requestSingleUpdate("network", any(), null) } answers {
+        every { locationManager.requestSingleUpdate("network", any(), looper) } answers {
             netListener = arg(1)
             netHandler?.invoke(netListener)
         }
@@ -49,11 +58,17 @@ class LocationProviderTest {
 
     @After
     fun afterTest() {
-        verify {
-            locationManager.requestSingleUpdate("gps", gpsListener, null)
-            locationManager.requestSingleUpdate("network", netListener, null)
-            locationManager.removeUpdates(gpsListener)
-            locationManager.removeUpdates(netListener)
+        if (this::gpsListener.isInitialized || this::netListener.isInitialized) {
+            verify {
+                if (this@LocationProviderTest::gpsListener.isInitialized) {
+                    locationManager.requestSingleUpdate("gps", gpsListener, looper)
+                    locationManager.removeUpdates(gpsListener)
+                }
+                if (this@LocationProviderTest::netListener.isInitialized) {
+                    locationManager.requestSingleUpdate("network", netListener, looper)
+                    locationManager.removeUpdates(netListener)
+                }
+            }
         }
     }
 
