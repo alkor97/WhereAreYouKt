@@ -7,13 +7,11 @@ import info.alkor.whereareyou.model.location.Provider
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 data class LocationFound(val location: Location?, val final: Boolean)
 
 abstract class AbstractLocationProvider(
-        private val providers: Array<Provider> = Provider.values(),
-        protected val locationCoroutineContext: CoroutineContext = Dispatchers.Main
+        private val providers: Array<Provider> = Provider.values()
 ) {
     private val scope = CoroutineScope(Dispatchers.IO)
     protected val loggingTag = "locating"
@@ -25,7 +23,7 @@ abstract class AbstractLocationProvider(
 
         // request location for all providers in parallel
         val deferred = providers.map { provider ->
-            scope.async(locationCoroutineContext) {
+            scope.async {
                 val location = requestLocation(provider)
                 if (location != null && location.time.notOlderThan(totalTimeout)) {
                     // report any location found as non-final one
@@ -55,6 +53,9 @@ abstract class AbstractLocationProvider(
 
             // send reasonable location as final one
             channel.send(LocationFound(location, true))
+        }.invokeOnCompletion {
+            Log.d(loggingTag, "location awaiting completed with: " + (it?.allReasons()
+                    ?: "success"))
             channel.close()
         }
         return channel
@@ -64,3 +65,10 @@ abstract class AbstractLocationProvider(
 }
 
 fun Date.notOlderThan(duration: Duration) = Date().time - this.time <= duration.toMillis()
+
+fun Throwable.allReasons(): String {
+    if (localizedMessage != null) {
+        return "\n- $localizedMessage" + (cause?.allReasons() ?: "")
+    }
+    return ""
+}

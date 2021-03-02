@@ -60,7 +60,7 @@ class AppContext : Application() {
     }
 
     @ExperimentalCoroutinesApi
-    fun handleMessage(from: Person, message: String) = scope.launch {
+    fun handleMessage(from: Person, message: String) = scope.launch(Dispatchers.IO) {
         if (!tryHandleLocationRequest(from, message)) {
             tryHandleLocationResponse(from, message)
         }

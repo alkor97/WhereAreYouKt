@@ -7,32 +7,29 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.os.HandlerThread
 import android.util.Log
 import info.alkor.whereareyou.common.*
 import info.alkor.whereareyou.impl.location.AbstractLocationProvider
 import info.alkor.whereareyou.model.location.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class LocationProviderImpl(
-        context: Context,
-        locationCoroutineContext: CoroutineContext = Dispatchers.Main)
-    : AbstractLocationProvider(Provider.values(), locationCoroutineContext) {
+class LocationProviderImpl(context: Context) : AbstractLocationProvider(Provider.values()) {
 
     private val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     @SuppressLint("MissingPermission")
     override suspend fun requestLocation(provider: Provider): info.alkor.whereareyou.model.location.Location? = suspendCancellableCoroutine { continuation ->
+        val thread = HandlerThread("$provider-thread")
+        thread.start()
         try {
             val listener = object : LocationListener {
                 override fun onLocationChanged(location: Location?) {
                     locationManager.removeUpdates(this)
+                    thread.quitSafely()
                     continuation.resume(location?.toModelLocation())
                 }
 
@@ -41,13 +38,13 @@ class LocationProviderImpl(
                 override fun onProviderDisabled(provider: String?) {}
             }
             continuation.invokeOnCancellation {
-                CoroutineScope(locationCoroutineContext).launch {
-                    Log.d(loggingTag, "cancelling location request from $provider")
-                    locationManager.removeUpdates(listener)
-                }
+                locationManager.removeUpdates(listener)
+                thread.quitSafely()
+                Log.d(loggingTag, "cancelled location request from $provider")
             }
-            locationManager.requestSingleUpdate(provider.toAndroidProvider(), listener, null)
+            locationManager.requestSingleUpdate(provider.toAndroidProvider(), listener, thread.looper)
         } catch (e: Exception) {
+            thread.quitSafely()
             continuation.resumeWithException(e)
         }
     }
