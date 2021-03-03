@@ -3,11 +3,14 @@ package info.alkor.whereareyou.ui
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.telephony.PhoneNumberUtils
+import android.telephony.TelephonyManager
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +39,7 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
     }
 
     private val permissionRequester by lazy { PermissionRequester(this) }
+    private val telephonyManager by lazy { getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager }
 
     @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
@@ -140,7 +144,7 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         return false
     }
 
-    fun locatePerson() {
+    private fun locatePerson() {
         val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
         startActivityForResult(intent, PICK_CONTACT_TO_LOCATE)
     }
@@ -169,7 +173,7 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
                 val phoneIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA)
                 if (it.moveToFirst()) {
                     val displayName = it.getString(displayNameIdx)
-                    val phoneNumber = PhoneNumber(it.getString(phoneIdx))
+                    val phoneNumber = PhoneNumber(toPhoneNumber(it.getString(phoneIdx)))
                     return Person(phoneNumber, displayName)
                 }
             }
@@ -189,6 +193,11 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
             setNegativeButton(android.R.string.no, null)
             show()
         }
+    }
+
+    private fun toPhoneNumber(text: String): String {
+        val countryCode = telephonyManager.networkCountryIso.toUpperCase(Locale.US)
+        return PhoneNumberUtils.formatNumberToE164(text, countryCode)
     }
 }
 

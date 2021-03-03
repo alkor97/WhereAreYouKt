@@ -14,16 +14,13 @@ class SmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context != null) {
             val contacts = ContactProvider(context.applicationContext)
-            val ctx = appContext(context)
             Telephony.Sms.Intents.getMessagesFromIntent(intent).forEach {
                 val phoneNumber = PhoneNumber(it.originatingAddress!!)
                 if (phoneNumber.isValid()) {
                     val person = contacts.findName(phoneNumber)
-                    ctx.handleMessage(person, it.messageBody)
+                    (context.applicationContext as AppContext).handleMessage(person, it.messageBody)
                 }
             }
         }
     }
-
-    private fun appContext(context: Context) = context.applicationContext as AppContext
 }

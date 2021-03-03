@@ -18,6 +18,7 @@
     <string name="location_response_max_age_dialog_message">Jeśli uzyskana lokalizacja jest starsza niż wartość progowa to jest ona odrzucana.</string>
 
     <string name="no_location_response">Przykro mi, nie mogę wyznaczyć swego położenia… :(</string>
+    <string name="location_in_progress">Twoja lokalizacja jest właśnie ustalana</string>
 
     <string name="show">Pokaż</string>
 
@@ -115,6 +116,7 @@
     <string name="read_contacts_permission_needed">czytanie podstawowych danych Twoich kontaktów w celu ich prezentacji w kontekście żądań lokalizacji.</string>
     <string name="send_sms_permission_needed">wysyłanie wiadomości tekstowych z lokalizacją.</string>
     <string name="read_phone_state_permission_needed">odczytywanie stanu telefonu w celu wysyłania wiadomości tekstowych z lokalizacją.</string>
+    <string name="foreground_service_permission_needed">uruchamianie usługi na pierwszym planie</string>
 
     <string name="query_someones_location">Pytasz o położenie osoby</string>
     <string name="query_my_location">Twoje położenie jest szukane przez</string>

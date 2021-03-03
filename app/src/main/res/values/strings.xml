@@ -25,6 +25,7 @@
 
     <!-- http://loc.alkor.info/?q=<location> -->
     <string name="location_response_format" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s</string>
+    <string name="location_in_progress">Your location is being established</string>
     <string name="no_location_response">Sorry, my location cannot be found… :(</string>
     <!-- http://loc.alkor.info/?q=<location>,<phone>,<name>,<key> -->
     <string name="location_presenter_url" translatable="false">&scheme;://&pathPrefix;.&host;/?q=%s,%s,%s,%s</string>
@@ -118,6 +119,7 @@
     <string name="read_contacts_permission_needed">read contacts in process of location requesting.</string>
     <string name="send_sms_permission_needed">send text messages to transport location responses.</string>
     <string name="read_phone_state_permission_needed">read phone and network state to send location responses.</string>
+    <string name="foreground_service_permission_needed">run foreground service</string>
 
     <string name="query_someones_location">You have asked location of</string>
     <string name="query_my_location">Your location was asked by</string>

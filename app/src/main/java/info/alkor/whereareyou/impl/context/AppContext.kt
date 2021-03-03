@@ -2,6 +2,7 @@ package info.alkor.whereareyou.impl.context
 
 import android.app.Application
 import android.util.Log
+import androidx.core.content.ContextCompat
 import info.alkor.whereareyou.impl.action.LocationRequestParser
 import info.alkor.whereareyou.impl.action.LocationRequester
 import info.alkor.whereareyou.impl.action.LocationResponder
@@ -10,6 +11,7 @@ import info.alkor.whereareyou.impl.communication.android.SmsSender
 import info.alkor.whereareyou.impl.location.android.LocationProviderImpl
 import info.alkor.whereareyou.impl.persistence.LocationActionRepository
 import info.alkor.whereareyou.impl.persistence.PersonRepository
+import info.alkor.whereareyou.impl.service.android.LocationService
 import info.alkor.whereareyou.impl.settings.Settings
 import info.alkor.whereareyou.model.action.LocationRequest
 import info.alkor.whereareyou.model.action.MessageId
@@ -60,7 +62,7 @@ class AppContext : Application() {
     }
 
     @ExperimentalCoroutinesApi
-    fun handleMessage(from: Person, message: String) = scope.launch(Dispatchers.IO) {
+    fun handleMessage(from: Person, message: String) = scope.launch {
         if (!tryHandleLocationRequest(from, message)) {
             tryHandleLocationResponse(from, message)
         }
@@ -71,17 +73,26 @@ class AppContext : Application() {
         val startTime = now()
         locationRequestParser.parseLocationRequest(from, message)?.let {
             if (personsRepository.isPersonRegistered(it.from)) {
-                handleLocationRequest(it)
-                val duration = now() - startTime
-                Log.i(loggingTag, "remotely-initiated location request handled in $duration seconds")
+                handleLocationRequestWithService(it)
             }
+            val duration = now() - startTime
+            Log.i(loggingTag, "remotely-initiated location request handled in $duration seconds")
             return true
         }
         return false
     }
 
     @ExperimentalCoroutinesApi
+    suspend fun handleLocationRequestFrom(person: Person) {
+        handleLocationRequest(LocationRequest(person))
+    }
+
+    @ExperimentalCoroutinesApi
     private suspend fun handleLocationRequest(request: LocationRequest) = locationResponder.handleLocationRequest(request)
+
+    private fun handleLocationRequestWithService(request: LocationRequest) {
+        ContextCompat.startForegroundService(applicationContext, LocationService.toIntent(applicationContext, request.from))
+    }
 
     private suspend fun tryHandleLocationResponse(from: Person, message: String) {
         val response = locationResponseParser.parseLocationResponse(from, message)

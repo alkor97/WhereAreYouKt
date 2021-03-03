@@ -1,11 +1,10 @@
 package info.alkor.whereareyou
 
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import info.alkor.whereareyou.impl.settings.SettingsAccess
 import info.alkor.whereareyou.impl.settings.SettingsKey
-import info.alkor.whereareyou.ui.PermissionRequester
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,12 +19,6 @@ class StaticsTest {
         for (key in SettingsKey.values()) {
             key.getSummary(access)
         }
-    }
-
-    @Test
-    fun testPermissions() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        PermissionRequester(context)
     }
 
     @Test
