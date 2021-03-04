@@ -98,7 +98,7 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         with(AlertDialog.Builder(this)) {
             setTitle(R.string.app_name)
             setMessage("\n$version\n$timestamp")
-            setIcon(R.drawable.ic_whereareyou_icon)
+            setIcon(R.mipmap.ic_launcher)
             show()
         }
     }

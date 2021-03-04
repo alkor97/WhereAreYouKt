@@ -18,23 +18,12 @@ class NotificationsHelper(val context: Context) {
         createNotificationChannel()
 
         val intent = Intent(context, SimpleActivity::class.java)
-//                .apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//        }
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
-        //val icon = BitmapFactory.decodeResource(context.resources, R.drawable.dog)
-
-        //NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
         return NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_whereareyou_icon)
-                //.setLargeIcon(icon)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(context.getText(R.string.app_name))
                 .setContentText(context.getText(R.string.location_in_progress))
-//                .setStyle(
-//                        NotificationCompat.BigPictureStyle()
-//                                .bigPicture(icon)
-//                                .bigLargeIcon(null))
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .build()
