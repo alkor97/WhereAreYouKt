@@ -49,6 +49,9 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         setSupportActionBar(toolbar)
         PreferenceManager.setDefaultValues(this, R.xml.settings, true)
 
+        window.navigationBarColor = resources.getColor(R.color.colorPrimary, theme)
+        toolbar.setTitleTextColor(resources.getColor(R.color.colorOnPrimary, theme))
+
         val fragmentAdapter = prepareFragmentAdapter()
         viewpager_main.adapter = fragmentAdapter
         tabs_main.setupWithViewPager(viewpager_main)
