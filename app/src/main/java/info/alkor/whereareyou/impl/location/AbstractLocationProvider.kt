@@ -25,7 +25,7 @@ abstract class AbstractLocationProvider(
         val deferred = providers.map { provider ->
             scope.async {
                 val location = requestLocation(provider)
-                if (location != null && location.time.notOlderThan(totalTimeout)) {
+                if (location != null) {
                     // report any location found as non-final one
                     channel.send(LocationFound(location, false))
                 }
