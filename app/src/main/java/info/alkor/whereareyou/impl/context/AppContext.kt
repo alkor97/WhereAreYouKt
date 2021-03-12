@@ -3,6 +3,7 @@ package info.alkor.whereareyou.impl.context
 import android.app.Application
 import android.util.Log
 import androidx.core.content.ContextCompat
+import info.alkor.whereareyou.common.loggingTagOf
 import info.alkor.whereareyou.impl.action.LocationRequestParser
 import info.alkor.whereareyou.impl.action.LocationRequester
 import info.alkor.whereareyou.impl.action.LocationResponder
@@ -37,7 +38,7 @@ class AppContext : Application() {
     val personsRepository by lazy { PersonRepository(this) }
     private val scope = CoroutineScope(Dispatchers.IO)
     private val awaiting = HashMap<MessageId, Mutex>()
-    private val loggingTag = "ctx"
+    private val loggingTag = loggingTagOf("ctx")
 
     @ExperimentalCoroutinesApi
     fun handleOwnLocation() = scope.launch {
@@ -70,14 +71,11 @@ class AppContext : Application() {
 
     @ExperimentalCoroutinesApi
     private suspend fun tryHandleLocationRequest(from: Person, message: String): Boolean {
-        val startTime = now()
         locationRequestParser.parseLocationRequest(from, message)?.let {
             if (personsRepository.isPersonRegistered(it.from)) {
                 handleLocationRequestWithService(it)
             }
-            val duration = now() - startTime
-            Log.i(loggingTag, "remotely-initiated location request handled in $duration seconds")
-            return true
+            return true // location request is correctly parsed
         }
         return false
     }

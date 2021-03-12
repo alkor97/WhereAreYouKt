@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import info.alkor.whereareyou.common.loggingTagOf
 import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.model.action.Person
 import info.alkor.whereareyou.model.action.PhoneNumber
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class LocationService : Service() {
 
-    private val loggingTag = "locsvc"
+    private val loggingTag = loggingTagOf("locsvc")
     private val scope = CoroutineScope(Dispatchers.IO)
     private val requests = hashMapOf<Long, Person>()
 

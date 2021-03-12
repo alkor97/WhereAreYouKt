@@ -2,6 +2,7 @@ package info.alkor.whereareyou.impl.location
 
 import android.util.Log
 import info.alkor.whereareyou.common.Duration
+import info.alkor.whereareyou.common.loggingTagOf
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.Provider
 import kotlinx.coroutines.*
@@ -14,7 +15,7 @@ abstract class AbstractLocationProvider(
         private val providers: Array<Provider> = Provider.values()
 ) {
     private val scope = CoroutineScope(Dispatchers.IO)
-    protected val loggingTag = "locating"
+    protected val loggingTag = loggingTagOf("locating")
 
     @ExperimentalCoroutinesApi
     fun getLocationChannel(timeout: Duration, maxAge: Duration): Channel<LocationFound> {

@@ -17,7 +17,7 @@ object LocationFormatter {
     private val SPEED_FORMAT = DecimalFormat("#.#", DECIMAL_FORMAT_SYMBOLS)
     private val DISTANCE_FORMAT = NumberFormat.getIntegerInstance(Locale.US)
 
-    private val loggingTag = "parse"
+    private val loggingTag = loggingTagOf("parse")
 
     init {
         DATE_FORMAT.timeZone = TimeZone.getTimeZone("UTC")

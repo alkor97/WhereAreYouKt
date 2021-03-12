@@ -2,6 +2,7 @@ package info.alkor.whereareyou.impl.action
 
 import android.util.Log
 import info.alkor.whereareyou.common.Duration
+import info.alkor.whereareyou.common.loggingTagOf
 import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.impl.persistence.RegularTicker
 import info.alkor.whereareyou.model.action.LocationRequest
@@ -23,7 +24,7 @@ class LocationResponder(private val context: AppContext) {
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    private val loggingTag = "responder"
+    private val loggingTag = loggingTagOf("responder")
 
     @ExperimentalCoroutinesApi
     suspend fun handleLocationRequest(incomingRequest: LocationRequest) {

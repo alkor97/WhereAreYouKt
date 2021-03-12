@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import info.alkor.whereareyou.common.loggingTagOf
 import info.alkor.whereareyou.model.action.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +22,7 @@ class LocationActionRepository(context: Context) {
         }
     }
 
-    private val loggingTag = "persistence"
+    private val loggingTag = loggingTagOf("persistence")
 
     fun remove(id: MessageId) {
         scope.launch {

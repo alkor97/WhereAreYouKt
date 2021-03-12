@@ -1,6 +1,7 @@
 package info.alkor.whereareyou.impl.action
 
 import android.util.Log
+import info.alkor.whereareyou.common.loggingTagOf
 import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.model.action.LocationResponse
 import info.alkor.whereareyou.model.action.MessageId
@@ -11,7 +12,7 @@ class LocationRequester(private val context: AppContext) {
     private val sender by lazy { context.messageSender }
     private val repository by lazy { context.actionsRepository }
 
-    private val loggingTag = "requester"
+    private val loggingTag = loggingTagOf("requester")
 
     suspend fun requestLocationOf(target: Person): MessageId {
         val request = repository.onExternalLocationRequested(target)

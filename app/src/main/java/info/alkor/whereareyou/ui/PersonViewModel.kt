@@ -1,7 +1,6 @@
 package info.alkor.whereareyou.ui
 
 import android.content.Context
-import android.util.Log
 import info.alkor.whereareyou.R
 import info.alkor.whereareyou.model.action.Person
 
@@ -17,7 +16,6 @@ class PersonViewModel {
             val model = inputModel ?: PersonViewModel()
             model.name = person.name ?: resources.getString(R.string.person_unknown)
             model.phone = resources.getString(R.string.phone, person.phone.toHumanReadable())
-            Log.i("render", "$person")
             return model
         }
     }
