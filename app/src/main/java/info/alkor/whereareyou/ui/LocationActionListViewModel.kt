@@ -9,9 +9,17 @@ class LocationActionListViewModel(application: Application) : AndroidViewModel(a
 
     private val appContext = application as AppContext
     private val repository = appContext.actionsRepository
-    val actions = repository.all
+    private val filtering = LiveDataFiltering(repository.all) { it.id }
+    val actions = filtering.filtered
 
-    fun removeAction(id: MessageId) {
-        appContext.actionsRepository.remove(id)
+    fun removeAction(id: MessageId, commit: Boolean = true) {
+        if (commit) {
+            appContext.actionsRepository.remove(id)
+        }
+        filtering.markForRemoval(id, !commit)
+    }
+
+    fun restoreAction(id: MessageId) {
+        filtering.markForRemoval(id, false)
     }
 }

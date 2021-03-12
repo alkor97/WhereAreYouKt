@@ -23,8 +23,10 @@ class LocationActionRepository(context: Context) {
 
     private val loggingTag = "persistence"
 
-    fun remove(id: MessageId) = scope.launch {
-        actions.deleteAction(id)
+    fun remove(id: MessageId) {
+        scope.launch {
+            actions.deleteAction(id)
+        }
     }
 
     suspend fun onExternalLocationRequested(target: Person): LocationRequest = onLocationRequested(Direction.OUTGOING, target)

@@ -3,4 +3,5 @@
     <color name="colorPrimary">#5C6BC0</color>
     <color name="colorAccent">#FF5722</color>
     <color name="colorOnPrimary">#FEFEFE</color>
+    <color name="deleteBackgroundColor">#EE0000</color>
 </resources>

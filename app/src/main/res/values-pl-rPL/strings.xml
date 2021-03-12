@@ -142,9 +142,8 @@
 
     <string name="person_unknown">Nieznany</string>
 
-    <string name="person_deletion">Usuwanie</string>
-    <string name="person_deletion_confirmation_query">Na pewno usunąć wpis?</string>
-
     <string name="positive_number">liczba</string>
     <string name="find_person_location">Znajdź położenie osoby</string>
+    <string name="undo">Cofnij</string>
+    <string name="deleted">Usunięto</string>
 </resources>

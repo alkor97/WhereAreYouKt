@@ -142,6 +142,8 @@
 
     <string name="action_deletion">Deletion</string>
     <string name="action_deletion_confirmation_query">Are you sure to remove this entry?</string>
+    <string name="deleted">Deleted</string>
+    <string name="undo">Undo</string>
 
     <string name="location_request">Location request</string>
     <string name="location_request_confirmation_query">Are you sure to send location request to %s?</string>
@@ -149,9 +151,6 @@
     <string name="person_unknown">Unknown</string>
 
     <string name="phone" translatable="false">✆ %s</string>
-
-    <string name="person_deletion">Deletion</string>
-    <string name="person_deletion_confirmation_query">Are you sure to remove this entry?</string>
 
     <string name="positive_number">number</string>
     <string name="find_person_location">Find location of a person</string>

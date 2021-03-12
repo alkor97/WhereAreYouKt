@@ -1,16 +1,19 @@
 package info.alkor.whereareyou.ui
 
-import android.app.AlertDialog
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import info.alkor.whereareyou.R
 import info.alkor.whereareyou.model.action.Person
 import kotlinx.android.synthetic.main.fragment_person_list.*
@@ -35,7 +38,10 @@ class PersonFragment : Fragment() {
             adapter = myAdapter
         }
 
-        val itemTouchHelper = ItemTouchHelper(SwipeHandler())
+        val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_24)!!
+        val deleteBackground = ColorDrawable(requireContext().getColor(R.color.deleteBackgroundColor))
+
+        val itemTouchHelper = ItemTouchHelper(SwipeHandler(deleteIcon, deleteBackground))
         itemTouchHelper.attachToRecyclerView(person_list)
 
         observePersons(myAdapter)
@@ -63,26 +69,22 @@ class PersonFragment : Fragment() {
         fun onPersonLocationRequested(person: Person)
     }
 
-    inner class SwipeHandler : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-        override fun onMove(recyclerView: RecyclerView,
-                            viewHolder: RecyclerView.ViewHolder,
-                            target: RecyclerView.ViewHolder): Boolean = false
+    inner class SwipeHandler(deleteIcon: Drawable, deleteBackground: ColorDrawable) : AbstractSwipeHandler(deleteIcon, deleteBackground) {
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val person = (viewHolder as PersonRecyclerViewAdapter.ViewHolder).getBoundPerson()
             if (person != null) {
-                with(AlertDialog.Builder(context)) {
-                    setTitle(R.string.person_deletion)
-                    setMessage(R.string.person_deletion_confirmation_query)
-                    setIcon(android.R.drawable.ic_dialog_alert)
-                    setPositiveButton(android.R.string.yes) { _, _ ->
-                        viewModel.removePerson(person)
-                    }
-                    setNegativeButton(android.R.string.no) { _, _ ->
-                        person_list.adapter?.notifyItemChanged(viewHolder.getAdapterPosition())
-                    }
-                    show()
-                }
+                viewModel.removePerson(person, commit = false)
+                Snackbar.make(viewHolder.itemView, resources.getString(R.string.deleted), Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo) { viewModel.restorePerson(person) }
+                        .addCallback(object : Snackbar.Callback() {
+                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                                if (event == DISMISS_EVENT_TIMEOUT) {
+                                    viewModel.removePerson(person, commit = true)
+                                }
+                            }
+                        })
+                        .show()
             }
         }
     }
