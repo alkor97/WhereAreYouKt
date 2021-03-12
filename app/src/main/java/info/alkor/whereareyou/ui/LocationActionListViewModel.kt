@@ -15,8 +15,10 @@ class LocationActionListViewModel(application: Application) : AndroidViewModel(a
     fun removeAction(id: MessageId, commit: Boolean = true) {
         if (commit) {
             appContext.actionsRepository.remove(id)
+            filtering.dropRemovalMarkSilently(id)
+        } else {
+            filtering.markForRemoval(id, true)
         }
-        filtering.markForRemoval(id, !commit)
     }
 
     fun restoreAction(id: MessageId) {

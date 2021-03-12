@@ -28,8 +28,10 @@ class LiveDataFiltering<K, V>(private val stored: LiveData<List<V>>, private val
         mediator
     }
 
+    fun dropRemovalMarkSilently(key: K) = markedForRemoval.remove(key)
+
     fun markForRemoval(key: K, marked: Boolean) {
-        val updated = if (marked) markedForRemoval.add(key) else markedForRemoval.remove(key)
+        val updated = if (marked) markedForRemoval.add(key) else dropRemovalMarkSilently(key)
         if (updated) {
             version.postValue(1 + (version.value ?: 0))
         }

@@ -20,8 +20,10 @@ class PersonListViewModel(application: Application) : AndroidViewModel(applicati
     fun removePerson(person: Person, commit: Boolean = true) {
         if (commit) {
             repository.removePerson(person)
+            filtering.dropRemovalMarkSilently(person)
+        } else {
+            filtering.markForRemoval(person, true)
         }
-        filtering.markForRemoval(person, !commit)
     }
 
     fun restorePerson(person: Person) {
