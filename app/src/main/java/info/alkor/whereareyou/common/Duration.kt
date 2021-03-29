@@ -48,6 +48,16 @@ data class Duration(val value: Long, val unit: TimeUnit) {
 
     operator fun unaryMinus() = Duration(-value, unit)
 
+    operator fun compareTo(other: Duration): Int {
+        val thisOne = toSmallest()
+        val otherOne = other.toSmallest()
+        return when {
+            thisOne < otherOne -> -1
+            thisOne > otherOne -> 1
+            else -> 0
+        }
+    }
+
     fun toNanos() = unit.toNanos(value)
     fun toMicros() = unit.toMicros(value)
     fun toMillis() = unit.toMillis(value)
