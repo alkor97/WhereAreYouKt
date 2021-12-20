@@ -15,16 +15,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import info.alkor.whereareyou.R
+import info.alkor.whereareyou.databinding.FragmentActionListBinding
 import info.alkor.whereareyou.model.action.LocationAction
-import kotlinx.android.synthetic.main.fragment_action_list.*
 
 class ActionFragment : Fragment() {
 
     private lateinit var viewModel: LocationActionListViewModel
+    private lateinit var binding: FragmentActionListBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_action_list, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        this.binding = FragmentActionListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,7 +37,7 @@ class ActionFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(LocationActionListViewModel::class.java)
         val myAdapter = ActionRecyclerViewAdapter(activity as OnListFragmentInteractionListener)
 
-        action_list.apply {
+        binding.actionList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = myAdapter
         }
@@ -42,7 +46,7 @@ class ActionFragment : Fragment() {
         val deleteBackground = ColorDrawable(requireContext().getColor(R.color.deleteBackgroundColor))
 
         val itemTouchHelper = ItemTouchHelper(SwipeHandler(deleteIcon, deleteBackground))
-        itemTouchHelper.attachToRecyclerView(action_list)
+        itemTouchHelper.attachToRecyclerView(binding.actionList)
 
         observeActions(myAdapter)
     }
@@ -56,7 +60,7 @@ class ActionFragment : Fragment() {
             result.dispatchUpdatesTo(adapter)
 
             if (newList.size > oldListSize) {
-                action_list.layoutManager?.scrollToPosition(0)
+                binding.actionList.layoutManager?.scrollToPosition(0)
             }
         }
     }

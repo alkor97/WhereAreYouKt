@@ -7,10 +7,8 @@ import android.provider.Telephony
 import info.alkor.whereareyou.impl.contact.android.ContactProvider
 import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.model.action.PhoneNumber
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class SmsReceiver : BroadcastReceiver() {
-    @ExperimentalCoroutinesApi
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context != null) {
             val contacts = ContactProvider(context.applicationContext)

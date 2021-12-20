@@ -6,7 +6,6 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
-import android.os.Bundle
 import android.os.HandlerThread
 import android.util.Log
 import info.alkor.whereareyou.common.*
@@ -27,15 +26,11 @@ class LocationProviderImpl(context: Context) : AbstractLocationProvider(Provider
         thread.start()
         try {
             val listener = object : LocationListener {
-                override fun onLocationChanged(location: Location?) {
+                override fun onLocationChanged(location: Location) {
                     locationManager.removeUpdates(this)
                     thread.quitSafely()
-                    continuation.resume(location?.toModelLocation())
+                    continuation.resume(location.toModelLocation())
                 }
-
-                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-                override fun onProviderEnabled(provider: String?) {}
-                override fun onProviderDisabled(provider: String?) {}
             }
             continuation.invokeOnCancellation {
                 locationManager.removeUpdates(listener)

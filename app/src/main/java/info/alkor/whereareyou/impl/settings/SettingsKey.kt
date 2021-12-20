@@ -15,12 +15,12 @@ enum class SettingsKey(val defaultId: Int) {
         override fun getSummary(access: SettingsAccess) = access.getDurationValueAsString(this)
     };
 
-    override fun toString() = name.toLowerCase(Locale.ROOT)
+    override fun toString() = name.lowercase(Locale.ROOT)
     abstract fun getSummary(access: SettingsAccess): String
 
     companion object {
         fun fromString(key: String): SettingsKey? {
-            val uppercase = key.toUpperCase(Locale.ROOT)
+            val uppercase = key.uppercase(Locale.ROOT)
             for (settingsKey in values()) {
                 if (uppercase == settingsKey.name) {
                     return settingsKey

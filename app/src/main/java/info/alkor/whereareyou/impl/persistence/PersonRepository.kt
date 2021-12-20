@@ -31,5 +31,6 @@ class PersonRepository(context: Context) {
         }
     }
 
-    suspend fun isPersonRegistered(person: Person): Boolean = persons.getPersonByPhone(person.toRecord().phone) != null
+    fun isPersonRegistered(person: Person): Boolean =
+        persons.getPersonByPhone(person.toRecord().phone) != null
 }

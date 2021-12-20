@@ -18,15 +18,16 @@ class NotificationsHelper(val context: Context) {
         createNotificationChannel()
 
         val intent = Intent(context, SimpleActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val pendingIntent =
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         return NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(context.getText(R.string.app_name))
-                .setContentText(context.getText(R.string.location_in_progress))
-                .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .build()
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(context.getText(R.string.app_name))
+            .setContentText(context.getText(R.string.location_in_progress))
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
     }
 
     private fun createNotificationChannel() {

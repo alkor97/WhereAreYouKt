@@ -27,6 +27,7 @@
         <activity
             android:name=".ui.SimpleActivity"
             android:label="@string/title_activity_simple"
+            android:exported="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,6 +55,7 @@
 
         <receiver
             android:name=".impl.communication.android.SmsReceiver"
+            android:exported="true"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

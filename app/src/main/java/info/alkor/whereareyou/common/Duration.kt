@@ -11,7 +11,7 @@ fun TimeUnit.asString(): String = when {
     this == TimeUnit.MILLISECONDS -> "msec"
     this == TimeUnit.MICROSECONDS -> "usec"
     this == TimeUnit.NANOSECONDS -> "nsec"
-    else -> javaClass.simpleName.toLowerCase(Locale.ROOT)
+    else -> javaClass.simpleName.lowercase(Locale.ROOT)
 }
 
 data class Duration(val value: Long, val unit: TimeUnit) {

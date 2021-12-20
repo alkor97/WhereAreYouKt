@@ -13,11 +13,14 @@ import android.telephony.PhoneNumberUtils
 import android.telephony.TelephonyManager
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import info.alkor.whereareyou.BuildConfig
 import info.alkor.whereareyou.R
+import info.alkor.whereareyou.databinding.ActivitySimpleBinding
 import info.alkor.whereareyou.impl.context.AppContext
 import info.alkor.whereareyou.impl.settings.GOOGLE_API_KEY
 import info.alkor.whereareyou.model.action.LocationAction
@@ -26,7 +29,6 @@ import info.alkor.whereareyou.model.action.PhoneNumber
 import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.LocationFormatter
 import info.alkor.whereareyou.ui.settings.SettingsActivity
-import kotlinx.android.synthetic.main.activity_simple.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,32 +36,41 @@ import java.util.*
 
 class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInteractionListener, PersonFragment.OnListFragmentInteractionListener {
 
-    companion object {
-        private const val PICK_CONTACT_TO_LOCATE = 13579
-    }
-
     private val permissionRequester by lazy { PermissionRequester(this) }
     private val telephonyManager by lazy { getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager }
+    private lateinit var binding: ActivitySimpleBinding
+    private var locatePersonLauncher: ActivityResultLauncher<Intent>? = null
 
-    @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_simple)
-        setSupportActionBar(toolbar)
+        this.binding = ActivitySimpleBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
         PreferenceManager.setDefaultValues(this, R.xml.settings, true)
 
         window.navigationBarColor = resources.getColor(R.color.colorPrimary, theme)
-        toolbar.setTitleTextColor(resources.getColor(R.color.colorOnPrimary, theme))
+        binding.toolbar.setTitleTextColor(resources.getColor(R.color.colorOnPrimary, theme))
 
         val fragmentAdapter = prepareFragmentAdapter()
-        viewpager_main.adapter = fragmentAdapter
-        tabs_main.setupWithViewPager(viewpager_main)
+        binding.viewpagerMain.adapter = fragmentAdapter
+        binding.tabsMain.setupWithViewPager(binding.viewpagerMain)
 
-        fab.setOnLongClickListener { locateMe() }
-        fab.setOnClickListener { locatePerson() }
+        binding.fab.setOnLongClickListener { locateMe() }
+        binding.fab.setOnClickListener { locatePerson() }
 
         permissionRequester.ensurePermissionsGranted(this)
+
+        locatePersonLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                val intent = it.data
+                if (it.resultCode == Activity.RESULT_OK && intent != null) {
+                    extractPerson(intent)?.let {
+                        addPersonToFavourites(it)
+                        onPersonLocationRequested(it)
+                    }
+                }
+            }
     }
 
     @ExperimentalCoroutinesApi
@@ -147,19 +158,10 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         return false
     }
 
+
     private fun locatePerson() {
         val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-        startActivityForResult(intent, PICK_CONTACT_TO_LOCATE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        super.onActivityResult(requestCode, resultCode, intent)
-        if (requestCode == PICK_CONTACT_TO_LOCATE && resultCode == Activity.RESULT_OK && intent != null) {
-            extractPerson(intent)?.let {
-                addPersonToFavourites(it)
-                onPersonLocationRequested(it)
-            }
-        }
+        locatePersonLauncher?.launch(intent)
     }
 
     private fun addPersonToFavourites(person: Person) {
@@ -189,17 +191,17 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
             setTitle(R.string.location_request)
             setMessage(person.toQueryConfirmation(context.resources))
             setIcon(android.R.drawable.ic_dialog_alert)
-            setPositiveButton(android.R.string.yes) { _, _ ->
+            setPositiveButton(android.R.string.ok) { _, _ ->
                 val ctx = applicationContext as AppContext
                 ctx.requestLocationOf(person)
             }
-            setNegativeButton(android.R.string.no, null)
+            setNegativeButton(android.R.string.cancel, null)
             show()
         }
     }
 
     private fun toPhoneNumber(text: String): String {
-        val countryCode = telephonyManager.networkCountryIso.toUpperCase(Locale.US)
+        val countryCode = telephonyManager.networkCountryIso.uppercase(Locale.US)
         return PhoneNumberUtils.formatNumberToE164(text, countryCode)
     }
 }

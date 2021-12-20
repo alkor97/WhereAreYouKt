@@ -6,7 +6,7 @@ sealed class DistanceUnit(private val meters: Double) {
     fun toMeters(value: Double) = value * meters
     fun fromMeters(value: Double) = value / meters
     override fun toString(): String {
-        return javaClass.simpleName.toLowerCase(Locale.getDefault())
+        return javaClass.simpleName.lowercase(Locale.getDefault())
     }
 }
 

@@ -51,7 +51,10 @@ class SmsSender(private val context: Context) : AbstractMessageSender(context as
         val intent = Intent(action)
         val receiver = MessageEventReceiver(scope, channel)
         context.registerReceiver(receiver, IntentFilter(action))
-        return ReceiverAndIntent(receiver, PendingIntent.getBroadcast(context, 0, intent, 0))
+        return ReceiverAndIntent(
+            receiver,
+            PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        )
     }
 
     private class MessageEventReceiver(val scope: CoroutineScope, val channel: Channel<SendingStatus>) : BroadcastReceiver() {

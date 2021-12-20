@@ -14,25 +14,25 @@ interface LocationActionDao {
     fun all(): LiveData<List<LocationActionRecord>>
 
     @Query("DELETE FROM location_action WHERE id = :id")
-    suspend fun deleteAction(id: MessageId)
+    fun deleteAction(id: MessageId)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addAction(action: LocationActionRecord): MessageId
+    fun addAction(action: LocationActionRecord): MessageId
 
     @Query("UPDATE location_action SET status = :status WHERE id = :id")
-    suspend fun updateSendingStatus(id: MessageId, status: SendingStatus)
+    fun updateSendingStatus(id: MessageId, status: SendingStatus)
 
     @Query("UPDATE location_action SET progress = :progress WHERE id = :id")
-    suspend fun updateProgress(id: MessageId, progress: Float)
+    fun updateProgress(id: MessageId, progress: Float)
 
     @Query("SELECT * FROM location_action WHERE id = :id")
-    suspend fun findById(id: MessageId): LocationActionRecord?
+    fun findById(id: MessageId): LocationActionRecord?
 
     @Query("SELECT * FROM location_action WHERE phone = :phone AND isFinal = 0 ORDER BY id DESC LIMIT 1")
-    suspend fun findMatching(phone: String): LocationActionRecord?
+    fun findMatching(phone: String): LocationActionRecord?
 
     @Update
-    suspend fun updateAction(action: LocationActionRecord)
+    fun updateAction(action: LocationActionRecord)
 }
 
 @Entity(tableName = "location_action")

@@ -15,16 +15,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import info.alkor.whereareyou.R
+import info.alkor.whereareyou.databinding.FragmentPersonListBinding
 import info.alkor.whereareyou.model.action.Person
-import kotlinx.android.synthetic.main.fragment_person_list.*
 
 class PersonFragment : Fragment() {
 
     private lateinit var viewModel: PersonListViewModel
+    private lateinit var binding: FragmentPersonListBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_person_list, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        this.binding = FragmentPersonListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,7 +37,7 @@ class PersonFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(PersonListViewModel::class.java)
         val myAdapter = PersonRecyclerViewAdapter(activity as OnListFragmentInteractionListener)
 
-        person_list.apply {
+        binding.personList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = myAdapter
         }
@@ -42,7 +46,7 @@ class PersonFragment : Fragment() {
         val deleteBackground = ColorDrawable(requireContext().getColor(R.color.deleteBackgroundColor))
 
         val itemTouchHelper = ItemTouchHelper(SwipeHandler(deleteIcon, deleteBackground))
-        itemTouchHelper.attachToRecyclerView(person_list)
+        itemTouchHelper.attachToRecyclerView(binding.personList)
 
         observePersons(myAdapter)
     }
@@ -56,7 +60,7 @@ class PersonFragment : Fragment() {
             result.dispatchUpdatesTo(myAdapter)
 
             if (newList.size > oldListSize) {
-                person_list.layoutManager?.scrollToPosition(0)
+                binding.personList.layoutManager?.scrollToPosition(0)
             }
         }
     }

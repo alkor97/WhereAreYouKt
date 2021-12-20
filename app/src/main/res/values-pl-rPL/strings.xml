@@ -127,7 +127,7 @@
     <string name="status_locating">lokalizowanie</string>
 
     <string name="above_sea_level">%s nad poziomem morza</string>
-    <string name="speed_and_bearing">przy %s w kierunku %s (%s)</string>
+    <string name="speed_and_bearing">przy %1$s w kierunku %2$s (%3$s)</string>
 
     <string name="location_unknown">nieznane</string>
 

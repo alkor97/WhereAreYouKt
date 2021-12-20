@@ -30,36 +30,40 @@ class LocationActionRepository(context: Context) {
         }
     }
 
-    suspend fun onExternalLocationRequested(target: Person): LocationRequest = onLocationRequested(Direction.OUTGOING, target)
+    fun onExternalLocationRequested(target: Person): LocationRequest =
+        onLocationRequested(Direction.OUTGOING, target)
 
-    suspend fun onMyLocationRequested(requester: Person): LocationRequest = onLocationRequested(Direction.INCOMING, requester)
+    fun onMyLocationRequested(requester: Person): LocationRequest =
+        onLocationRequested(Direction.INCOMING, requester)
 
-    private suspend fun onLocationRequested(direction: Direction, person: Person): LocationRequest {
+    private fun onLocationRequested(direction: Direction, person: Person): LocationRequest {
         Log.d(loggingTag, "onLocationRequested: $direction $person")
         val action = LocationAction(
-                null,
-                direction,
-                person,
-                null,
-                false,
-                SendingStatus.PENDING,
-                0.0f)
+            null,
+            direction,
+            person,
+            null,
+            false,
+            SendingStatus.PENDING,
+            0.0f
+        )
 
         val id = actions.addAction(action.toRecord())
         return LocationRequest(person, id)
     }
 
-    suspend fun onCommunicationStatusUpdate(request: LocationRequest, status: SendingStatus) {
+    fun onCommunicationStatusUpdate(request: LocationRequest, status: SendingStatus) {
         Log.d(loggingTag, "onCommunicationStatusUpdate: $request $status")
         if (request.id != null) {
             actions.updateSendingStatus(request.id, status)
         }
     }
 
-    suspend fun onLocationResponse(response: LocationResponse, id: MessageId? = null): MessageId? {
+    fun onLocationResponse(response: LocationResponse, id: MessageId? = null): MessageId? {
         Log.d(loggingTag, "onLocationResponse: $response $id")
 
-        val found = if (id != null) actions.findById(id) else actions.findMatching(response.person.phone.toExternalForm())
+        val found =
+            if (id != null) actions.findById(id) else actions.findMatching(response.person.phone.toExternalForm())
         if (found != null) {
             if (response.location != null) {
                 found.location = response.location.toRecord()
@@ -73,7 +77,7 @@ class LocationActionRepository(context: Context) {
         }
     }
 
-    suspend fun updateProgress(id: MessageId, progress: Float) {
+    fun updateProgress(id: MessageId, progress: Float) {
         actions.updateProgress(id, progress)
     }
 }

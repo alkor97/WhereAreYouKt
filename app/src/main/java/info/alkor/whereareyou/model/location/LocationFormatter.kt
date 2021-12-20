@@ -42,7 +42,10 @@ object LocationFormatter {
         fun parse(context: Context): E = try {
             doParse(context[field])
         } catch (e: Exception) {
-            throw ParserException("Failed to parse ${field.name.toLowerCase(Locale.US)} from `${context[field]}`", e)
+            throw ParserException(
+                "Failed to parse ${field.name.lowercase(Locale.US)} from `${context[field]}`",
+                e
+            )
         }
 
         protected abstract fun doParse(text: String?): E
@@ -54,9 +57,11 @@ object LocationFormatter {
     }
 
     private object ProviderHandler : AbstractHandler<Provider>(Field.PROVIDER) {
-        override fun format(value: Provider): String = value.name.toLowerCase(Locale.US)
-        override fun doParse(text: String?): Provider = Provider.valueOf(text?.toUpperCase(Locale.US)
-                ?: "")
+        override fun format(value: Provider): String = value.name.lowercase(Locale.US)
+        override fun doParse(text: String?): Provider = Provider.valueOf(
+            text?.uppercase(Locale.US)
+                ?: ""
+        )
     }
 
     private object LatitudeHandler : AbstractHandler<Latitude>(Field.LATITUDE) {

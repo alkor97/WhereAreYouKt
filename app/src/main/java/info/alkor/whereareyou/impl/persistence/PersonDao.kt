@@ -9,13 +9,13 @@ interface PersonDao {
     fun all(): LiveData<List<PersonRecord>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vararg persons: PersonRecord)
+    fun insert(vararg persons: PersonRecord)
 
     @Delete
-    suspend fun delete(person: PersonRecord)
+    fun delete(person: PersonRecord)
 
     @Query("SELECT * FROM person WHERE phone = :phone")
-    suspend fun getPersonByPhone(phone: String): PersonRecord?
+    fun getPersonByPhone(phone: String): PersonRecord?
 }
 
 @Entity(tableName = "person")
