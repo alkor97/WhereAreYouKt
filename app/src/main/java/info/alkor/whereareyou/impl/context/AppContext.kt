@@ -94,9 +94,11 @@ class AppContext : Application() {
 
     private suspend fun tryHandleLocationResponse(from: Person, message: String) {
         val response = locationResponseParser.parseLocationResponse(from, message)
-        val requestId = locationRequester.onLocationResponse(response)
-        if (requestId != null) {
-            awaiting[requestId]?.unlock()
+        if (response != null) {
+            val requestId = locationRequester.onLocationResponse(response)
+            if (requestId != null) {
+                awaiting[requestId]?.unlock()
+            }
         }
     }
 
