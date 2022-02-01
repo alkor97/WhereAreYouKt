@@ -8,29 +8,37 @@ import java.util.*
 class LocationFormatterTest {
 
     private fun location(
-            provider: Provider, date: Date,
-            latitude: Double, longitude: Double, accuracy: Double? = null,
-            altitude: Double? = null, altitudeAccuracy: Double? = null,
-            bearing: Double? = null, bearingAccuracy: Double? = null,
-            speed: Double? = null, speedAccuracy: Double? = null) = Location(
-            provider,
-            date,
-            Coordinates(
-                    Latitude(latitude),
-                    Longitude(longitude),
-                    if (accuracy != null) Distance(accuracy) else null
-            ),
-            if (altitude != null) Altitude(Distance(altitude),
-                    if (altitudeAccuracy != null) Distance(altitudeAccuracy) else null)
-            else null,
-            if (bearing != null) Bearing(Azimuth(bearing),
-                    if (bearingAccuracy != null) Azimuth(bearingAccuracy) else null)
-            else null,
-            if (speed != null) Speed(Velocity(speed),
-                    if (speedAccuracy != null) Velocity(speedAccuracy) else null)
-            else null)
+        provider: Provider, date: Date,
+        latitude: Double, longitude: Double, accuracy: Double? = null,
+        altitude: Double? = null, altitudeAccuracy: Double? = null,
+        bearing: Double? = null, bearingAccuracy: Double? = null,
+        speed: Double? = null, speedAccuracy: Double? = null
+    ) = ComputedLocation(
+        provider,
+        date,
+        Coordinates(
+            Latitude(latitude),
+            Longitude(longitude),
+            if (accuracy != null) Distance(accuracy) else null
+        ),
+        if (altitude != null) Altitude(
+            Distance(altitude),
+            if (altitudeAccuracy != null) Distance(altitudeAccuracy) else null
+        )
+        else null,
+        if (bearing != null) Bearing(
+            Azimuth(bearing),
+            if (bearingAccuracy != null) Azimuth(bearingAccuracy) else null
+        )
+        else null,
+        if (speed != null) Speed(
+            Velocity(speed),
+            if (speedAccuracy != null) Velocity(speedAccuracy) else null
+        )
+        else null
+    )
 
-    private fun verify(expected: Location) {
+    private fun verify(expected: ComputedLocation) {
         val expectedText = LocationFormatter.format(expected)
         val actual = LocationFormatter.parse(expectedText)
 

@@ -22,24 +22,24 @@ class ConvertersTest {
     @Test
     fun testLocationActionConversion() {
         val data = LocationAction(
-                id = 13,
-                direction = Direction.INCOMING,
-                person = Person(PhoneNumber("+48123456789"), "Mariusz"),
-                location = Location(
-                        provider = Provider.GPS,
-                        time = Date(),
-                        coordinates = Coordinates(
-                                latitude = latitudeDegrees(53.1),
-                                longitude = longitudeDegrees(14.2),
-                                accuracy = meters(13.1)
-                        ),
-                        altitude = Altitude(meters(14.2), meters(1.2)),
-                        bearing = Bearing(azimuthDegrees(13.3), azimuthDegrees(1.1)),
-                        speed = Speed(metersPerSecond(31.4), metersPerSecond(2.1))
+            id = 13,
+            direction = Direction.INCOMING,
+            person = Person(PhoneNumber("+48123456789"), "Mariusz"),
+            time = Date(),
+            location = LocationImpl(
+                provider = Provider.GPS,
+                coordinates = Coordinates(
+                    latitude = latitudeDegrees(53.1),
+                    longitude = longitudeDegrees(14.2),
+                    accuracy = meters(13.1)
                 ),
-                final = true,
-                status = SendingStatus.DELIVERED,
-                progress = 13.5f
+                altitude = Altitude(meters(14.2), meters(1.2)),
+                bearing = Bearing(azimuthDegrees(13.3), azimuthDegrees(1.1)),
+                speed = Speed(metersPerSecond(31.4), metersPerSecond(2.1))
+            ),
+            final = true,
+            status = SendingStatus.DELIVERED,
+            progress = 13.5f
         )
         assertEquals(data, data.toRecord().toModel())
     }

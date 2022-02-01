@@ -20,17 +20,27 @@ class LocationResponseParser(private val context: AppContext) {
         val trimmedText = text.trim()
         if (trimmedText.startsWith(prefix)) {
             val location = LocationFormatter.parse(trimmedText.substring(prefix.length))
-            return LocationResponse(person, location, true)
+            return LocationResponse(
+                person = person,
+                time = location?.time ?: Date(),
+                location = location,
+                final = true
+            )
         }
         if (locationCannotBeComputedResponses.contains(trimmedText)) {
-            return LocationResponse(person, null, true)
+            return LocationResponse(
+                person = person,
+                time = Date(),
+                location = null,
+                final = true
+            )
         }
         return null // some irrelevant text arrived from remote person
     }
 
     fun formatLocationResponse(response: LocationResponse): String {
         if (response.location != null) {
-            return getString(LocationFormatter.format(response.location))
+            return getString(LocationFormatter.format(response.location, response.time))
         }
         return context.settings.getNonExistingLocationResponse()
     }

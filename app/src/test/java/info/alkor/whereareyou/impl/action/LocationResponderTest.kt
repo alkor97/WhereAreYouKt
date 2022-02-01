@@ -11,8 +11,8 @@ import info.alkor.whereareyou.impl.location.android.LocationProviderImpl
 import info.alkor.whereareyou.impl.persistence.LocationActionRepository
 import info.alkor.whereareyou.impl.settings.Settings
 import info.alkor.whereareyou.model.action.*
+import info.alkor.whereareyou.model.location.ComputedLocation
 import info.alkor.whereareyou.model.location.Coordinates
-import info.alkor.whereareyou.model.location.Location
 import info.alkor.whereareyou.model.location.Provider
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -66,7 +66,16 @@ class LocationResponderTest {
 
             val statuses = arrayListOf(SendingStatus.SENT, SendingStatus.DELIVERED)
             val statusChannel = Channel<SendingStatus>()
-            coEvery { messageSender.send(LocationResponse(incoming.from, foundLocations[2].location, foundLocations[2].final)) } answers {
+            coEvery {
+                messageSender.send(
+                    LocationResponse(
+                        person = incoming.from,
+                        time = foundLocations[2].location?.time ?: Date(),
+                        location = foundLocations[2].location,
+                        final = foundLocations[2].final
+                    )
+                )
+            } answers {
                 CoroutineScope(Dispatchers.IO).launch {
                     statuses.forEach {
                         statusChannel.send(it)
@@ -81,7 +90,16 @@ class LocationResponderTest {
             }
 
             foundLocations.forEach {
-                coEvery { repository.onLocationResponse(LocationResponse(incoming.from, it.location, it.final), requestWithId.id) } coAnswers { requestWithId.id }
+                coEvery {
+                    repository.onLocationResponse(
+                        LocationResponse(
+                            person = incoming.from,
+                            time = it.location?.time ?: Date(),
+                            location = it.location,
+                            final = it.final
+                        ), requestWithId.id
+                    )
+                } coAnswers { requestWithId.id }
             }
 
             launch {
@@ -97,7 +115,14 @@ class LocationResponderTest {
             coVerify {
                 repository.updateProgress(requestWithId.id!!, any())
                 foundLocations.forEach {
-                    repository.onLocationResponse(LocationResponse(incoming.from, it.location, it.final), requestWithId.id)
+                    repository.onLocationResponse(
+                        LocationResponse(
+                            person = incoming.from,
+                            time = it.location?.time ?: Date(),
+                            location = it.location,
+                            final = it.final
+                        ), requestWithId.id
+                    )
                 }
                 statuses.forEach {
                     repository.onCommunicationStatusUpdate(requestWithId, it)
@@ -106,9 +131,9 @@ class LocationResponderTest {
         }
     }
 
-    private fun location(provider: Provider) = Location(
-            provider,
-            Date(),
-            Coordinates(latitudeDegrees(53.1), longitudeDegrees(14.2))
+    private fun location(provider: Provider) = ComputedLocation(
+        provider,
+        Date(),
+        Coordinates(latitudeDegrees(53.1), longitudeDegrees(14.2))
     )
 }

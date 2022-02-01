@@ -16,33 +16,40 @@ import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class LocationProviderImpl(context: Context) : AbstractLocationProvider(Provider.values()) {
+class LocationProviderImpl(private val context: Context) :
+    AbstractLocationProvider(Provider.values()) {
 
-    private val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val locationManager: LocationManager =
+        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     @SuppressLint("MissingPermission")
-    override suspend fun requestLocation(provider: Provider): info.alkor.whereareyou.model.location.Location? = suspendCancellableCoroutine { continuation ->
-        val thread = HandlerThread("$provider-thread")
-        thread.start()
-        try {
-            val listener = object : LocationListener {
-                override fun onLocationChanged(location: Location) {
-                    locationManager.removeUpdates(this)
-                    thread.quitSafely()
-                    continuation.resume(location.toModelLocation())
+    override suspend fun requestLocation(provider: Provider): ComputedLocation? =
+        suspendCancellableCoroutine { continuation ->
+            val thread = HandlerThread("$provider-thread")
+            thread.start()
+            try {
+                val listener = object : LocationListener {
+                    override fun onLocationChanged(location: Location) {
+                        locationManager.removeUpdates(this)
+                        thread.quitSafely()
+                        continuation.resume(location.toModelLocation())
+                    }
                 }
-            }
-            continuation.invokeOnCancellation {
-                locationManager.removeUpdates(listener)
+                continuation.invokeOnCancellation {
+                    locationManager.removeUpdates(listener)
+                    thread.quitSafely()
+                    Log.d(loggingTag, "cancelled location request from $provider")
+                }
+                locationManager.requestSingleUpdate(
+                    provider.toAndroidProvider(),
+                    listener,
+                    thread.looper
+                )
+            } catch (e: Exception) {
                 thread.quitSafely()
-                Log.d(loggingTag, "cancelled location request from $provider")
+                continuation.resumeWithException(e)
             }
-            locationManager.requestSingleUpdate(provider.toAndroidProvider(), listener, thread.looper)
-        } catch (e: Exception) {
-            thread.quitSafely()
-            continuation.resumeWithException(e)
         }
-    }
 }
 
 fun Provider.toAndroidProvider() = when (this) {
@@ -84,10 +91,11 @@ fun Location.toModelBearing() =
                 Bearing(azimuthDegrees(bearing.toDouble()))
         else null
 
-fun Location.toModelLocation() = Location(
-        toModelProvider(),
-        Date(time),
-        toModelCoordinates(),
-        toModelAltitude(),
-        toModelBearing(),
-        toModelSpeed())
+fun Location.toModelLocation() = ComputedLocation(
+    toModelProvider(),
+    Date(time),
+    toModelCoordinates(),
+    toModelAltitude(),
+    toModelBearing(),
+    toModelSpeed()
+)

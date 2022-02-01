@@ -9,6 +9,7 @@ import info.alkor.whereareyou.model.action.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 
 class LocationActionRepository(context: Context) {
 
@@ -42,6 +43,7 @@ class LocationActionRepository(context: Context) {
             null,
             direction,
             person,
+            Date(),
             null,
             false,
             SendingStatus.PENDING,

@@ -117,25 +117,28 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         }
     }
 
-    private fun formatLink(location: Location, person: Person?) = resources.getString(R.string.location_presenter_url,
-            LocationFormatter.format(location),
-            if (person?.phone != PhoneNumber.OWN)
-                person?.phone?.toExternalForm() ?: ""
-            else "",
-            person?.name
-                    ?: resources.getString(R.string.your_location_is),
-            GOOGLE_API_KEY)
+    private fun formatLink(location: Location, time: Date, person: Person?) = resources.getString(
+        R.string.location_presenter_url,
+        LocationFormatter.format(location, time),
+        if (person?.phone != PhoneNumber.OWN)
+            person?.phone?.toExternalForm() ?: ""
+        else "",
+        person?.name
+            ?: resources.getString(R.string.your_location_is),
+        GOOGLE_API_KEY
+    )
 
-    private fun prepareFragmentAdapter() = GenericPagerAdapter(supportFragmentManager,
-            listOf(
-                    FragmentDescriptor(getString(R.string.tab_actions)) { ActionFragment.newInstance() },
-                    FragmentDescriptor(getString(R.string.tab_persons)) { PersonFragment.newInstance() }
-            )
+    private fun prepareFragmentAdapter() = GenericPagerAdapter(
+        supportFragmentManager,
+        listOf(
+            FragmentDescriptor(getString(R.string.tab_actions)) { ActionFragment.newInstance() },
+            FragmentDescriptor(getString(R.string.tab_persons)) { PersonFragment.newInstance() }
+        )
     )
 
     override fun onShareLocation(action: LocationAction): Boolean {
         if (action.location != null) {
-            val link = formatLink(action.location, action.person)
+            val link = formatLink(action.location, action.time, action.person)
             val intent = Intent(Intent.ACTION_SEND)
             with(intent) {
                 type = "text/plain"
@@ -150,7 +153,7 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
 
     override fun onShowLocation(action: LocationAction): Boolean {
         if (action.location != null) {
-            val link = formatLink(action.location, action.person)
+            val link = formatLink(action.location, action.time, action.person)
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
             startActivity(intent)
             return true

@@ -37,21 +37,21 @@ interface LocationActionDao {
 
 @Entity(tableName = "location_action")
 data class LocationActionRecord(
-        @PrimaryKey(autoGenerate = true)
-        var id: MessageId?,
-        var direction: Direction,
-        var phone: String,
-        var name: String?,
-        @Embedded
-        var location: LocationRecord?,
-        var isFinal: Boolean,
-        var status: SendingStatus,
-        var progress: Float?
+    @PrimaryKey(autoGenerate = true)
+    var id: MessageId?,
+    var direction: Direction,
+    var phone: String,
+    var name: String?,
+    val time: Date,
+    @Embedded
+    var location: LocationRecord?,
+    var isFinal: Boolean,
+    var status: SendingStatus,
+    var progress: Float?
 )
 
 data class LocationRecord(
         val provider: Provider,
-        val time: Date,
         @Embedded
         val coordinates: CoordinatesRecord,
         @Embedded(prefix = "alt_")

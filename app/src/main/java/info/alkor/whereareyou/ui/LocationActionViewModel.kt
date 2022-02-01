@@ -40,7 +40,7 @@ class LocationActionViewModel {
 
         fun build(inputModel: LocationActionViewModel?, action: LocationAction): LocationActionViewModel {
             val model = inputModel ?: LocationActionViewModel()
-            model.timeStamp = formatTimeStamp(action.location?.time ?: Date())
+            model.timeStamp = formatTimeStamp(action.time)
             postHeader(model, action)
             postStatus(model, action)
 
@@ -56,10 +56,12 @@ class LocationActionViewModel {
                     model.altitudeVisible = View.GONE
                 }
 
-                if (action.location.speed != null) {
-                    if (action.location.speed.value.value > 0.0) {
-                        if (action.location.bearing != null) {
-                            model.speed = formatSpeedAndBearing(action.location.speed, action.location.bearing)
+                val speed = action.location.speed
+                if (speed != null) {
+                    if (speed.value.value > 0.0) {
+                        val bearing = action.location.bearing
+                        if (bearing != null) {
+                            model.speed = formatSpeedAndBearing(speed, bearing)
                             model.speedVisible = View.VISIBLE
                         } else {
                             model.speedVisible = View.GONE

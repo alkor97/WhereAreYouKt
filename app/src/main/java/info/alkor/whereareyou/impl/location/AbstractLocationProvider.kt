@@ -3,13 +3,13 @@ package info.alkor.whereareyou.impl.location
 import android.util.Log
 import info.alkor.whereareyou.common.Duration
 import info.alkor.whereareyou.common.loggingTagOf
-import info.alkor.whereareyou.model.location.Location
+import info.alkor.whereareyou.model.location.ComputedLocation
 import info.alkor.whereareyou.model.location.Provider
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import java.util.*
 
-data class LocationFound(val location: Location?, val final: Boolean)
+data class LocationFound(val location: ComputedLocation?, val final: Boolean)
 
 abstract class AbstractLocationProvider(
         private val providers: Array<Provider> = Provider.values()
@@ -62,7 +62,7 @@ abstract class AbstractLocationProvider(
         return channel
     }
 
-    protected abstract suspend fun requestLocation(provider: Provider): Location?
+    protected abstract suspend fun requestLocation(provider: Provider): ComputedLocation?
 }
 
 fun Date.notOlderThan(duration: Duration) = Date().time - this.time <= duration.toMillis()

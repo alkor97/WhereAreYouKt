@@ -84,22 +84,23 @@ fun LiveDataStorage<LocationAction>.remove(id: MessageId) {
 }
 
 fun action(id: MessageId) = LocationAction(
-        id = id,
-        direction = Direction.INCOMING,
-        person = Person(PhoneNumber("+48123456789"), "Mariusz"),
-        location = Location(
-                provider = Provider.GPS,
-                time = Date(),
-                coordinates = Coordinates(
-                        latitude = latitudeDegrees(53.1),
-                        longitude = longitudeDegrees(14.2),
-                        accuracy = meters(13.1)
-                ),
-                altitude = Altitude(meters(14.2), meters(1.2)),
-                bearing = Bearing(azimuthDegrees(13.3), azimuthDegrees(1.1)),
-                speed = Speed(metersPerSecond(31.4), metersPerSecond(2.1))
+    id = id,
+    direction = Direction.INCOMING,
+    person = Person(PhoneNumber("+48123456789"), "Mariusz"),
+    time = Date(),
+    location = ComputedLocation(
+        provider = Provider.GPS,
+        time = Date(),
+        coordinates = Coordinates(
+            latitude = latitudeDegrees(53.1),
+            longitude = longitudeDegrees(14.2),
+            accuracy = meters(13.1)
         ),
-        final = true,
-        status = SendingStatus.DELIVERED,
-        progress = 13.5f
+        altitude = Altitude(meters(14.2), meters(1.2)),
+        bearing = Bearing(azimuthDegrees(13.3), azimuthDegrees(1.1)),
+        speed = Speed(metersPerSecond(31.4), metersPerSecond(2.1))
+    ),
+    final = true,
+    status = SendingStatus.DELIVERED,
+    progress = 13.5f
 )

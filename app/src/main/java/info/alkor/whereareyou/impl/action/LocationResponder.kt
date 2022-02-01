@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class LocationResponder(private val context: AppContext) {
@@ -43,7 +44,12 @@ class LocationResponder(private val context: AppContext) {
 
         val maxAge = settings.getLocationMaxAge()
         locationProvider.getLocationChannel(timeout, maxAge).consumeEach { found ->
-            val response = LocationResponse(request.from, found.location, found.final)
+            val response = LocationResponse(
+                person = request.from,
+                time = found.location?.time ?: Date(),
+                location = found.location,
+                final = found.final
+            )
             repository.onLocationResponse(response, request.id)
 
             if (found.final) {

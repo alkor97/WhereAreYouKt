@@ -50,41 +50,49 @@ fun AccurateValueRecord.toSpeed() = Speed(
 
 fun Location.toRecord() = LocationRecord(
         provider = provider,
-        time = time,
         coordinates = coordinates.toRecord(),
         altitude = altitude?.toRecord(),
         bearing = bearing?.toRecord(),
         speed = speed?.toRecord()
 )
 
-fun LocationRecord.toModel() = Location(
-        provider = provider,
-        time = time,
-        coordinates = coordinates.toModel(),
-        altitude = altitude?.toAltitude(),
-        bearing = bearing?.toBearing(),
-        speed = speed?.toSpeed()
+fun LocationRecord.toModel(): Location = LocationImpl(
+    provider = provider,
+    coordinates = coordinates.toModel(),
+    altitude = altitude?.toAltitude(),
+    bearing = bearing?.toBearing(),
+    speed = speed?.toSpeed()
 )
 
+internal data class LocationImpl(
+    override val provider: Provider,
+    override val coordinates: Coordinates,
+    override val altitude: Altitude? = null,
+    override val bearing: Bearing? = null,
+    override val speed: Speed? = null
+) : Location
+
 fun LocationAction.toRecord() = LocationActionRecord(
-        id = id,
-        direction = direction,
-        phone = person.phone.toExternalForm(),
-        name = person.name,
-        location = location?.toRecord(),
-        isFinal = final,
-        status = status,
-        progress = progress
+    id = id,
+    direction = direction,
+    phone = person.phone.toExternalForm(),
+    name = person.name,
+    time = time,
+    location = location?.toRecord(),
+    isFinal = final,
+    status = status,
+    progress = progress
 )
 
 fun LocationActionRecord.toModel() = LocationAction(
-        id = id!!,
-        direction = direction,
-        person = Person(PhoneNumber(phone), name),
-        location = location?.toModel(),
-        final = isFinal,
-        status = status,
-        progress = progress
+    id = id!!,
+    direction = direction,
+    person = Person(PhoneNumber(phone), name),
+    time = time,
+    location = location?.toModel(),
+    final = isFinal,
+    status = status,
+    progress = progress
 )
 
 class Converters {

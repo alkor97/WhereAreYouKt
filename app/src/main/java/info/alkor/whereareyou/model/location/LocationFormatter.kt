@@ -118,42 +118,57 @@ object LocationFormatter {
         fun join(separator: String = ",") = order.joinToString(separator)
     }
 
-    fun format(location: Location): String {
+    fun format(location: ComputedLocation): String = format(location, location.time)
+
+    fun format(location: Location, time: Date): String {
         val context = Context()
-        context[Field.TIME] = DateHandler.format(location.time)
+        context[Field.TIME] = DateHandler.format(time)
         context[Field.PROVIDER] = ProviderHandler.format(location.provider)
         context[Field.LATITUDE] = LatitudeHandler.format(location.coordinates.latitude)
         context[Field.LONGITUDE] = LongitudeHandler.format(location.coordinates.longitude)
-        context[Field.ACCURACY] = DistanceHandler(Field.ACCURACY).format(location.coordinates.accuracy)
+        context[Field.ACCURACY] =
+            DistanceHandler(Field.ACCURACY).format(location.coordinates.accuracy)
         context[Field.ALTITUDE] = DistanceHandler(Field.ALTITUDE).format(location.altitude?.value)
-        context[Field.ALTITUDE_ACCURACY] = DistanceHandler(Field.ALTITUDE_ACCURACY).format(location.altitude?.accuracy)
+        context[Field.ALTITUDE_ACCURACY] =
+            DistanceHandler(Field.ALTITUDE_ACCURACY).format(location.altitude?.accuracy)
         context[Field.BEARING] = AzimuthHandler(Field.BEARING).format(location.bearing?.value)
-        context[Field.BEARING_ACCURACY] = AzimuthHandler(Field.BEARING_ACCURACY).format(location.bearing?.accuracy)
+        context[Field.BEARING_ACCURACY] =
+            AzimuthHandler(Field.BEARING_ACCURACY).format(location.bearing?.accuracy)
         context[Field.SPEED] = VelocityHandler(Field.SPEED).format(location.speed?.value)
-        context[Field.SPEED_ACCURACY] = VelocityHandler(Field.SPEED_ACCURACY).format(location.speed?.accuracy)
+        context[Field.SPEED_ACCURACY] =
+            VelocityHandler(Field.SPEED_ACCURACY).format(location.speed?.accuracy)
         return context.join()
     }
 
-    fun parse(text: String): Location? {
+    fun parse(text: String): ComputedLocation? {
         val context = Context(text)
         return try {
-            Location(
-                    provider = ProviderHandler.parse(context),
-                    time = DateHandler.parse(context),
-                    coordinates = Coordinates(
-                            latitude = LatitudeHandler.parse(context),
-                            longitude = LongitudeHandler.parse(context),
-                            accuracy = DistanceHandler(Field.ACCURACY).parse(context)
-                    ),
-                    altitude = if (context[Field.ALTITUDE].isNotEmpty())
-                        Altitude(DistanceHandler(Field.ALTITUDE).parse(context)!!, DistanceHandler(Field.ALTITUDE_ACCURACY).parse(context))
-                    else null,
-                    bearing = if (context[Field.BEARING].isNotEmpty())
-                        Bearing(AzimuthHandler(Field.BEARING).parse(context)!!, AzimuthHandler(Field.BEARING_ACCURACY).parse(context))
-                    else null,
-                    speed = if (context[Field.SPEED].isNotEmpty())
-                        Speed(VelocityHandler(Field.SPEED).parse(context)!!, VelocityHandler(Field.SPEED_ACCURACY).parse(context))
-                    else null
+            ComputedLocation(
+                provider = ProviderHandler.parse(context),
+                time = DateHandler.parse(context),
+                coordinates = Coordinates(
+                    latitude = LatitudeHandler.parse(context),
+                    longitude = LongitudeHandler.parse(context),
+                    accuracy = DistanceHandler(Field.ACCURACY).parse(context)
+                ),
+                altitude = if (context[Field.ALTITUDE].isNotEmpty())
+                    Altitude(
+                        DistanceHandler(Field.ALTITUDE).parse(context)!!,
+                        DistanceHandler(Field.ALTITUDE_ACCURACY).parse(context)
+                    )
+                else null,
+                bearing = if (context[Field.BEARING].isNotEmpty())
+                    Bearing(
+                        AzimuthHandler(Field.BEARING).parse(context)!!,
+                        AzimuthHandler(Field.BEARING_ACCURACY).parse(context)
+                    )
+                else null,
+                speed = if (context[Field.SPEED].isNotEmpty())
+                    Speed(
+                        VelocityHandler(Field.SPEED).parse(context)!!,
+                        VelocityHandler(Field.SPEED_ACCURACY).parse(context)
+                    )
+                else null
             )
         } catch (e: ParserException) {
             Log.e(loggingTag, "Parsing exception", e)
