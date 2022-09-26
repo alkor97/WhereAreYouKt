@@ -15,11 +15,11 @@ android {
             keyPassword 'android'
         }
     }
-    compileSdkVersion 31
+    compileSdkVersion 32
     defaultConfig {
         applicationId "info.alkor.whereareyoukt"
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 32
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         archivesBaseName = "WhereAreYouKt-$versionName"
@@ -35,20 +35,21 @@ android {
         dataBinding = true
         viewBinding = true
     }
+    namespace 'info.alkor.whereareyou'
 }
 
-def roomVersion = '2.4.0'
+def roomVersion = '2.4.3'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // view components
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
-    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
 
     // Room components
     implementation "androidx.room:room-runtime:$roomVersion"
@@ -58,16 +59,16 @@ dependencies {
 
     // Lifecycle components
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    kapt "androidx.lifecycle:lifecycle-common-java8:2.4.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+    kapt "androidx.lifecycle:lifecycle-common-java8:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
 
     // Kotlin components
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
-    api 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
 
     // Material design
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.material:material:1.6.1'
 
     // Testing
     testImplementation 'junit:junit:4.13.2'

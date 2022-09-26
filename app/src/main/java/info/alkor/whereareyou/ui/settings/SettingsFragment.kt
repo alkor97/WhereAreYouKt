@@ -22,15 +22,15 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
     override fun onResume() {
         super.onResume()
         preferenceManager.sharedPreferences.let { prefs ->
-            prefs.registerOnSharedPreferenceChangeListener(this)
-            prefs.all.keys.onEach { key ->
+            prefs?.registerOnSharedPreferenceChangeListener(this)
+            prefs?.all?.keys?.onEach { key ->
                 onSharedPreferenceChanged(prefs, key)
             }
         }
     }
 
     override fun onPause() {
-        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        preferenceManager.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(this)
         super.onPause()
     }
 
@@ -48,7 +48,7 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
         }
     }
 
-    override fun onDisplayPreferenceDialog(preference: Preference?) {
+    override fun onDisplayPreferenceDialog(preference: Preference) {
         if (parentFragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG) != null) {
             return
         }

@@ -16,8 +16,10 @@ import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import com.google.android.material.tabs.TabLayoutMediator
 import info.alkor.whereareyou.BuildConfig
 import info.alkor.whereareyou.R
 import info.alkor.whereareyou.databinding.ActivitySimpleBinding
@@ -42,6 +44,7 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
     private var locatePersonLauncher: ActivityResultLauncher<Intent>? = null
 
     @SuppressLint("MissingPermission")
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.binding = ActivitySimpleBinding.inflate(layoutInflater)
@@ -54,7 +57,10 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
 
         val fragmentAdapter = prepareFragmentAdapter()
         binding.viewpagerMain.adapter = fragmentAdapter
-        binding.tabsMain.setupWithViewPager(binding.viewpagerMain)
+
+        TabLayoutMediator(binding.tabsMain, binding.viewpagerMain) { tab, position ->
+            tab.text = tabs[position].title
+        }.attach()
 
         binding.fab.setOnLongClickListener { locateMe() }
         binding.fab.setOnClickListener { locatePerson() }
@@ -128,13 +134,12 @@ class SimpleActivity : AppCompatActivity(), ActionFragment.OnListFragmentInterac
         GOOGLE_API_KEY
     )
 
-    private fun prepareFragmentAdapter() = GenericPagerAdapter(
-        supportFragmentManager,
-        listOf(
-            FragmentDescriptor(getString(R.string.tab_actions)) { ActionFragment.newInstance() },
-            FragmentDescriptor(getString(R.string.tab_persons)) { PersonFragment.newInstance() }
-        )
-    )
+    private fun prepareFragmentAdapter() = GenericPagerAdapter(supportFragmentManager, lifecycle, tabs)
+
+    private val tabs by lazy { listOf(
+        FragmentDescriptor(getString(R.string.tab_actions)) { ActionFragment.newInstance() },
+        FragmentDescriptor(getString(R.string.tab_persons)) { PersonFragment.newInstance() }
+    ) }
 
     override fun onShareLocation(action: LocationAction): Boolean {
         if (action.location != null) {

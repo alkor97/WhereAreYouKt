@@ -16,14 +16,8 @@ class DurationPreference(ctx: Context, attrs: AttributeSet) : DialogPreference(c
         dialogLayoutResource = info.alkor.whereareyou.R.layout.duration_selector
     }
 
-    override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
-        val value = a?.getString(index) ?: DEFAULT_DURATION.toString()
-        duration = duration(value)
-        return value
-    }
-
-    override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any?) {
-        if (restorePersistedValue) {
+    override fun onSetInitialValue(defaultValue: Any?) {
+        if (defaultValue == null) {
             duration = readPersistedDuration()
         } else {
             duration = duration(defaultValue as String)

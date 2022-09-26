@@ -21,6 +21,7 @@ class LocationService : Service() {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val requests = hashMapOf<Long, Person>()
 
+    @ExperimentalCoroutinesApi
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
             if (isCompleted()) {

@@ -28,7 +28,7 @@ class SmsSender(private val context: Context) : AbstractMessageSender(context as
         val (sendReceiver, sendIntent) = createAndRegisterIntent(SMS_SENT, localChannel)
         val (deliveryReceiver, deliveryIntent) = createAndRegisterIntent(SMS_DELIVERED, localChannel)
 
-        SmsManager.getDefault().sendTextMessage(
+        getSmsManager().sendTextMessage(
                 person.phone.value,
                 null,
                 message,
@@ -85,4 +85,6 @@ class SmsSender(private val context: Context) : AbstractMessageSender(context as
             else -> null
         }
     }
+
+    private fun getSmsManager() = context.getSystemService(SmsManager::class.java) ?: SmsManager.getDefault()
 }
