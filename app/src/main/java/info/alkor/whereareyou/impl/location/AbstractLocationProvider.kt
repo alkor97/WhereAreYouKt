@@ -25,7 +25,7 @@ abstract class AbstractLocationProvider(
         // request location for all providers in parallel
         val deferred = providers.map { provider ->
             scope.async {
-                val location = requestLocation(provider)
+                val location = requestLocation(provider, timeout)
                 if (location != null) {
                     // report any location found as non-final one
                     channel.send(LocationFound(location, false))
@@ -62,7 +62,7 @@ abstract class AbstractLocationProvider(
         return channel
     }
 
-    protected abstract suspend fun requestLocation(provider: Provider): ComputedLocation?
+    protected abstract suspend fun requestLocation(provider: Provider, timeout: Duration): ComputedLocation?
 }
 
 fun Date.notOlderThan(duration: Duration) = Date().time - this.time <= duration.toMillis()
