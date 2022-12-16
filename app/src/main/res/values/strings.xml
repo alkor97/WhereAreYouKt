@@ -120,6 +120,7 @@
     <string name="send_sms_permission_needed">send text messages to transport location responses.</string>
     <string name="read_phone_state_permission_needed">read phone and network state to send location responses.</string>
     <string name="foreground_service_permission_needed">run foreground service</string>
+    <string name="post_notifications_permission_needed">post notifications</string>
 
     <string name="query_someones_location">You have asked location of</string>
     <string name="query_my_location">Your location was asked by</string>

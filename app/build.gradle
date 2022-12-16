@@ -15,11 +15,11 @@ android {
             keyPassword 'android'
         }
     }
-    compileSdkVersion 32
+    compileSdkVersion 33
     defaultConfig {
         applicationId "info.alkor.whereareyoukt"
         minSdkVersion 23
-        targetSdkVersion 32
+        targetSdkVersion 33
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         archivesBaseName = "WhereAreYouKt-$versionName"

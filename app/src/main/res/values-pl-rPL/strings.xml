@@ -146,4 +146,5 @@
     <string name="find_person_location">Znajdź położenie osoby</string>
     <string name="undo">Cofnij</string>
     <string name="deleted">Usunięto</string>
+    <string name="post_notifications_permission_needed">pokazywanie powiadomień</string>
 </resources>
