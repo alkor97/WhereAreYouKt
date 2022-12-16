@@ -84,7 +84,7 @@ class ActionFragment : Fragment() {
                         .setAction(R.string.undo) { viewModel.restoreAction(messageId) }
                         .addCallback(object : Snackbar.Callback() {
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                                if (event == DISMISS_EVENT_TIMEOUT) {
+                                if (event == DISMISS_EVENT_TIMEOUT || event == DISMISS_EVENT_CONSECUTIVE) {
                                     viewModel.removeAction(messageId, commit = true)
                                 }
                             }
